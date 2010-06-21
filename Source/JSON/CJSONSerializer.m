@@ -55,21 +55,27 @@ serializer = NULL;
 [super dealloc];
 }
 
-- (NSString *)serializeObject:(id)inObject;
+- (NSString *)serializeObject:(id)inObject error:(NSError **)outError
 {
-NSData *theData = [serializer serializeObject:inObject];
+NSData *theData = [serializer serializeObject:inObject error:outError];
+if (theData == NULL)
+	return(NULL);
 return([[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] autorelease]);
 }
 
-- (NSString *)serializeArray:(NSArray *)inArray
+- (NSString *)serializeArray:(NSArray *)inArray error:(NSError **)outError
 {
-NSData *theData = [serializer serializeArray:inArray];
+NSData *theData = [serializer serializeArray:inArray error:outError];
+if (theData == NULL)
+	return(NULL);
 return([[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] autorelease]);
 }
 
-- (NSString *)serializeDictionary:(NSDictionary *)inDictionary;
+- (NSString *)serializeDictionary:(NSDictionary *)inDictionary error:(NSError **)outError
 {
-NSData *theData = [serializer serializeDictionary:inDictionary];
+NSData *theData = [serializer serializeDictionary:inDictionary error:outError];
+if (theData == NULL)
+	return(NULL);
 return([[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] autorelease]);
 }
 @end
