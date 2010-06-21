@@ -35,12 +35,12 @@
 + (id)serializer;
 
 /// Take any JSON compatible object (generally NSNull, NSNumber, NSString, NSArray and NSDictionary) and produce an NSData containing the serialized JSON.
-- (NSData *)serializeObject:(id)inObject;
+- (NSData *)serializeObject:(id)inObject error:(NSError **)outError;
 
-- (NSData *)serializeNull:(NSNull *)inNull;
-- (NSData *)serializeNumber:(NSNumber *)inNumber;
-- (NSData *)serializeString:(NSString *)inString;
-- (NSData *)serializeArray:(NSArray *)inArray;
-- (NSData *)serializeDictionary:(NSDictionary *)inDictionary;
+- (NSData *)serializeNull:(NSNull *)inNull error:(NSError **)outError;
+- (NSData *)serializeNumber:(NSNumber *)inNumber error:(NSError **)outError;
+- (NSData *)serializeString:(NSString *)inString error:(NSError **)outError;
+- (NSData *)serializeArray:(NSArray *)inArray error:(NSError **)outError;
+- (NSData *)serializeDictionary:(NSDictionary *)inDictionary error:(NSError **)outError;
 
 @end
