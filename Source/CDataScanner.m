@@ -52,9 +52,6 @@ return(theCharacter);
 
 @implementation CDataScanner
 
-@dynamic data;
-@dynamic scanLocation;
-@dynamic isAtEnd;
 @synthesize doubleCharacters;
 
 + (id)scannerWithData:(NSData *)inData
@@ -88,7 +85,7 @@ return(current - start);
 
 - (NSData *)data
 {
-return(data); 
+return(data);
 }
 
 - (void)setData:(NSData *)inData
@@ -100,7 +97,7 @@ if (data != inData)
 		[data release];
 		data = NULL;
 		}
-	
+
 	if (inData)
 		{
 		data = [inData retain];
@@ -192,7 +189,7 @@ if (outValue)
 	{
 	*outValue = [[[NSString alloc] initWithBytes:current length:P - current encoding:NSUTF8StringEncoding] autorelease];
 	}
-	
+
 current = P;
 
 return(YES);
@@ -232,7 +229,7 @@ if (outValue)
 	{
 	*outValue = [[[NSString alloc] initWithBytes:current length:P - current encoding:NSUTF8StringEncoding] autorelease];
 	}
-	
+
 current = P;
 
 return(YES);
