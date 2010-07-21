@@ -50,7 +50,19 @@ void test(void)
 {
 NSString *theSource = NULL;
 //
-theSource = @"{\"a\": [ { ] }";
+//theSource = [NSString stringWithFormat:@"%llu", UINT64_MAX];
+//NSLog(@"%@", theSource);
+//
+//NSData *theData = [theSource dataUsingEncoding:NSUTF32BigEndianStringEncoding];
+//
+//NSError *theError = NULL;
+//id theObject = [[CJSONDeserializer deserializer] deserialize:theData error:&theError];
+//
+//NSLog(@"Error: %@", theError);
+//NSLog(@"Result: %@ %@", NSStringFromClass([theObject class]), theObject);
+
+theSource = @"3.14";
+NSLog(@"%@", theSource);
 
 NSData *theData = [theSource dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 
@@ -58,5 +70,5 @@ NSError *theError = NULL;
 id theObject = [[CJSONDeserializer deserializer] deserialize:theData error:&theError];
 
 NSLog(@"Error: %@", theError);
-NSLog(@"Result: %@", theObject);
+NSLog(@"Result: %@ %@", NSStringFromClass([theObject class]), theObject);
 }

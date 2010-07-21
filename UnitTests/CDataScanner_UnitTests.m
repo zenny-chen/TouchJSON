@@ -57,9 +57,18 @@ STAssertTrue(theResult, NULL);
 STAssertEqualObjects(theString, @"World", NULL);
 STAssertEquals(theScanner.scanLocation, 11U, NULL);
 
-
 STAssertTrue(theScanner.isAtEnd, NULL);
+}
 
+- (void)testDoubles
+{
+NSString *theString = @"3.14";
+CDataScanner *theScanner = [CDataScanner scannerWithData:[theString dataUsingEncoding:NSUTF8StringEncoding]];
+STAssertFalse(theScanner.isAtEnd, NULL);
+
+NSNumber *theNumber = NULL;
+BOOL theResult = [theScanner scanNumber:&theNumber];
+STAssertTrue(theResult, NULL);
 }
 
 @end

@@ -32,7 +32,6 @@
 #import "CDataScanner_Extensions.h"
 
 @interface CDataScanner ()
-@property (readwrite, nonatomic, retain) NSCharacterSet *doubleCharacters;
 @end
 
 #pragma mark -
@@ -52,8 +51,6 @@ return(theCharacter);
 
 @implementation CDataScanner
 
-@synthesize doubleCharacters;
-
 + (id)scannerWithData:(NSData *)inData
 {
 CDataScanner *theScanner = [[[self alloc] init] autorelease];
@@ -65,7 +62,8 @@ return(theScanner);
 {
 if ((self = [super init]) != nil)
 	{
-	self.doubleCharacters = [NSCharacterSet characterSetWithCharactersInString:@"0123456789eE-."];
+	integerCharacters = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789"] retain];
+	doubleCharacters = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789eE-."] retain];
 	}
 return(self);
 }
@@ -73,7 +71,10 @@ return(self);
 - (void)dealloc
 {
 self.data = NULL;
-self.doubleCharacters = NULL;
+[integerCharacters release];
+integerCharacters = NULL;
+[doubleCharacters release];
+doubleCharacters = NULL;
 //
 [super dealloc];
 }
