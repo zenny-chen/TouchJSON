@@ -58,7 +58,7 @@ else
 	return(NULL);
 }
 
-- (id)deserializeAsDictionary:(NSData *)inData error:(NSError **)outError;
+- (id)deserializeAsDictionary:(NSData *)inData error:(NSError **)outError
 {
 if (inData == NULL || [inData length] == 0)
 	{
@@ -75,7 +75,7 @@ else
 	return(NULL);
 }
 
-- (id)deserializeAsArray:(NSData *)inData error:(NSError **)outError;
+- (id)deserializeAsArray:(NSData *)inData error:(NSError **)outError
 {
 if (inData == NULL || [inData length] == 0)
 	{
