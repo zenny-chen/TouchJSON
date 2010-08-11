@@ -61,7 +61,7 @@ NSString *theSource = NULL;
 //NSLog(@"Error: %@", theError);
 //NSLog(@"Result: %@ %@", NSStringFromClass([theObject class]), theObject);
 
-theSource = @"3.14";
+theSource = @"\"";
 NSLog(@"%@", theSource);
 
 NSData *theData = [theSource dataUsingEncoding:NSUTF32BigEndianStringEncoding];
