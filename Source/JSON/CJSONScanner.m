@@ -485,6 +485,7 @@ while ([self scanCharacter:'"'] == NO)
                 NULL];
             *outError = [NSError errorWithDomain:kJSONScannerErrorDomain code:-14 userInfo:theUserInfo];
             }
+        [theString release];
         return(NO);
         }
 
