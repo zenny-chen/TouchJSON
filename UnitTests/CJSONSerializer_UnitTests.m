@@ -35,14 +35,14 @@
 -(void)testEmptyDictionary {
 	NSString *jsonEquivalent = @"{}";
 	NSDictionary *emptyDictionary = [NSDictionary dictionary];
-	id theObject = [[CJSONSerializer serializer] serializeObject:emptyDictionary];
+	id theObject = [[CJSONSerializer serializer] serializeObject:emptyDictionary error:nil];
 	STAssertEqualObjects(jsonEquivalent, theObject, nil);
 }
 
 -(void)testSingleKeyValuePair {
 	NSString *jsonEquivalent = @"{\"a\":\"b\"}";
 	NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"b" forKey:@"a"];
-	id theObject = [[CJSONSerializer serializer] serializeObject:dictionary];
+	id theObject = [[CJSONSerializer serializer] serializeObject:dictionary error:nil];
 	STAssertEqualObjects(jsonEquivalent, theObject, nil);
 }
 
@@ -51,21 +51,21 @@
     NSString *a = @"a";
     NSArray  *input = [NSArray arrayWithObjects:a, @"b", a, nil];
     NSString *expected = @"[\"a\",\"b\",\"a\"]";
-    id output = [[CJSONSerializer serializer] serializeObject:input];
+    id output = [[CJSONSerializer serializer] serializeObject:input error:nil];
     STAssertEqualObjects(expected, output, nil);
 }
 
 - (void)testFalse {
 	NSString *jsonEquivalent = @"{\"a\":false}";
 	NSDictionary *dictionary = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"a"];
-	id theObject = [[CJSONSerializer serializer] serializeObject:dictionary];
+	id theObject = [[CJSONSerializer serializer] serializeObject:dictionary error:nil];
 	STAssertEqualObjects(jsonEquivalent, theObject, nil);
 }
 
 - (void)testDoubleAccuracy {
 	NSString *jsonEquivalent = @"{\"a\":1.23456789}";
 	NSDictionary *dictionary = [NSDictionary dictionaryWithObject:[NSNumber numberWithDouble:1.23456789] forKey:@"a"];
-	id theObject = [[CJSONSerializer serializer] serializeObject:dictionary];
+	id theObject = [[CJSONSerializer serializer] serializeObject:dictionary error:nil];
 	STAssertEqualObjects(jsonEquivalent, theObject, nil);
 }
 
