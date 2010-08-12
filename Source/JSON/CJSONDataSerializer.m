@@ -44,11 +44,11 @@ NSAutoreleasePool *thePool = [[NSAutoreleasePool alloc] init];
 @synchronized(@"CJSONDataSerializer")
 	{
 	if (kNULL == NULL)
-		kNULL = [[NSData alloc] initWithBytesNoCopy:"null" length:4 freeWhenDone:NO];
+		kNULL = [[NSData alloc] initWithBytesNoCopy:(void *)"null" length:4 freeWhenDone:NO];
 	if (kFalse == NULL)
-		kFalse = [[NSData alloc] initWithBytesNoCopy:"false" length:5 freeWhenDone:NO];
+		kFalse = [[NSData alloc] initWithBytesNoCopy:(void *)"false" length:5 freeWhenDone:NO];
 	if (kTrue == NULL)
-		kTrue = [[NSData alloc] initWithBytesNoCopy:"true" length:4 freeWhenDone:NO];
+		kTrue = [[NSData alloc] initWithBytesNoCopy:(void *)"true" length:4 freeWhenDone:NO];
 	}
 
 [thePool release];

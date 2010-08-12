@@ -145,7 +145,7 @@ else
 	return(NO);
 }
 
-- (BOOL)scanUTF8String:(const char *)inString intoString:(NSString **)outValue;
+- (BOOL)scanUTF8String:(const char *)inString intoString:(NSString **)outValue
 {
 const size_t theLength = strlen(inString);
 if ((size_t)(end - current) < theLength)

@@ -407,8 +407,7 @@ while ([self scanCharacter:'"'] == NO)
 		{
 		[theString appendString:theStringChunk];
 		}
-	
-	if ([self scanCharacter:'\\'] == YES)
+	else if ([self scanCharacter:'\\'] == YES)
 		{
 		unichar theCharacter = [self scanCharacter];
 		switch (theCharacter)
@@ -477,6 +476,19 @@ while ([self scanCharacter:'"'] == NO)
 			}
 		CFStringAppendCharacters((CFMutableStringRef)theString, &theCharacter, 1);
 		}
+    else
+        {
+        if (outError)
+            {
+            NSDictionary *theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                @"Could not scan string constant. No terminating double quote character.", NSLocalizedDescriptionKey,
+                NULL];
+            *outError = [NSError errorWithDomain:kJSONScannerErrorDomain code:-14 userInfo:theUserInfo];
+            }
+        [theString release];
+        return(NO);
+        }
+
 	}
 	
 if (outStringConstant != NULL)
