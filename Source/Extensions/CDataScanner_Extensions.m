@@ -82,6 +82,7 @@ else
 NSUInteger theLine = 0;
 for (const u_int8_t *C = start; C < current; ++C)
     {
+    // TODO: JIW What about MS-DOS line endings you bastard! (Also other unicode line endings)
     if (*C == '\n' || *C == '\r')
         {
         ++theLine;
