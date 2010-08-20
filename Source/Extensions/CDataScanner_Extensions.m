@@ -77,4 +77,50 @@ else
 	}
 }
 
+- (NSUInteger)lineOfScanLocation
+{
+NSUInteger theLine = 0;
+for (const u_int8_t *C = start; C < current; ++C)
+    {
+    if (*C == '\n' || *C == '\r')
+        {
+        ++theLine;
+        }
+    }
+return(theLine);
+}
+
+- (NSDictionary *)userInfoForScanLocation
+{
+NSUInteger theLine = 0;
+const u_int8_t *theLineStart = start;
+for (const u_int8_t *C = start; C < current; ++C)
+    {
+    if (*C == '\n' || *C == '\r')
+        {
+        theLineStart = C - 1;
+        ++theLine;
+        }
+    }
+
+NSUInteger theCharacter = current - theLineStart;
+
+NSRange theStartRange = NSIntersectionRange((NSRange){ .location = MAX((NSInteger)self.scanLocation - 20, 0), .length = 20 + (NSInteger)self.scanLocation - 20 }, (NSRange){ .location = 0, .length = self.data.length });
+NSRange theEndRange = NSIntersectionRange((NSRange){ .location = self.scanLocation, .length = 20 }, (NSRange){ .location = 0, .length = self.data.length });
+
+
+NSString *theSnippet = [NSString stringWithFormat:@"%@!HERE>!%@",
+    [[[NSString alloc] initWithData:[self.data subdataWithRange:theStartRange] encoding:NSUTF8StringEncoding] autorelease],
+    [[[NSString alloc] initWithData:[self.data subdataWithRange:theEndRange] encoding:NSUTF8StringEncoding] autorelease]
+    ];
+
+NSDictionary *theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+    [NSNumber numberWithUnsignedInteger:theLine], @"line",
+    [NSNumber numberWithUnsignedInteger:theCharacter], @"character",
+    [NSNumber numberWithUnsignedInteger:self.scanLocation], @"location",
+    theSnippet, @"snippet",
+    NULL];
+return(theUserInfo);    
+}
+
 @end

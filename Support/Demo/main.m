@@ -50,7 +50,7 @@ void test(void)
 {
 NSString *theSource = NULL;
 //
-theSource = @"{\"a\": [ { ] }";
+theSource = @"\n\n\n\n\n{\"a\": [ { ] }";
 
 NSData *theData = [theSource dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 
@@ -58,5 +58,6 @@ NSError *theError = NULL;
 id theObject = [[CJSONDeserializer deserializer] deserialize:theData error:&theError];
 
 NSLog(@"Error: %@", theError);
+NSLog(@"Error (User Info): %@", theError.userInfo);
 NSLog(@"Result: %@", theObject);
 }
