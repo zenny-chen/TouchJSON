@@ -260,7 +260,14 @@
 			isa = PBXProject;
 			buildConfigurationList = 45FC538608FBF91C0091ABDF /* Build configuration list for PBXProject "TouchJSON" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Sample */;
 			projectDirPath = "";
 			projectRoot = "";
