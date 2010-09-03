@@ -20,9 +20,9 @@ The primary author is Jonathan Wight <http://toxicsoftware.com/> with several ot
 
 ## What is JSON?
 
-<http://www.ietf.org/rfc/rfc4627.txt?number=4627>
-<http://www.json.org/>
-<http://en.wikipedia.org/wiki/JSON>
+* <http://www.ietf.org/rfc/rfc4627.txt?number=4627>
+* <http://www.json.org/>
+* <http://en.wikipedia.org/wiki/JSON>
 
 ## License
 
@@ -99,28 +99,36 @@ It is especially important to validate your JSON before filing bugs.
 
 ## Strings vs Data
 
-TODO
+TouchJSON can handle JSON represented either as NSData or as NSString objects. It is recommended that you use NSData if at all possible as the NSString based classes and methods might be deprecated in the future.
 
 ## String encoding
 
-TODO
+TouchJSON will work UTF8, UTF16 & UTF32 (little and big endian) data. However internally it will convert UTF16 & UTF32 to UTF8 so for performance purposes you should try to use UTF8 if at all possible. (Although see <http://github.com/schwa/TouchJSON/issues/issue/1>)
 
 ## Date Formats
 
-TODO
+JSON doesn't specify a date encoding format. As such various methods are used. As such TouchJSON doesn't dictate which format you use. ISO 8601 style dates (with as much precession as needed) are recoemmended. See <http://en.wikipedia.org/wiki/ISO_8601>. You can use the CExtensibleJSONDataSerializer class to automatically serialize Cocoa's NSDate objects into ISO-8601 strings (this sample code uses TouchFoundation <http://github.com/schwa/TouchFoundation>)
 
-## Extending TouchJSON
+	CExtensibleJSONDataSerializer *theSerializer = [[[CExtensibleJSONDataSerializer alloc] init] autorelease];
 
-TODO
+	JSONConversionConverter theConverter = ^(id inObject) {
+		return((id)[(NSDate *)inObject ISO8601String]);
+		};
+	theSerializer.convertersByName = [NSDictionary dictionaryWithObject:theConverter forKey:@"date"];
+	JSONConversionTest theTest = ^(id inObject) {
+		NSString *theName = NULL;
+		if ([inObject isKindOfClass:[NSDate class]])
+			{
+			theName = @"date";
+			}
+		return(theName);
+		};
+
+	theSerializer.tests = [NSSet setWithObject:theTest];
 
 ## Roadmap
 
-TODO
+* Benchmarking application
+* Performance optimisations
+* JSONPath
 
-## Performance
-
-TODO
-
-## FAQ
-
-TODO
