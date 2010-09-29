@@ -34,7 +34,13 @@
 
 NSString *const kJSONDeserializerErrorDomain  = @"CJSONDeserializerErrorDomain";
 
+@interface CJSONDeserializer ()
+@property (nonatomic, retain) NSOperationQueue *operationQueue;
+@end
+
 @implementation CJSONDeserializer
+
+@synthesize operationQueue;
 
 + (id)deserializer
 {
@@ -90,6 +96,66 @@ if ([theScanner scanJSONArray:&theArray error:outError] == YES)
 	return(theArray);
 else
 	return(NULL);
+}
+
+#if NS_BLOCKS_AVAILABLE
+- (void)deserializeAsDictionary:(NSData *)inData completionBlock:(void (^)(id result, NSError *error))block {
+	
+	NSError *noDataError = nil;
+	if (inData == NULL || [inData length] == 0) {
+		noDataError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:-1 userInfo:NULL];
+		block(nil, noDataError);
+	}
+	
+	[self.operationQueue addOperationWithBlock:^{
+		
+		NSError *deserializationError = nil;
+		CJSONScanner *theScanner = [CJSONScanner scannerWithData:inData];
+		NSDictionary *theDictionary = NULL;
+		BOOL successful = [theScanner scanJSONDictionary:&theDictionary error:&deserializationError];
+		
+		dispatch_async(dispatch_get_main_queue (), ^{
+			if (successful)
+				block(theDictionary, nil);
+			else
+				block(nil, deserializationError);
+		});
+	}];
+}
+
+- (void)deserializeAsArray:(NSData *)inData completionBlock:(void (^)(id result, NSError *error))block {
+	
+	NSError *nullInDataError = nil;
+	if (inData == NULL || [inData length] == 0) {
+		nullInDataError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:-1 userInfo:NULL];
+		block(nil, nullInDataError);
+	}
+			  
+	[self.operationQueue addOperationWithBlock:^{
+		
+		NSError *deserializationError = nil;
+		CJSONScanner *theScanner = [CJSONScanner scannerWithData:inData];
+		NSArray *theArray = NULL;
+		BOOL successful = [theScanner scanJSONArray:&theArray error:&deserializationError];
+		
+		dispatch_async(dispatch_get_main_queue(), ^{
+			if (successful)
+				block(theArray, nil);
+			else
+				block(nil, deserializationError);
+		});
+	}];
+}
+#endif
+
+- (NSOperationQueue *)operationQueue {
+	return operationQueue ? : (operationQueue = [[NSOperationQueue alloc] init]);
+}
+
+- (void)dealloc {
+	
+	[operationQueue release];
+	[super dealloc];
 }
 
 @end
