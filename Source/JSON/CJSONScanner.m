@@ -309,7 +309,7 @@ if ([self scanCharacter:'['] == NO)
 	if (outError)
 		{
         NSMutableDictionary *theUserInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-			@"Could not scan array. Array not started by a '{' character.", NSLocalizedDescriptionKey,
+			@"Could not scan array. Array not started by a '[' character.", NSLocalizedDescriptionKey,
 			NULL];
         [theUserInfo addEntriesFromDictionary:self.userInfoForScanLocation];
 		*outError = [NSError errorWithDomain:kJSONScannerErrorDomain code:-7 userInfo:theUserInfo];
