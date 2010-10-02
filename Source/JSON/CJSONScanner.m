@@ -304,6 +304,8 @@ return(YES);
 {
 NSUInteger theScanLocation = [self scanLocation];
 
+[self skipWhitespace];
+
 if ([self scanCharacter:'['] == NO)
 	{
 	if (outError)
