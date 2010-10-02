@@ -47,6 +47,27 @@ NSString *const kJSONDeserializerErrorDomain  = @"CJSONDeserializerErrorDomain";
 return([[[self alloc] init] autorelease]);
 }
 
+- (void)dealloc
+{
+[operationQueue release];
+operationQueue = NULL;
+//
+[super dealloc];
+}
+
+#pragma mark -
+
+- (NSOperationQueue *)operationQueue
+{
+if (operationQueue == NULL)
+    {
+    operationQueue = [[NSOperationQueue alloc] init];
+    }
+return(operationQueue);
+}
+
+#pragma mark -
+
 - (id)deserialize:(NSData *)inData error:(NSError **)outError
 {
 if (inData == NULL || [inData length] == 0)
@@ -147,15 +168,5 @@ else
 	}];
 }
 #endif
-
-- (NSOperationQueue *)operationQueue {
-	return operationQueue ? : (operationQueue = [[NSOperationQueue alloc] init]);
-}
-
-- (void)dealloc {
-	
-	[operationQueue release];
-	[super dealloc];
-}
 
 @end
