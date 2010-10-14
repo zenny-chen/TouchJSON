@@ -32,7 +32,9 @@
 extern NSString *const kJSONDeserializerErrorDomain /* = @"CJSONDeserializerErrorDomain" */;
 
 @interface CJSONDeserializer : NSObject {
-
+#if NS_BLOCKS_AVAILABLE
+    NSOperationQueue *operationQueue;
+#endif
 }
 
 + (id)deserializer;
