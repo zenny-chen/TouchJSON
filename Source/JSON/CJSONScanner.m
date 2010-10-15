@@ -56,18 +56,22 @@ else
 @implementation CJSONScanner
 
 @synthesize strictEscapeCodes;
+@synthesize nullObject;
 
 - (id)init
 {
 if ((self = [super init]) != nil)
 	{
 	strictEscapeCodes = NO;
+    nullObject = [[NSNull null] retain];
 	}
 return(self);
 }
 
 - (void)dealloc
 {
+[nullObject release];
+nullObject = NULL;
 //
 [super dealloc];
 }
@@ -135,7 +139,7 @@ switch (C)
 	case 'n':
 		if ([self scanUTF8String:"null" intoString:NULL])
 			{
-			theObject = [NSNull null];
+			theObject = self.nullObject;
 			}
 		break;
 	case '\"':
