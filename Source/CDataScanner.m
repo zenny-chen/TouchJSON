@@ -62,12 +62,9 @@ return(theScanner);
 
 + (void)initialize
 {
-@synchronized(self)
+if (sDoubleCharacters == NULL)
     {
-    if (sDoubleCharacters == NULL)
-        {
-        sDoubleCharacters = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789eE-."] retain];
-        }
+    sDoubleCharacters = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789eE-."] retain];
     }
 }
 
