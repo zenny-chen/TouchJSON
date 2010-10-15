@@ -35,35 +35,20 @@
 NSString *const kJSONDeserializerErrorDomain  = @"CJSONDeserializerErrorDomain";
 
 @interface CJSONDeserializer ()
-@property (nonatomic, retain) NSOperationQueue *operationQueue;
 @end
 
 @implementation CJSONDeserializer
 
-@synthesize operationQueue;
 
 + (id)deserializer
 {
 return([[[self alloc] init] autorelease]);
 }
 
-- (void)dealloc
 {
-[operationQueue release];
-operationQueue = NULL;
-//
-[super dealloc];
 }
 
-#pragma mark -
-
-- (NSOperationQueue *)operationQueue
 {
-if (operationQueue == NULL)
-    {
-    operationQueue = [[NSOperationQueue alloc] init];
-    }
-return(operationQueue);
 }
 
 #pragma mark -
