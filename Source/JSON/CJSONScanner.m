@@ -252,7 +252,14 @@ while ([self currentCharacter] != '}')
 		return(NO);
 		}
 
-	[theDictionary setValue:theValue forKey:theKey];
+    if (theValue == NULL && self.nullObject == NULL)
+        {
+        // If the value is a null and nullObject is also null then we're skipping this key/value pair.
+        }
+    else
+        {
+        [theDictionary setValue:theValue forKey:theKey];
+        }
 
 	[self skipWhitespace];
 	if ([self scanCharacter:','] == NO)
@@ -343,22 +350,27 @@ while ([self currentCharacter] != ']')
 		[theArray release];
 		return(NO);
 		}
-		
-	if(theValue == nil)
-		{
-		if (outError)
-			{
-			NSMutableDictionary *theUserInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                @"Could not scan array. Value is NULL.", NSLocalizedDescriptionKey,
-                NULL];
-            [theUserInfo addEntriesFromDictionary:self.userInfoForScanLocation];
-			*outError = [NSError errorWithDomain:kJSONScannerErrorDomain code:-9 userInfo:theUserInfo];
-			}
-		[theArray release];
-		return(NO);
-		}
 
-	[theArray addObject:theValue];
+    if (theValue == NULL)
+        {
+        if (self.nullObject != NULL)
+            {
+            if (outError)
+                {
+                NSMutableDictionary *theUserInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                    @"Could not scan array. Value is NULL.", NSLocalizedDescriptionKey,
+                    NULL];
+                [theUserInfo addEntriesFromDictionary:self.userInfoForScanLocation];
+                *outError = [NSError errorWithDomain:kJSONScannerErrorDomain code:-9 userInfo:theUserInfo];
+                }
+            [theArray release];
+            return(NO);
+            }
+        }
+    else
+        {
+        [theArray addObject:theValue];
+        }
 	
 	[self skipWhitespace];
 	if ([self scanCharacter:','] == NO)
