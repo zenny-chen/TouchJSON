@@ -32,7 +32,6 @@
 #import "CDataScanner_Extensions.h"
 
 @interface CDataScanner ()
-@property (readwrite, nonatomic, retain) NSCharacterSet *doubleCharacters;
 @end
 
 #pragma mark -
@@ -50,9 +49,9 @@ const unichar theCharacter = theByte;
 return(theCharacter);
 }
 
-@implementation CDataScanner
+static NSCharacterSet *sDoubleCharacters = NULL;
 
-@synthesize doubleCharacters;
+@implementation CDataScanner
 
 + (id)scannerWithData:(NSData *)inData
 {
@@ -61,11 +60,21 @@ theScanner.data = inData;
 return(theScanner);
 }
 
++ (void)initialize
+{
+@synchronized(self)
+    {
+    if (sDoubleCharacters == NULL)
+        {
+        sDoubleCharacters = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789eE-."] retain];
+        }
+    }
+}
+
 - (id)init
 {
 if ((self = [super init]) != nil)
 	{
-	self.doubleCharacters = [NSCharacterSet characterSetWithCharactersInString:@"0123456789eE-."];
 	}
 return(self);
 }
@@ -73,7 +82,6 @@ return(self);
 - (void)dealloc
 {
 self.data = NULL;
-self.doubleCharacters = NULL;
 //
 [super dealloc];
 }
@@ -239,7 +247,7 @@ return(YES);
 {
 // Replace all of this with a strtod call
 NSString *theString = NULL;
-if ([self scanCharactersFromSet:doubleCharacters intoString:&theString])
+if ([self scanCharactersFromSet:sDoubleCharacters intoString:&theString])
 	{
 	if (outValue)
 		*outValue = [NSNumber numberWithDouble:[theString doubleValue]]; // TODO dont use doubleValue
