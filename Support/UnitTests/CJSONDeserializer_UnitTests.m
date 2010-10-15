@@ -173,5 +173,37 @@
 	STAssertNil(dictionary, @"Dictionary will be nil when there is an error deserializing", nil);
 }
 
+-(void)testSkipNullValueInArray {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.nullObject = NULL;
+    NSData *theData = [@"[null]" dataUsingEncoding:NSUTF8StringEncoding];
+	NSArray *theArray = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theArray, [NSArray array], @"Skipping null did not produce empty array");
+}
+
+-(void)testAlternativeNullValueInArray {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.nullObject = @"foo";
+    NSData *theData = [@"[null]" dataUsingEncoding:NSUTF8StringEncoding];
+	NSArray *theArray = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theArray, [NSArray arrayWithObject:@"foo"], @"Skipping null did not produce array with placeholder");
+}
+
+-(void)testDontSkipNullValueInArray {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"[null]" dataUsingEncoding:NSUTF8StringEncoding];
+	NSArray *theArray = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theArray, [NSArray arrayWithObject:[NSNull null]], @"Didnt get the array we were looking for");
+}
+
+-(void)testSkipNullValueInDictionary {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.nullObject = NULL;
+    NSData *theData = [@"{\"foo\":null}" dataUsingEncoding:NSUTF8StringEncoding];
+	NSDictionary *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, [NSDictionary dictionary], @"Skipping null did not produce empty dict");
+}
+
+
 @end
 

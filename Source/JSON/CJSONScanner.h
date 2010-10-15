@@ -35,8 +35,8 @@
     id nullObject;
 }
 
-@property (readonly, nonatomic, assign) BOOL strictEscapeCodes;
-@property (readonly, nonatomic, retain) id nullObject;
+@property (readwrite, nonatomic, assign) BOOL strictEscapeCodes;
+@property (readwrite, nonatomic, retain) id nullObject;
 
 - (BOOL)scanJSONObject:(id *)outObject error:(NSError **)outError;
 - (BOOL)scanJSONDictionary:(NSDictionary **)outDictionary error:(NSError **)outError;

@@ -65,6 +65,18 @@ scanner = NULL;
 
 #pragma mark -
 
+- (id)nullObject
+    {
+    return(self.scanner.nullObject);
+    }
+
+- (void)setNullObject:(id)inNullObject
+    {
+    self.scanner.nullObject = inNullObject;
+    }
+
+#pragma mark -
+
 - (id)deserialize:(NSData *)inData error:(NSError **)outError
 {
 if (inData == NULL || [inData length] == 0)

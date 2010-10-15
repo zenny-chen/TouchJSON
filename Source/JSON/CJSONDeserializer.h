@@ -38,6 +38,8 @@ extern NSString *const kJSONDeserializerErrorDomain /* = @"CJSONDeserializerErro
 }
 
 @property (readwrite, nonatomic, retain) CJSONScanner *scanner;
+/// Object to return instead when a null encountered in the JSON. Defaults to NSNull. Setting to null causes the scanner to skip null values.
+@property (readwrite, nonatomic, retain) id nullObject;
 
 + (id)deserializer;
 
