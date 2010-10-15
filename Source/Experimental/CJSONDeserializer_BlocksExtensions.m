@@ -23,9 +23,9 @@
 	[[NSOperationQueue mainQueue] addOperationWithBlock:^{
 		
 		NSError *deserializationError = nil;
-		CJSONScanner *theScanner = [CJSONScanner scannerWithData:inData];
+		self.scanner.data = inData;
 		NSDictionary *theDictionary = NULL;
-		BOOL successful = [theScanner scanJSONDictionary:&theDictionary error:&deserializationError];
+		BOOL successful = [self.scanner scanJSONDictionary:&theDictionary error:&deserializationError];
 		
 		dispatch_async(dispatch_get_main_queue (), ^{
 			if (successful)
@@ -47,9 +47,9 @@
 	[[NSOperationQueue mainQueue] addOperationWithBlock:^{
 		
 		NSError *deserializationError = nil;
-		CJSONScanner *theScanner = [CJSONScanner scannerWithData:inData];
+        self.scanner.data = inData;
 		NSArray *theArray = NULL;
-		BOOL successful = [theScanner scanJSONArray:&theArray error:&deserializationError];
+		BOOL successful = [self.scanner scanJSONArray:&theArray error:&deserializationError];
 		
 		dispatch_async(dispatch_get_main_queue(), ^{
 			if (successful)
