@@ -78,7 +78,8 @@ return(self);
 
 - (void)dealloc
 {
-self.data = NULL;
+[data release];
+data = NULL;
 //
 [super dealloc];
 }
