@@ -32,9 +32,6 @@
 extern NSString *const kJSONDeserializerErrorDomain /* = @"CJSONDeserializerErrorDomain" */;
 
 @interface CJSONDeserializer : NSObject {
-#if NS_BLOCKS_AVAILABLE
-    NSOperationQueue *operationQueue;
-#endif
 }
 
 + (id)deserializer;
@@ -43,10 +40,5 @@ extern NSString *const kJSONDeserializerErrorDomain /* = @"CJSONDeserializerErro
 
 - (id)deserializeAsDictionary:(NSData *)inData error:(NSError **)outError;
 - (id)deserializeAsArray:(NSData *)inData error:(NSError **)outError;
-
-#if NS_BLOCKS_AVAILABLE
-- (void)deserializeAsDictionary:(NSData *)inData completionBlock:(void (^)(id result, NSError *error))block;
-- (void)deserializeAsArray:(NSData *)inData completionBlock:(void (^)(id result, NSError *error))block;
-#endif
 
 @end

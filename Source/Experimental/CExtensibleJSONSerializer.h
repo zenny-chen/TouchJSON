@@ -6,12 +6,12 @@
 //  Copyright 2010 toxicsoftware.com. All rights reserved.
 //
 
-#import "CJSONDataSerializer.h"
+#import "CJSONSerializer.h"
 
 typedef NSString *(^JSONConversionTest)(id inObject);
 typedef id (^JSONConversionConverter)(id inObject);
 
-@interface CExtensibleJSONSerializer : CJSONDataSerializer {
+@interface CExtensibleJSONSerializer : CJSONSerializer {
 	NSSet *tests;
 	NSDictionary *convertersByName;
 }
