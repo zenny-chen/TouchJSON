@@ -433,7 +433,7 @@ while ([self scanCharacter:'"'] == NO)
 	NSString *theStringChunk = NULL;
 	if ([self scanNotQuoteCharactersIntoString:&theStringChunk])
 		{
-		[theString appendString:theStringChunk];
+        CFStringAppend((CFMutableStringRef)theString, (CFStringRef)theStringChunk);
 		}
 	else if ([self scanCharacter:'\\'] == YES)
 		{
