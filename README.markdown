@@ -89,7 +89,7 @@ Here is a code sample:
 
 	NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"b" forKey:@"a"];
 	NSError *error = NULL;
-	NSData *jsonData = [[CJSONDataSerializer serializer] serializeObject:dictionary error&error];
+	NSData *jsonData = [[CJSONSerializer serializer] serializeObject:dictionary error&error];
 
 ## Invalid JSON
 
@@ -109,7 +109,7 @@ TouchJSON will work UTF8, UTF16 & UTF32 (little and big endian) data. However in
 
 JSON doesn't specify a date encoding format. As such various methods are used. As such TouchJSON doesn't dictate which format you use. ISO 8601 style dates (with as much precession as needed) are recoemmended. See <http://en.wikipedia.org/wiki/ISO_8601>. You can use the CExtensibleJSONDataSerializer class to automatically serialize Cocoa's NSDate objects into ISO-8601 strings (this sample code uses TouchFoundation <http://github.com/schwa/TouchFoundation>)
 
-	CExtensibleJSONDataSerializer *theSerializer = [[[CExtensibleJSONDataSerializer alloc] init] autorelease];
+	CExtensibleJSONSerializer *theSerializer = [[[CExtensibleJSONSerializer alloc] init] autorelease];
 
 	JSONConversionConverter theConverter = ^(id inObject) {
 		return((id)[(NSDate *)inObject ISO8601String]);
