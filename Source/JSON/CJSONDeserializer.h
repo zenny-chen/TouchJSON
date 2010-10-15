@@ -31,8 +31,13 @@
 
 extern NSString *const kJSONDeserializerErrorDomain /* = @"CJSONDeserializerErrorDomain" */;
 
+@class CJSONScanner;
+
 @interface CJSONDeserializer : NSObject {
+    CJSONScanner *scanner;
 }
+
+@property (readwrite, nonatomic, retain) CJSONScanner *scanner;
 
 + (id)deserializer;
 

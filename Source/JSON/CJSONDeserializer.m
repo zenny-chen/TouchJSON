@@ -39,16 +39,28 @@ NSString *const kJSONDeserializerErrorDomain  = @"CJSONDeserializerErrorDomain";
 
 @implementation CJSONDeserializer
 
+@synthesize scanner;
 
 + (id)deserializer
 {
 return([[[self alloc] init] autorelease]);
 }
 
+- (id)init
 {
+if ((self = [super init]) != NULL)
+    {
+    scanner = [[CJSONScanner alloc] init];
+    }
+return(self);
 }
 
+- (void)dealloc
 {
+[scanner release];
+scanner = NULL;
+//
+[super dealloc];
 }
 
 #pragma mark -
@@ -62,9 +74,9 @@ if (inData == NULL || [inData length] == 0)
 
 	return(NULL);
 	}
-CJSONScanner *theScanner = [CJSONScanner scannerWithData:inData];
+self.scanner.data = inData;
 id theObject = NULL;
-if ([theScanner scanJSONObject:&theObject error:outError] == YES)
+if ([self.scanner scanJSONObject:&theObject error:outError] == YES)
 	return(theObject);
 else
 	return(NULL);
@@ -79,9 +91,9 @@ if (inData == NULL || [inData length] == 0)
 
 	return(NULL);
 	}
-CJSONScanner *theScanner = [CJSONScanner scannerWithData:inData];
+self.scanner.data = inData;
 NSDictionary *theDictionary = NULL;
-if ([theScanner scanJSONDictionary:&theDictionary error:outError] == YES)
+if ([self.scanner scanJSONDictionary:&theDictionary error:outError] == YES)
 	return(theDictionary);
 else
 	return(NULL);
@@ -96,9 +108,9 @@ if (inData == NULL || [inData length] == 0)
 
 	return(NULL);
 	}
-CJSONScanner *theScanner = [CJSONScanner scannerWithData:inData];
+self.scanner.data = inData;
 NSArray *theArray = NULL;
-if ([theScanner scanJSONArray:&theArray error:outError] == YES)
+if ([self.scanner scanJSONArray:&theArray error:outError] == YES)
 	return(theArray);
 else
 	return(NULL);
