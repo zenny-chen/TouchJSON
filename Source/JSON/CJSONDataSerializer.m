@@ -163,34 +163,79 @@ return(theResult);
 - (NSData *)serializeString:(NSString *)inString error:(NSError **)outError
 {
 #pragma unused (outError)
-NSMutableString *theMutableCopy = [[inString mutableCopy] autorelease];
-[theMutableCopy replaceOccurrencesOfString:@"\\" withString:@"\\\\" options:0 range:NSMakeRange(0, [theMutableCopy length])];
-[theMutableCopy replaceOccurrencesOfString:@"\"" withString:@"\\\"" options:0 range:NSMakeRange(0, [theMutableCopy length])];
-[theMutableCopy replaceOccurrencesOfString:@"/" withString:@"\\/" options:0 range:NSMakeRange(0, [theMutableCopy length])];
-[theMutableCopy replaceOccurrencesOfString:@"\b" withString:@"\\b" options:0 range:NSMakeRange(0, [theMutableCopy length])];
-[theMutableCopy replaceOccurrencesOfString:@"\f" withString:@"\\f" options:0 range:NSMakeRange(0, [theMutableCopy length])];
-[theMutableCopy replaceOccurrencesOfString:@"\n" withString:@"\\n" options:0 range:NSMakeRange(0, [theMutableCopy length])];
-[theMutableCopy replaceOccurrencesOfString:@"\r" withString:@"\\r" options:0 range:NSMakeRange(0, [theMutableCopy length])];
-[theMutableCopy replaceOccurrencesOfString:@"\t" withString:@"\\t" options:0 range:NSMakeRange(0, [theMutableCopy length])];
-/*
-			case 'u':
-				{
-				theCharacter = 0;
 
-				int theShift;
-				for (theShift = 12; theShift >= 0; theShift -= 4)
-					{
-					int theDigit = HexToInt([self scanCharacter]);
-					if (theDigit == -1)
-						{
-						[self setScanLocation:theScanLocation];
-						return(NO);
-						}
-					theCharacter |= (theDigit << theShift);
-					}
-				}
-*/
-return([[NSString stringWithFormat:@"\"%@\"", theMutableCopy] dataUsingEncoding:NSUTF8StringEncoding]);
+NSMutableData *theData = [NSMutableData dataWithLength:inString.length * 2 + 2];
+
+char *theOutputStart = [theData mutableBytes];
+char *OUT = theOutputStart;
+
+*OUT++ = '"';
+
+const char *theUTF8String = [inString UTF8String];
+for (const char *IN = theUTF8String; *IN != '\0'; ++IN)
+    {
+    switch (*IN)
+        {
+        case '\\':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '\\';
+            }
+            break;
+        case '\"':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '\"';
+            }
+            break;
+        case '/':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '/';
+            }
+            break;
+        case '\b':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '\b';
+            }
+            break;
+        case '\f':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '\f';
+            }
+            break;
+        case '\n':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '\n';
+            }
+            break;
+        case '\r':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '\r';
+            }
+            break;
+        case '\t':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '\t';
+            }
+            break;
+        default:
+            {
+            *OUT++ = *IN;
+            }
+            break;
+        }
+    }
+
+*OUT++ = '"';
+
+theData.length = OUT - theOutputStart;
+return(theData);
 }
 
 - (NSData *)serializeArray:(NSArray *)inArray error:(NSError **)outError
