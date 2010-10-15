@@ -1,5 +1,5 @@
 //
-//  CExtensibleJSONDataSerializer.h
+//  CExtensibleJSONSerializer.h
 //  CouchNotes
 //
 //  Created by Jonathan Wight on 06/20/10.
@@ -11,7 +11,7 @@
 typedef NSString *(^JSONConversionTest)(id inObject);
 typedef id (^JSONConversionConverter)(id inObject);
 
-@interface CExtensibleJSONDataSerializer : CJSONDataSerializer {
+@interface CExtensibleJSONSerializer : CJSONDataSerializer {
 	NSSet *tests;
 	NSDictionary *convertersByName;
 }

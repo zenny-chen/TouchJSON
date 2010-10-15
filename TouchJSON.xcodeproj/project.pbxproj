@@ -78,6 +78,8 @@
 		453111B50A64EDDE00A970C2 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4567B5B80951D51A00ECB961 /* CJSONDeserializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer.h; sourceTree = "<group>"; };
 		4567B5B90951D51A00ECB961 /* CJSONDeserializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer.m; sourceTree = "<group>"; };
+		4569D5DA12683A9100AEC287 /* CExtensibleJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CExtensibleJSONSerializer.h; sourceTree = "<group>"; };
+		4569D5DB12683A9100AEC287 /* CExtensibleJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CExtensibleJSONSerializer.m; sourceTree = "<group>"; };
 		457B5CA110976D7E00B564BC /* CJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializer.h; sourceTree = "<group>"; };
 		457B5CA210976D7E00B564BC /* CJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializer.m; sourceTree = "<group>"; };
 		457B5CA310976D7E00B564BC /* CSerializedJSONData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSerializedJSONData.h; sourceTree = "<group>"; };
@@ -173,9 +175,19 @@
 			path = Support/Demo;
 			sourceTree = "<group>";
 		};
+		4569D5D912683A9100AEC287 /* Experimental */ = {
+			isa = PBXGroup;
+			children = (
+				4569D5DA12683A9100AEC287 /* CExtensibleJSONSerializer.h */,
+				4569D5DB12683A9100AEC287 /* CExtensibleJSONSerializer.m */,
+			);
+			path = Experimental;
+			sourceTree = "<group>";
+		};
 		45FC53AB08FBFB490091ABDF /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				4569D5D912683A9100AEC287 /* Experimental */,
 				45FDB4B1094E056800A8B4AB /* Extensions */,
 				45FDB4B9094E056800A8B4AB /* JSON */,
 				451F85B30DB6E06800136680 /* CDataScanner.h */,
