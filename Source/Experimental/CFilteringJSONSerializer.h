@@ -1,5 +1,5 @@
 //
-//  CExtensibleJSONSerializer.h
+//  CFilteringJSONSerializer.h
 //  CouchNotes
 //
 //  Created by Jonathan Wight on 06/20/10.
@@ -11,7 +11,7 @@
 typedef NSString *(^JSONConversionTest)(id inObject);
 typedef id (^JSONConversionConverter)(id inObject);
 
-@interface CExtensibleJSONSerializer : CJSONSerializer {
+@interface CFilteringJSONSerializer : CJSONSerializer {
 	NSSet *tests;
 	NSDictionary *convertersByName;
 }

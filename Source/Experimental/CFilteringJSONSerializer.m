@@ -1,14 +1,14 @@
 //
-//  CExtensibleJSONSerializer.m
+//  CFilteringJSONSerializer.m
 //  CouchNotes
 //
 //  Created by Jonathan Wight on 06/20/10.
 //  Copyright 2010 toxicsoftware.com. All rights reserved.
 //
 
-#import "CExtensibleJSONSerializer.h"
+#import "CFilteringJSONSerializer.h"
 
-@implementation CExtensibleJSONSerializer
+@implementation CFilteringJSONSerializer
 
 @synthesize tests;
 @synthesize convertersByName;
