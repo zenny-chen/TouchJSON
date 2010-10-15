@@ -98,21 +98,23 @@ return(data);
 {
 if (data != inData)
 	{
-	if (data)
-		{
-		[data release];
-		data = NULL;
-		}
+    [data release];
+    data = [inData retain];
+    }
 
-	if (inData)
-		{
-		data = [inData retain];
-		//
-		start = (u_int8_t *)data.bytes;
-		end = start + data.length;
-		current = start;
-		length = data.length;
-		}
+if (data)
+    {
+    start = (u_int8_t *)data.bytes;
+    end = start + data.length;
+    current = start;
+    length = data.length;
+    }
+else
+    {
+    start = NULL;
+    end = NULL;
+    current = NULL;
+    length = 0;
     }
 }
 

@@ -204,6 +204,16 @@
 	STAssertEqualObjects(theObject, [NSDictionary dictionary], @"Skipping null did not produce empty dict");
 }
 
+-(void)testMultipleRuns {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"{\"hello\":\"world\"}" dataUsingEncoding:NSUTF8StringEncoding];
+	NSDictionary *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, [NSDictionary dictionaryWithObject:@"world" forKey:@"hello"], @"Dictionary did not contain expected contents");
+    theData = [@"{\"goodbye\":\"cruel world\"}" dataUsingEncoding:NSUTF8StringEncoding];
+	theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, [NSDictionary dictionaryWithObject:@"cruel world" forKey:@"goodbye"], @"Dictionary did not contain expected contents");
+}
+
 
 @end
 
