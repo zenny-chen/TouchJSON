@@ -29,53 +29,277 @@
 
 #import "CJSONSerializer.h"
 
-#import "CJSONDataSerializer.h"
+#import "CSerializedJSONData.h"
+
+static NSData *kNULL = NULL;
+static NSData *kFalse = NULL;
+static NSData *kTrue = NULL;
 
 @implementation CJSONSerializer
+
++ (void)initialize
+{
+NSAutoreleasePool *thePool = [[NSAutoreleasePool alloc] init];
+
+@synchronized(@"CJSONDataSerializer")
+	{
+	if (kNULL == NULL)
+		kNULL = [[NSData alloc] initWithBytesNoCopy:(void *)"null" length:4 freeWhenDone:NO];
+	if (kFalse == NULL)
+		kFalse = [[NSData alloc] initWithBytesNoCopy:(void *)"false" length:5 freeWhenDone:NO];
+	if (kTrue == NULL)
+		kTrue = [[NSData alloc] initWithBytesNoCopy:(void *)"true" length:4 freeWhenDone:NO];
+	}
+
+[thePool release];
+}
 
 + (id)serializer
 {
 return([[[self alloc] init] autorelease]);
 }
 
-- (id)init
+- (NSData *)serializeObject:(id)inObject error:(NSError **)outError
 {
-if ((self = [super init]) != NULL)
+NSData *theResult = NULL;
+
+if ([inObject isKindOfClass:[NSNull class]])
 	{
-	serializer = [[CJSONDataSerializer alloc] init];
+	theResult = [self serializeNull:inObject error:outError];
 	}
-return(self);
-}
-
-- (void)dealloc
-{
-[serializer release];
-serializer = NULL;
-//
-[super dealloc];
-}
-
-- (NSString *)serializeObject:(id)inObject error:(NSError **)outError
-{
-NSData *theData = [serializer serializeObject:inObject error:outError];
-if (theData == NULL)
+else if ([inObject isKindOfClass:[NSNumber class]])
+	{
+	theResult = [self serializeNumber:inObject error:outError];
+	}
+else if ([inObject isKindOfClass:[NSString class]])
+	{
+	theResult = [self serializeString:inObject error:outError];
+	}
+else if ([inObject isKindOfClass:[NSArray class]])
+	{
+	theResult = [self serializeArray:inObject error:outError];
+	}
+else if ([inObject isKindOfClass:[NSDictionary class]])
+	{
+	theResult = [self serializeDictionary:inObject error:outError];
+	}
+else if ([inObject isKindOfClass:[NSData class]])
+	{
+	NSString *theString = [[[NSString alloc] initWithData:inObject encoding:NSUTF8StringEncoding] autorelease];
+	theResult = [self serializeString:theString error:outError];
+	}
+else if ([inObject isKindOfClass:[CSerializedJSONData class]])
+	{
+	theResult = [inObject data];
+	}
+else
+	{
+	if (outError)
+		{
+		NSDictionary *theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+			[NSString stringWithFormat:@"Cannot serialize data of type '%@'", NSStringFromClass([inObject class])], NSLocalizedDescriptionKey,
+			NULL];
+		*outError = [NSError errorWithDomain:@"TODO_DOMAIN" code:-1 userInfo:theUserInfo];
+		}
 	return(NULL);
-return([[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] autorelease]);
+	}
+if (theResult == NULL)
+	{
+	if (outError)
+		{
+		NSDictionary *theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+			[NSString stringWithFormat:@"Could not serialize object '%@'", inObject], NSLocalizedDescriptionKey,
+			NULL];
+		*outError = [NSError errorWithDomain:@"TODO_DOMAIN" code:-1 userInfo:theUserInfo];
+		}
+	return(NULL);
+	}
+return(theResult);
 }
 
-- (NSString *)serializeArray:(NSArray *)inArray error:(NSError **)outError
+- (NSData *)serializeNull:(NSNull *)inNull error:(NSError **)outError
 {
-NSData *theData = [serializer serializeArray:inArray error:outError];
-if (theData == NULL)
-	return(NULL);
-return([[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] autorelease]);
+#pragma unused (inNull, outError)
+return(kNULL);
 }
 
-- (NSString *)serializeDictionary:(NSDictionary *)inDictionary error:(NSError **)outError
+- (NSData *)serializeNumber:(NSNumber *)inNumber error:(NSError **)outError
 {
-NSData *theData = [serializer serializeDictionary:inDictionary error:outError];
-if (theData == NULL)
-	return(NULL);
-return([[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] autorelease]);
+#pragma unused (outError)
+NSData *theResult = NULL;
+switch (CFNumberGetType((CFNumberRef)inNumber))
+	{
+	case kCFNumberCharType:
+		{
+		int theValue = [inNumber intValue];
+		if (theValue == 0)
+			theResult = kFalse;
+		else if (theValue == 1)
+			theResult = kTrue;
+		else
+			theResult = [[inNumber stringValue] dataUsingEncoding:NSASCIIStringEncoding];
+		}
+		break;
+	case kCFNumberFloat32Type:
+	case kCFNumberFloat64Type:
+	case kCFNumberFloatType:
+	case kCFNumberDoubleType:
+	case kCFNumberSInt8Type:
+	case kCFNumberSInt16Type:
+	case kCFNumberSInt32Type:
+	case kCFNumberSInt64Type:
+	case kCFNumberShortType:
+	case kCFNumberIntType:
+	case kCFNumberLongType:
+	case kCFNumberLongLongType:
+	case kCFNumberCFIndexType:
+	default:
+		theResult = [[inNumber stringValue] dataUsingEncoding:NSASCIIStringEncoding];
+		break;
+	}
+return(theResult);
 }
+
+- (NSData *)serializeString:(NSString *)inString error:(NSError **)outError
+{
+#pragma unused (outError)
+
+NSMutableData *theData = [NSMutableData dataWithLength:inString.length * 2 + 2];
+
+char *theOutputStart = [theData mutableBytes];
+char *OUT = theOutputStart;
+
+*OUT++ = '"';
+
+const char *theUTF8String = [inString UTF8String];
+for (const char *IN = theUTF8String; *IN != '\0'; ++IN)
+    {
+    switch (*IN)
+        {
+        case '\\':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '\\';
+            }
+            break;
+        case '\"':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '\"';
+            }
+            break;
+        case '/':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '/';
+            }
+            break;
+        case '\b':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '\b';
+            }
+            break;
+        case '\f':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '\f';
+            }
+            break;
+        case '\n':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '\n';
+            }
+            break;
+        case '\r':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '\r';
+            }
+            break;
+        case '\t':
+            {
+            *OUT++ = '\\';
+            *OUT++ = '\t';
+            }
+            break;
+        default:
+            {
+            *OUT++ = *IN;
+            }
+            break;
+        }
+    }
+
+*OUT++ = '"';
+
+theData.length = OUT - theOutputStart;
+return(theData);
+}
+
+- (NSData *)serializeArray:(NSArray *)inArray error:(NSError **)outError
+{
+NSMutableData *theData = [NSMutableData data];
+
+[theData appendBytes:"[" length:1];
+
+NSEnumerator *theEnumerator = [inArray objectEnumerator];
+id theValue = NULL;
+NSUInteger i = 0;
+while ((theValue = [theEnumerator nextObject]) != NULL)
+	{
+	NSData *theValueData = [self serializeObject:theValue error:outError];
+	if (theValueData == NULL)
+		{
+		return(NULL);
+		}
+	[theData appendData:theValueData];
+	if (++i < [inArray count])
+		[theData appendBytes:"," length:1];
+	}
+
+[theData appendBytes:"]" length:1];
+
+return(theData);
+}
+
+- (NSData *)serializeDictionary:(NSDictionary *)inDictionary error:(NSError **)outError
+{
+NSMutableData *theData = [NSMutableData data];
+
+[theData appendBytes:"{" length:1];
+
+NSArray *theKeys = [inDictionary allKeys];
+NSEnumerator *theEnumerator = [theKeys objectEnumerator];
+NSString *theKey = NULL;
+while ((theKey = [theEnumerator nextObject]) != NULL)
+	{
+	id theValue = [inDictionary objectForKey:theKey];
+	
+	NSData *theKeyData = [self serializeString:theKey error:outError];
+	if (theKeyData == NULL)
+		{
+		return(NULL);
+		}
+	NSData *theValueData = [self serializeObject:theValue error:outError];
+	if (theValueData == NULL)
+		{
+		return(NULL);
+		}
+	
+	
+	[theData appendData:theKeyData];
+	[theData appendBytes:":" length:1];
+	[theData appendData:theValueData];
+	
+	if (theKey != [theKeys lastObject])
+		[theData appendData:[@"," dataUsingEncoding:NSASCIIStringEncoding]];
+	}
+
+[theData appendBytes:"}" length:1];
+
+return(theData);
+}
+
 @end
