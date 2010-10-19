@@ -12,3 +12,5 @@ build/*
 # osx noise
 .DS_Store
 profile
+
+Support/NewBenchmark/build/
