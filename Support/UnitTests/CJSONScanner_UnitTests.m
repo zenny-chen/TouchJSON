@@ -362,4 +362,14 @@ STAssertFalse(theResult, @"Scan return failure.");
 STAssertTrue(theObject == NULL, @"Scan return failure.");
 }
 
+- (void)testGarbageCharacter
+{
+// This should fail.
+id theObject = NULL;
+NSString *theSource = @">";
+BOOL theResult = Scan(theSource, &theObject, NULL);
+STAssertFalse(theResult, @"Scan return failure.");
+STAssertTrue(theObject == NULL, @"Scan return failure.");
+}
+
 @end

@@ -166,7 +166,15 @@ switch (C)
 		theResult = [self scanJSONArray:&theObject error:outError];
 		break;
 	default:
-		
+		theResult = NO;
+        if (outError)
+            {
+            NSMutableDictionary *theUserInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                @"Could not scan object. Character not a valid JSON character.", NSLocalizedDescriptionKey,
+                NULL];
+            [theUserInfo addEntriesFromDictionary:self.userInfoForScanLocation];
+            *outError = [NSError errorWithDomain:kJSONScannerErrorDomain code:-1 userInfo:theUserInfo];
+            }
 		break;
 	}
 
