@@ -42,6 +42,7 @@
 
 @property (readwrite, nonatomic, retain) NSData *data;
 @property (readwrite, nonatomic, assign) NSUInteger scanLocation;
+@property (readonly, nonatomic, assign) NSUInteger bytesRemaining;
 @property (readonly, nonatomic, assign) BOOL isAtEnd;
 
 + (id)scannerWithData:(NSData *)inData;
@@ -59,8 +60,11 @@
 
 - (BOOL)scanNumber:(NSNumber **)outValue;
 
+- (BOOL)scanDataOfLength:(NSUInteger)inLength intoData:(NSData **)outData;
+
 - (void)skipWhitespace;
 
 - (NSString *)remainingString;
+- (NSData *)remainingData;
 
 @end

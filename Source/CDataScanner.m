@@ -89,6 +89,11 @@ data = NULL;
 return(current - start);
 }
 
+- (NSUInteger)bytesRemaining
+{
+return(end - current);
+}
+
 - (NSData *)data
 {
 return(data);
@@ -256,6 +261,23 @@ if ([self scanCharactersFromSet:sDoubleCharacters intoString:&theString])
 return(NO);
 }
 
+- (BOOL)scanDataOfLength:(NSUInteger)inLength intoData:(NSData **)outData;
+    {
+    if (end - current < inLength)
+        {
+        return(NO);
+        }
+    
+    if (outData)
+        {
+        *outData = [NSData dataWithBytes:current length:inLength];
+        }
+
+    current += inLength;
+    return(YES);
+    }
+
+
 - (void)skipWhitespace
 {
 u_int8_t *P;
@@ -270,6 +292,12 @@ current = P;
 NSData *theRemainingData = [NSData dataWithBytes:current length:end - current];
 NSString *theString = [[[NSString alloc] initWithData:theRemainingData encoding:NSUTF8StringEncoding] autorelease];
 return(theString);
+}
+
+- (NSData *)remainingData;
+{
+NSData *theRemainingData = [NSData dataWithBytes:current length:end - current];
+return(theRemainingData);
 }
 
 @end
