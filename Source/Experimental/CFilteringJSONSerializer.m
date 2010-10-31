@@ -36,10 +36,20 @@ for (JSONConversionTest theTest in self.tests)
 		id theObject = theConverter(inObject);
 		if (theObject)
 			{
-			NSError *theError = NULL;
-			theData = [super serializeObject:theObject error:&theError];
-			if (theData != NULL)
-				break;
+            if ([theObject isKindOfClass:[NSData class]])
+                {
+                theData = theObject;
+                break;
+                }
+            else
+                {
+                NSError *theError = NULL;
+                theData = [super serializeObject:theObject error:&theError];
+                if (theData != NULL)
+                    {
+                    break;
+                    }
+                }
 			}
 		}
 	}
