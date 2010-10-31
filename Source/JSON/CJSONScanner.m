@@ -188,6 +188,8 @@ return(theResult);
 {
 NSUInteger theScanLocation = [self scanLocation];
 
+[self skipWhitespace];
+
 if ([self scanCharacter:'{'] == NO)
 	{
 	if (outError)
@@ -433,7 +435,7 @@ return(YES);
 {
 NSUInteger theScanLocation = [self scanLocation];
 
-[self skipWhitespace]; //  TODO - i want to remove this method. But breaks unit tests.
+[self skipWhitespace];
 
 NSMutableString *theString = [[NSMutableString alloc] init];
 
@@ -557,6 +559,9 @@ return(YES);
 - (BOOL)scanJSONNumberConstant:(NSNumber **)outNumberConstant error:(NSError **)outError
 {
 NSNumber *theNumber = NULL;
+
+[self skipWhitespace];
+
 if ([self scanNumber:&theNumber] == YES)
 	{
 	if (outNumberConstant != NULL)
