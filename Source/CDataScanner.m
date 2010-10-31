@@ -263,7 +263,7 @@ return(NO);
 
 - (BOOL)scanDataOfLength:(NSUInteger)inLength intoData:(NSData **)outData;
     {
-    if (end - current < inLength)
+    if (self.bytesRemaining < inLength)
         {
         return(NO);
         }
