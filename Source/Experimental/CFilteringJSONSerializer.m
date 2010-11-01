@@ -1,14 +1,14 @@
 //
-//  CExtensibleJSONSerializer.m
+//  CFilteringJSONSerializer.m
 //  CouchNotes
 //
 //  Created by Jonathan Wight on 06/20/10.
 //  Copyright 2010 toxicsoftware.com. All rights reserved.
 //
 
-#import "CExtensibleJSONSerializer.h"
+#import "CFilteringJSONSerializer.h"
 
-@implementation CExtensibleJSONSerializer
+@implementation CFilteringJSONSerializer
 
 @synthesize tests;
 @synthesize convertersByName;
@@ -36,10 +36,20 @@ for (JSONConversionTest theTest in self.tests)
 		id theObject = theConverter(inObject);
 		if (theObject)
 			{
-			NSError *theError = NULL;
-			theData = [super serializeObject:theObject error:&theError];
-			if (theData != NULL)
-				break;
+            if ([theObject isKindOfClass:[NSData class]])
+                {
+                theData = theObject;
+                break;
+                }
+            else
+                {
+                NSError *theError = NULL;
+                theData = [super serializeObject:theObject error:&theError];
+                if (theData != NULL)
+                    {
+                    break;
+                    }
+                }
 			}
 		}
 	}

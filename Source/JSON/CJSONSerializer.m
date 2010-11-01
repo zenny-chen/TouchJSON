@@ -29,7 +29,7 @@
 
 #import "CJSONSerializer.h"
 
-#import "CSerializedJSONData.h"
+#import "JSONRepresentation.h"
 
 static NSData *kNULL = NULL;
 static NSData *kFalse = NULL;
@@ -85,9 +85,9 @@ else if ([inObject isKindOfClass:[NSData class]])
 	NSString *theString = [[[NSString alloc] initWithData:inObject encoding:NSUTF8StringEncoding] autorelease];
 	theResult = [self serializeString:theString error:outError];
 	}
-else if ([inObject isKindOfClass:[CSerializedJSONData class]])
+else if ([inObject respondsToSelector:@selector(JSONDataRepresentation)])
 	{
-	theResult = [inObject data];
+	theResult = [inObject JSONDataRepresentation];
 	}
 else
 	{
