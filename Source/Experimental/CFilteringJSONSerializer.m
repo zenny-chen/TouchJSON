@@ -32,8 +32,13 @@ for (JSONConversionTest theTest in self.tests)
 	NSString *theName = theTest(inObject);
 	if (theName != NULL)
 		{
+        id theObject = NULL;
 		JSONConversionConverter theConverter = [self.convertersByName objectForKey:theName];
-		id theObject = theConverter(inObject);
+        if (theConverter)
+            {
+            theObject = theConverter(inObject);
+            }
+            
 		if (theObject)
 			{
             if ([theObject isKindOfClass:[NSData class]])
@@ -51,7 +56,7 @@ for (JSONConversionTest theTest in self.tests)
                     }
                 }
 			}
-		}
+        }
 	}
 	
 if (theData == NULL)
