@@ -29,6 +29,7 @@
 
 #import "CJSONDeserializer_UnitTests.h"
 #import "CJSONDeserializer.h"
+#import "CJSONScanner.h"
 
 
 @implementation CJSONDeserializer_UnitTests
@@ -214,6 +215,14 @@
 	STAssertEqualObjects(theObject, [NSDictionary dictionaryWithObject:@"cruel world" forKey:@"goodbye"], @"Dictionary did not contain expected contents");
 }
 
+-(void)testWindowsCP1252StringEncoding {
+	NSString *jsonString = @"[\"Expos\u00E9\"]";
+	NSData *jsonData = [jsonString dataUsingEncoding:NSWindowsCP1252StringEncoding];
+	NSError *error = nil;
+	NSArray *array = [[CJSONDeserializer deserializer] deserialize:jsonData error:&error];
+	STAssertNotNil(error, @"An error should be reported when deserializing a non unicode JSON string", nil);
+	STAssertEqualObjects([error domain], kJSONScannerErrorDomain, @"The error must be of the CJSONScanner error domain");
+}
 
 @end
 
