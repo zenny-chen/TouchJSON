@@ -215,6 +215,8 @@
 	STAssertEqualObjects(theObject, [NSDictionary dictionaryWithObject:@"cruel world" forKey:@"goodbye"], @"Dictionary did not contain expected contents");
 }
 
+/// TODO - reenable this test if we ever support CP1252 encoding.
+#if 0
 -(void)testWindowsCP1252StringEncoding {
 	NSString *jsonString = @"[\"Expos\u00E9\"]";
 	NSData *jsonData = [jsonString dataUsingEncoding:NSWindowsCP1252StringEncoding];
@@ -223,6 +225,7 @@
 	STAssertNotNil(error, @"An error should be reported when deserializing a non unicode JSON string", nil);
 	STAssertEqualObjects([error domain], kJSONScannerErrorDomain, @"The error must be of the CJSONScanner error domain");
 }
+#endif
 
 @end
 
