@@ -40,6 +40,8 @@
 @property (readwrite, nonatomic, retain) id nullObject;
 @property (readwrite, nonatomic, assign) NSStringEncoding allowedEncoding;
 
+- (BOOL)setData:(NSData *)inData error:(NSError **)outError;
+
 - (BOOL)scanJSONObject:(id *)outObject error:(NSError **)outError;
 - (BOOL)scanJSONDictionary:(NSDictionary **)outDictionary error:(NSError **)outError;
 - (BOOL)scanJSONArray:(NSArray **)outArray error:(NSError **)outError;

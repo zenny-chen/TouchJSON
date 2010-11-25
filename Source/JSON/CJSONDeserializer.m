@@ -50,7 +50,6 @@ return([[[self alloc] init] autorelease]);
 {
 if ((self = [super init]) != NULL)
     {
-    scanner = [[CJSONScanner alloc] init];
     }
 return(self);
 }
@@ -64,6 +63,15 @@ scanner = NULL;
 }
 
 #pragma mark -
+
+- (CJSONScanner *)scanner
+{
+if (scanner == NULL)
+	{
+	scanner = [[CJSONScanner alloc] init];
+	}
+return(scanner);
+}
 
 - (id)nullObject
     {
@@ -98,7 +106,10 @@ if (inData == NULL || [inData length] == 0)
 
 	return(NULL);
 	}
-self.scanner.data = inData;
+if ([self.scanner setData:inData error:outError] == NO)
+	{
+	return(NULL);
+	}
 id theObject = NULL;
 if ([self.scanner scanJSONObject:&theObject error:outError] == YES)
 	return(theObject);
@@ -115,7 +126,10 @@ if (inData == NULL || [inData length] == 0)
 
 	return(NULL);
 	}
-self.scanner.data = inData;
+if ([self.scanner setData:inData error:outError] == NO)
+	{
+	return(NULL);
+	}
 NSDictionary *theDictionary = NULL;
 if ([self.scanner scanJSONDictionary:&theDictionary error:outError] == YES)
 	return(theDictionary);
@@ -132,7 +146,10 @@ if (inData == NULL || [inData length] == 0)
 
 	return(NULL);
 	}
-self.scanner.data = inData;
+if ([self.scanner setData:inData error:outError] == NO)
+	{
+	return(NULL);
+	}
 NSArray *theArray = NULL;
 if ([self.scanner scanJSONArray:&theArray error:outError] == YES)
 	return(theArray);

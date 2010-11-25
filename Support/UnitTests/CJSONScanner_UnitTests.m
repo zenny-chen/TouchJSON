@@ -44,7 +44,7 @@ return(thePropertyList);
 
 static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 {
-CJSONScanner *theScanner = [CJSONScanner scannerWithData:[inString dataUsingEncoding:NSUTF8StringEncoding]];
+CJSONScanner *theScanner = [[[CJSONScanner alloc] initWithData:[inString dataUsingEncoding:NSUTF8StringEncoding]] autorelease];
 for (NSString *theKey in inOptions)
 	{
 	id theValue = [inOptions objectForKey:theKey];
@@ -255,7 +255,7 @@ STAssertTrue(theResult, @"Scan return failure.");
 
 - (void)testNegative
 {
-id theObject = NULL;
+//id theObject = NULL;
 //STAssertThrows(Scan(@"[", &theObject), @"Incomplete array.", NULL);
 }
 

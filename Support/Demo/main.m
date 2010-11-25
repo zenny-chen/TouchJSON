@@ -30,6 +30,7 @@
 #import <Foundation/Foundation.h>
 
 #import "CJSONDeserializer.h"
+#import "CJSONScanner.h"
 
 void test(void);
 
@@ -48,16 +49,19 @@ return(0);
 
 void test(void)
 {
-NSString *theSource = NULL;
-//
-theSource = @"\n\n\n\n\n{\"a\": [ { ] }";
+CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+NSString *jsonString = @"[\"Expos\u00E9\"]";
+NSData *jsonData = [jsonString dataUsingEncoding:NSWindowsCP1252StringEncoding];
+NSError *error = nil;
+NSArray *array = [theDeserializer deserialize:jsonData error:&error];
 
-NSData *theData = [theSource dataUsingEncoding:NSUTF32BigEndianStringEncoding];
+NSLog(@"Result: %@", array);
+NSLog(@"Error: %@", error); 
 
-NSError *theError = NULL;
-id theObject = [[CJSONDeserializer deserializer] deserialize:theData error:&theError];
+theDeserializer.allowedEncoding = NSWindowsCP1252StringEncoding;
+array = [theDeserializer deserialize:jsonData error:&error];
 
-NSLog(@"Error: %@", theError);
-NSLog(@"Error (User Info): %@", theError.userInfo);
-NSLog(@"Result: %@", theObject);
+NSLog(@"Result: %@", array);
+NSLog(@"Error: %@", error); 
+
 }

@@ -79,7 +79,7 @@ nullObject = NULL;
 
 #pragma mark -
 
-- (void)setData:(NSData *)inData
+- (BOOL)setData:(NSData *)inData error:(NSError **)outError;
 {
 NSData *theData = inData;
 if (theData && theData.length >= 4)
@@ -110,7 +110,29 @@ if (theData && theData.length >= 4)
 	theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
 	[theString release];
 	}
-[super setData:theData];
+
+if (theData)
+	{
+	[super setData:theData];
+	return(YES);
+	}
+else
+	{
+	if (outError)
+		{
+		NSMutableDictionary *theUserInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+			@"Could not scan data. Data wasn't encoded properly?", NSLocalizedDescriptionKey,
+			NULL];
+		[theUserInfo addEntriesFromDictionary:self.userInfoForScanLocation];
+		*outError = [NSError errorWithDomain:kJSONScannerErrorDomain code:-1 userInfo:theUserInfo];
+		}
+	return(NO);
+	}
+}
+
+- (void)setData:(NSData *)inData
+{
+[self setData:inData error:NULL];
 }
 
 #pragma mark -

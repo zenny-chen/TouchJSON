@@ -36,7 +36,7 @@
 
 - (void)testSomething
 {
-CDataScanner *theScanner = [CDataScanner scannerWithData:[@"Hello World" dataUsingEncoding:NSUTF8StringEncoding]];
+CDataScanner *theScanner = [[[CDataScanner alloc] initWithData:[@"Hello World" dataUsingEncoding:NSUTF8StringEncoding]] autorelease];
 
 STAssertFalse(theScanner.isAtEnd, NULL);
 

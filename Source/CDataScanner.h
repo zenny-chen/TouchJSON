@@ -45,7 +45,7 @@
 @property (readonly, nonatomic, assign) NSUInteger bytesRemaining;
 @property (readonly, nonatomic, assign) BOOL isAtEnd;
 
-+ (id)scannerWithData:(NSData *)inData;
+- (id)initWithData:(NSData *)inData;
 
 - (unichar)currentCharacter;
 - (unichar)scanCharacter;
