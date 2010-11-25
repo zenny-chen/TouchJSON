@@ -216,12 +216,17 @@
 }
 
 -(void)testWindowsCP1252StringEncoding {
+	CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
 	NSString *jsonString = @"[\"Expos\u00E9\"]";
 	NSData *jsonData = [jsonString dataUsingEncoding:NSWindowsCP1252StringEncoding];
 	NSError *error = nil;
-	NSArray *array = [[CJSONDeserializer deserializer] deserialize:jsonData error:&error];
+	NSArray *array = [theDeserializer deserialize:jsonData error:&error];
 	STAssertNotNil(error, @"An error should be reported when deserializing a non unicode JSON string", nil);
-	STAssertEqualObjects([error domain], kJSONScannerErrorDomain, @"The error must be of the CJSONScanner error domain");
+	STAssertEqualObjects([error domain], kJSONDeserializerErrorDomain, @"The error must be of the CJSONDeserializer error domain");
+	STAssertEquals([error code], (NSInteger)-2, @"The error must be 'Invalid encoding'");
+	theDeserializer.allowedEncoding = NSWindowsCP1252StringEncoding;
+	array = [theDeserializer deserialize:jsonData error:nil];
+	STAssertEqualObjects(array, [NSArray arrayWithObject:@"Expos\u00E9"], nil);
 }
 
 @end

@@ -77,6 +77,18 @@ scanner = NULL;
 
 #pragma mark -
 
+- (NSStringEncoding)allowedEncoding
+	{
+	return(self.scanner.allowedEncoding);
+	}
+
+- (void)setAllowedEncoding:(NSStringEncoding)inAllowedEncoding
+	{
+	self.scanner.allowedEncoding = inAllowedEncoding;
+	}
+
+#pragma mark -
+
 - (id)deserialize:(NSData *)inData error:(NSError **)outError
 {
 if (inData == NULL || [inData length] == 0)
