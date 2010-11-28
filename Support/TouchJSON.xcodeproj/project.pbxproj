@@ -174,8 +174,7 @@
 				DEDF6D740E4A3F64005D2575 /* CJSONDeserializer_UnitTests.h */,
 				DEDF6D750E4A3F64005D2575 /* CJSONDeserializer_UnitTests.m */,
 			);
-			name = UnitTests;
-			path = Support/UnitTests;
+			path = UnitTests;
 			sourceTree = "<group>";
 		};
 		453111AD0A64EDAA00A970C2 /* Demo */ = {
@@ -183,8 +182,7 @@
 			children = (
 				453111B50A64EDDE00A970C2 /* main.m */,
 			);
-			name = Demo;
-			path = Support/Demo;
+			path = Demo;
 			sourceTree = "<group>";
 		};
 		4569D5D912683A9100AEC287 /* Experimental */ = {
@@ -207,7 +205,8 @@
 				451F85B30DB6E06800136680 /* CDataScanner.h */,
 				451F85B40DB6E06800136680 /* CDataScanner.m */,
 			);
-			path = Source;
+			name = Source;
+			path = ../Source;
 			sourceTree = "<group>";
 		};
 		45FDB4B1094E056800A8B4AB /* Extensions */ = {
@@ -501,7 +500,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
-				INFOPLIST_FILE = Support/UnitTests/Info.plist;
+				INFOPLIST_FILE = UnitTests/Info.plist;
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -530,7 +529,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
-				INFOPLIST_FILE = Support/UnitTests/Info.plist;
+				INFOPLIST_FILE = UnitTests/Info.plist;
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				OTHER_LDFLAGS = (
 					"-framework",
