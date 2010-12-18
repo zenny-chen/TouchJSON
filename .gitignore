@@ -5,6 +5,7 @@ build/*
 *.pbxuser
 *.perspective
 *.perspectivev3
+*.xcuserdatad
 
 # old skool
 .svn
