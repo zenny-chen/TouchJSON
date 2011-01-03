@@ -251,17 +251,52 @@ return(YES);
 }
 
 - (BOOL)scanNumber:(NSNumber **)outValue
-{
-// Replace all of this with a strtod call
-NSString *theString = NULL;
-if ([self scanCharactersFromSet:sDoubleCharacters intoString:&theString])
 	{
-	if (outValue)
-		*outValue = [NSNumber numberWithDouble:[theString doubleValue]]; // TODO dont use doubleValue
-	return(YES);
+	NSString *theString = NULL;
+	if ([self scanCharactersFromSet:sDoubleCharacters intoString:&theString])
+		{
+		if ([theString rangeOfString:@"."].location != NSNotFound)
+			{
+			if (outValue)
+				{
+				*outValue = [NSDecimalNumber decimalNumberWithString:theString];
+				}
+			return(YES);
+			}
+		else if ([theString rangeOfString:@"-"].location != NSNotFound)
+			{
+			if (outValue != NULL)
+				{
+				*outValue = [NSNumber numberWithLongLong:[theString longLongValue]];
+				}
+			return(YES);
+			}
+		else
+			{
+			if (outValue != NULL)
+				{
+				*outValue = [NSNumber numberWithUnsignedLongLong:strtoull([theString UTF8String], NULL, 0)];
+				}
+			return(YES);
+			}
+		
+		}
+	return(NO);
 	}
-return(NO);
-}
+		
+- (BOOL)scanDecimalNumber:(NSDecimalNumber **)outValue;
+	{
+	NSString *theString = NULL;
+	if ([self scanCharactersFromSet:sDoubleCharacters intoString:&theString])
+		{
+		if (outValue)
+			{
+			*outValue = [NSDecimalNumber decimalNumberWithString:theString];
+			}
+		return(YES);
+		}
+	return(NO);
+	}
 
 - (BOOL)scanDataOfLength:(NSUInteger)inLength intoData:(NSData **)outData;
     {

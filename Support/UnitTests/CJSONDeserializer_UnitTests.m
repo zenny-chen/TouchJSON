@@ -229,5 +229,14 @@
 	STAssertEqualObjects(array, [NSArray arrayWithObject:@"Expos\u00E9"], nil);
 }
 
+
+-(void)testLargeNumbers {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"14399073641566209" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEquals([theObject unsignedLongLongValue], 14399073641566209ULL, @"Numbers did not contain expected contents");
+}
+
+
 @end
 
