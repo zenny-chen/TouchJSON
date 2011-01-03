@@ -85,7 +85,7 @@ STAssertTrue([theObject isEqual:[NSNull null]], @"Result of scan didn't match ex
 id theObject = NULL;
 BOOL theResult = Scan(@"3.14", &theObject, NULL);
 STAssertTrue(theResult, @"Scan return failure.");
-STAssertTrue([theObject doubleValue] == 3.14, @"Result of scan didn't match expectations.");
+STAssertEqualsWithAccuracy([theObject doubleValue], 3.14, 0.001, @"Result of scan didn't match expectations.");
 }
 
 - (void)testEngineeringNumber

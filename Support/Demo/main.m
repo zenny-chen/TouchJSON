@@ -35,33 +35,34 @@
 void test(void);
 
 int main(int argc, char **argv)
-{
-#pragma unused(argc, argv)
+	{
+	#pragma unused(argc, argv)
 
-NSAutoreleasePool *theAutoreleasePool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *theAutoreleasePool = [[NSAutoreleasePool alloc] init];
 
-test();
+	test();
 
-[theAutoreleasePool release];
-//
-return(0);
-}
+	[theAutoreleasePool release];
+	//
+	return(0);
+	}
 
 void test(void)
-{
-CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
-NSString *jsonString = @"[\"Expos\u00E9\"]";
-NSData *jsonData = [jsonString dataUsingEncoding:NSWindowsCP1252StringEncoding];
-NSError *error = nil;
-NSArray *array = [theDeserializer deserialize:jsonData error:&error];
+	{
+	CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	NSString *jsonString = @"3.14";
+	NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+	NSError *error = nil;
+	NSNumber *theNumber = [theDeserializer deserialize:jsonData error:&error];
 
-NSLog(@"Result: %@", array);
-NSLog(@"Error: %@", error); 
+//    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+//    NSData *theData = [@"14399073641566209" dataUsingEncoding:NSUTF8StringEncoding];
+//	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+//	STAssertEquals([theObject unsignedLongLongValue], 14399073641566209ULL, @"Numbers did not contain expected contents");
 
-theDeserializer.allowedEncoding = NSWindowsCP1252StringEncoding;
-array = [theDeserializer deserialize:jsonData error:&error];
 
-NSLog(@"Result: %@", array);
-NSLog(@"Error: %@", error); 
-
-}
+	NSLog(@"Result: %@", [theNumber class]);
+	NSLog(@"Error: %llu", [theNumber unsignedLongLongValue]); 
+	NSLog(@"Error: %g", [theNumber doubleValue]); 
+	NSLog(@"Error: %d", [theNumber unsignedLongLongValue] == 14399073641566209ULL); 
+	}

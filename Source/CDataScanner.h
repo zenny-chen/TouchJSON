@@ -59,6 +59,7 @@
 - (BOOL)scanUpToCharactersFromSet:(NSCharacterSet *)set intoString:(NSString **)outValue; // inSet must only contain 7-bit ASCII characters
 
 - (BOOL)scanNumber:(NSNumber **)outValue;
+- (BOOL)scanDecimalNumber:(NSDecimalNumber **)outValue;
 
 - (BOOL)scanDataOfLength:(NSUInteger)inLength intoData:(NSData **)outData;
 
