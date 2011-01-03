@@ -96,6 +96,30 @@ STAssertTrue(theResult, @"Scan return failure.");
 STAssertTrue([theObject doubleValue] == 3.14e4, @"Result of scan didn't match expectations.");
 }
 
+- (void)testNegativeNumber
+{
+id theObject = NULL;
+BOOL theResult = Scan(@"-1", &theObject, NULL);
+STAssertTrue(theResult, @"Scan return failure.");
+STAssertTrue([theObject doubleValue] == -1, @"Result of scan didn't match expectations.");
+}
+
+- (void)testLargeNumber
+{
+id theObject = NULL;
+BOOL theResult = Scan(@"14399073641566209", &theObject, NULL);
+STAssertTrue(theResult, @"Scan return failure.");
+STAssertTrue([theObject unsignedLongLongValue] == 14399073641566209, @"Result of scan didn't match expectations.");
+}
+
+- (void)testLargeNegativeNumber
+{
+id theObject = NULL;
+BOOL theResult = Scan(@"-14399073641566209", &theObject, NULL);
+STAssertTrue(theResult, @"Scan return failure.");
+STAssertTrue([theObject longLongValue] == -14399073641566209, @"Result of scan didn't match expectations.");
+}
+
 #pragma mark -
 
 - (void)testString
