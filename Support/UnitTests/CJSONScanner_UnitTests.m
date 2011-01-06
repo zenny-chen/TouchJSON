@@ -96,6 +96,14 @@ STAssertTrue(theResult, @"Scan return failure.");
 STAssertTrue([theObject doubleValue] == 3.14e4, @"Result of scan didn't match expectations.");
 }
 
+- (void)testEngineeringNumber2
+{
+id theObject = NULL;
+BOOL theResult = Scan(@"-3.433021e+07", &theObject, NULL);
+STAssertTrue(theResult, @"Scan return failure.");
+STAssertTrue([theObject doubleValue] == -3.433021e+07, @"Result of scan didn't match expectations.");
+}
+
 - (void)testNegativeNumber
 {
 id theObject = NULL;
