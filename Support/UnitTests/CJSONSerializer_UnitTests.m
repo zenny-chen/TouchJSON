@@ -69,4 +69,12 @@
 	STAssertEqualObjects([jsonEquivalent dataUsingEncoding:NSUTF8StringEncoding], theObject, nil);
 }
 
+- (void)testLineBreaksInStrings {
+    NSString *jsonEquivalent = @"{\"a\":\"line\\nbreak\"}";
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"line\nbreak" forKey:@"a"];
+    id theObject = [[CJSONSerializer serializer] serializeObject:dictionary error:nil];
+    NSString *resultString = [[[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding] autorelease];
+    STAssertEqualObjects(resultString, jsonEquivalent, nil);
+}
+
 @end
