@@ -200,7 +200,7 @@ for (const char *IN = theUTF8String; *IN != '\0'; ++IN)
         case '\f':
             {
             *OUT++ = '\\';
-            *OUT++ = '\f';
+            *OUT++ = 'f';
             }
             break;
         case '\n':

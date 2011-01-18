@@ -93,4 +93,12 @@
     STAssertEqualObjects(resultString, jsonEquivalent, nil);
 }
 
+- (void)testFormfeedsInStrings {
+    NSString *jsonEquivalent = @"{\"a\":\"formfeed\\fhere\"}";
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"formfeed\fhere" forKey:@"a"];
+    id theObject = [[CJSONSerializer serializer] serializeObject:dictionary error:nil];
+    NSString *resultString = [[[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding] autorelease];
+    STAssertEqualObjects(resultString, jsonEquivalent, nil);
+}
+
 @end
