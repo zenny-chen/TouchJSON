@@ -77,4 +77,12 @@
     STAssertEqualObjects(resultString, jsonEquivalent, nil);
 }
 
+- (void)testCarriageReturnsInStrings {
+    NSString *jsonEquivalent = @"{\"a\":\"carriage\\rreturn\"}";
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"carriage\rreturn" forKey:@"a"];
+    id theObject = [[CJSONSerializer serializer] serializeObject:dictionary error:nil];
+    NSString *resultString = [[[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding] autorelease];
+    STAssertEqualObjects(resultString, jsonEquivalent, nil);
+}
+
 @end
