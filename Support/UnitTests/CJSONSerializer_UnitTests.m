@@ -85,4 +85,12 @@
     STAssertEqualObjects(resultString, jsonEquivalent, nil);
 }
 
+- (void)testTabsInStrings {
+    NSString *jsonEquivalent = @"{\"a\":\"tab\\there\"}";
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"tab\there" forKey:@"a"];
+    id theObject = [[CJSONSerializer serializer] serializeObject:dictionary error:nil];
+    NSString *resultString = [[[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding] autorelease];
+    STAssertEqualObjects(resultString, jsonEquivalent, nil);
+}
+
 @end

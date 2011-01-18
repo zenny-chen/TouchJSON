@@ -218,7 +218,7 @@ for (const char *IN = theUTF8String; *IN != '\0'; ++IN)
         case '\t':
             {
             *OUT++ = '\\';
-            *OUT++ = '\t';
+            *OUT++ = 't';
             }
             break;
         default:
