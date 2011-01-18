@@ -116,4 +116,13 @@
     NSString *resultString = [[[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding] autorelease];
     STAssertEqualObjects(resultString, jsonEquivalent, nil);
 }
+
+- (void)testBackslashInStrings {
+    NSString *jsonEquivalent = @"{\"a\":\"back\\\\slash\"}";
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"back\\slash" forKey:@"a"];
+    id theObject = [[CJSONSerializer serializer] serializeObject:dictionary error:nil];
+    NSString *resultString = [[[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding] autorelease];
+    STAssertEqualObjects(resultString, jsonEquivalent, nil);
+}
+
 @end
