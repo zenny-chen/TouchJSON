@@ -109,4 +109,11 @@
     STAssertEqualObjects(resultString, jsonEquivalent, nil);
 }
 
+- (void)testDoubleQuotesInStrings {
+    NSString *jsonEquivalent = @"{\"a\":\"double\\\"quote\"}";
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"double\"quote" forKey:@"a"];
+    id theObject = [[CJSONSerializer serializer] serializeObject:dictionary error:nil];
+    NSString *resultString = [[[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding] autorelease];
+    STAssertEqualObjects(resultString, jsonEquivalent, nil);
+}
 @end
