@@ -194,7 +194,7 @@ for (const char *IN = theUTF8String; *IN != '\0'; ++IN)
         case '\b':
             {
             *OUT++ = '\\';
-            *OUT++ = '\b';
+            *OUT++ = 'b';
             }
             break;
         case '\f':

@@ -101,4 +101,12 @@
     STAssertEqualObjects(resultString, jsonEquivalent, nil);
 }
 
+- (void)testBackspaceInStrings {
+    NSString *jsonEquivalent = @"{\"a\":\"backspace\\bhere\"}";
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"backspace\bhere" forKey:@"a"];
+    id theObject = [[CJSONSerializer serializer] serializeObject:dictionary error:nil];
+    NSString *resultString = [[[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding] autorelease];
+    STAssertEqualObjects(resultString, jsonEquivalent, nil);
+}
+
 @end
