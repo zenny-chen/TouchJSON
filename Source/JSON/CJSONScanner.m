@@ -61,7 +61,7 @@ else
 
 - (id)init
 {
-if ((self = [super init]) != nil)
+if ((self = [super init]) != NULL)
 	{
 	strictEscapeCodes = NO;
     nullObject = [[NSNull null] retain];
