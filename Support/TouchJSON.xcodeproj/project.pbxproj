@@ -13,6 +13,7 @@
 			buildPhases = (
 			);
 			dependencies = (
+				71AE54A912826490001E99D3 /* PBXTargetDependency */,
 				450038260D82FADC001F82C7 /* PBXTargetDependency */,
 				450038280D82FADC001F82C7 /* PBXTargetDependency */,
 			);
@@ -45,6 +46,23 @@
 		45FDB4D9094E057C00A8B4AB /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FDB4BB094E056800A8B4AB /* CJSONScanner.m */; };
 		45FDB4DB094E058000A8B4AB /* CDataScanner_Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FDB4B5094E056800A8B4AB /* CDataScanner_Extensions.m */; };
 		45FDB4DC094E058000A8B4AB /* NSCharacterSet_Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FDB4B3094E056800A8B4AB /* NSCharacterSet_Extensions.m */; };
+		71AE54AB128264A5001E99D3 /* NSDictionary_JSONExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F3F7740DB7C6CC00084331 /* NSDictionary_JSONExtensions.m */; };
+		71AE54AC128264A6001E99D3 /* NSDictionary_JSONExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 45F3F7730DB7C6CC00084331 /* NSDictionary_JSONExtensions.h */; };
+		71AE54AD128264A7001E99D3 /* NSCharacterSet_Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FDB4B3094E056800A8B4AB /* NSCharacterSet_Extensions.m */; };
+		71AE54AE128264A7001E99D3 /* NSCharacterSet_Extensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 45FDB4B2094E056800A8B4AB /* NSCharacterSet_Extensions.h */; };
+		71AE54AF128264A8001E99D3 /* JSONRepresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 4502F8611268BB2A0003AC74 /* JSONRepresentation.h */; };
+		71AE54B0128264A8001E99D3 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 457B5CA210976D7E00B564BC /* CJSONSerializer.m */; };
+		71AE54B1128264A9001E99D3 /* CJSONSerializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 457B5CA110976D7E00B564BC /* CJSONSerializer.h */; };
+		71AE54B2128264AA001E99D3 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FDB4BB094E056800A8B4AB /* CJSONScanner.m */; };
+		71AE54B3128264AA001E99D3 /* CJSONScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = 45FDB4BA094E056800A8B4AB /* CJSONScanner.h */; };
+		71AE54B4128264AC001E99D3 /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4567B5B90951D51A00ECB961 /* CJSONDeserializer.m */; };
+		71AE54B5128264AD001E99D3 /* CJSONDeserializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 4567B5B80951D51A00ECB961 /* CJSONDeserializer.h */; };
+		71AE54B8128264AF001E99D3 /* CDataScanner_Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FDB4B5094E056800A8B4AB /* CDataScanner_Extensions.m */; };
+		71AE54B9128264AF001E99D3 /* CDataScanner_Extensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 45FDB4B4094E056800A8B4AB /* CDataScanner_Extensions.h */; };
+		71AE54BA128264B0001E99D3 /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 451F85B40DB6E06800136680 /* CDataScanner.m */; };
+		71AE54BB128264B0001E99D3 /* CDataScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = 451F85B30DB6E06800136680 /* CDataScanner.h */; };
+		71AE54D11282657F001E99D3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 453111B50A64EDDE00A970C2 /* main.m */; };
+		71AE555212826587001E99D3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
 		DEDF6D770E4A4000005D2575 /* CJSONDeserializer_UnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DEDF6D750E4A3F64005D2575 /* CJSONDeserializer_UnitTests.m */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +81,13 @@
 			remoteGlobalIDString = 453111B00A64EDBB00A970C2;
 			remoteInfo = Demo;
 		};
+		71AE54A812826490001E99D3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71AE54A412826488001E99D3 /* TouchJSON */;
+			remoteInfo = TouchJSON;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -79,7 +104,7 @@
 		451F85B30DB6E06800136680 /* CDataScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDataScanner.h; sourceTree = "<group>"; };
 		451F85B40DB6E06800136680 /* CDataScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner.m; sourceTree = "<group>"; };
 		453111820A64ECFA00A970C2 /* Blake.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Blake.json; sourceTree = "<group>"; };
-		453111B10A64EDBB00A970C2 /* CocoaJSON Demo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "CocoaJSON Demo"; sourceTree = BUILT_PRODUCTS_DIR; };
+		453111B10A64EDBB00A970C2 /* CocoaJSON Demo */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = "CocoaJSON Demo"; sourceTree = BUILT_PRODUCTS_DIR; };
 		453111B50A64EDDE00A970C2 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4567B5B80951D51A00ECB961 /* CJSONDeserializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer.h; sourceTree = "<group>"; };
 		4567B5B90951D51A00ECB961 /* CJSONDeserializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer.m; sourceTree = "<group>"; };
@@ -98,6 +123,7 @@
 		45FDB4B5094E056800A8B4AB /* CDataScanner_Extensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDataScanner_Extensions.m; sourceTree = "<group>"; };
 		45FDB4BA094E056800A8B4AB /* CJSONScanner.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CJSONScanner.h; sourceTree = "<group>"; };
 		45FDB4BB094E056800A8B4AB /* CJSONScanner.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CJSONScanner.m; sourceTree = "<group>"; };
+		71AE54A512826488001E99D3 /* libTouchJSON.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTouchJSON.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEDF6D740E4A3F64005D2575 /* CJSONDeserializer_UnitTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer_UnitTests.h; sourceTree = "<group>"; };
 		DEDF6D750E4A3F64005D2575 /* CJSONDeserializer_UnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer_UnitTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -119,6 +145,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		71AE54A312826488001E99D3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				71AE555212826587001E99D3 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -127,6 +161,7 @@
 			children = (
 				45B15E110947D97B00AE66EB /* UnitTests.octest */,
 				453111B10A64EDBB00A970C2 /* CocoaJSON Demo */,
+				71AE54A512826488001E99D3 /* libTouchJSON.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -238,6 +273,24 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		71AE54A112826488001E99D3 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				71AE54AC128264A6001E99D3 /* NSDictionary_JSONExtensions.h in Headers */,
+				71AE54AE128264A7001E99D3 /* NSCharacterSet_Extensions.h in Headers */,
+				71AE54AF128264A8001E99D3 /* JSONRepresentation.h in Headers */,
+				71AE54B1128264A9001E99D3 /* CJSONSerializer.h in Headers */,
+				71AE54B3128264AA001E99D3 /* CJSONScanner.h in Headers */,
+				71AE54B5128264AD001E99D3 /* CJSONDeserializer.h in Headers */,
+				71AE54B9128264AF001E99D3 /* CDataScanner_Extensions.h in Headers */,
+				71AE54BB128264B0001E99D3 /* CDataScanner.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		453111B00A64EDBB00A970C2 /* Demo */ = {
 			isa = PBXNativeTarget;
@@ -273,6 +326,24 @@
 			productReference = 45B15E110947D97B00AE66EB /* UnitTests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
+		71AE54A412826488001E99D3 /* TouchJSON */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 71AE54BE128264E1001E99D3 /* Build configuration list for PBXNativeTarget "TouchJSON" */;
+			buildPhases = (
+				71AE54A112826488001E99D3 /* Headers */,
+				71AE54A212826488001E99D3 /* Sources */,
+				71AE54A312826488001E99D3 /* Frameworks */,
+				71AE556D128266D4001E99D3 /* Create Framework */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TouchJSON;
+			productName = TouchJSON;
+			productReference = 71AE54A512826488001E99D3 /* libTouchJSON.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -295,6 +366,7 @@
 				450038210D82FAD6001F82C7 /* All */,
 				45B15E100947D97B00AE66EB /* UnitTests */,
 				453111B00A64EDBB00A970C2 /* Demo */,
+				71AE54A412826488001E99D3 /* TouchJSON */,
 			);
 		};
 /* End PBXProject section */
@@ -324,6 +396,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+		71AE556D128266D4001E99D3 /* Create Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Create Framework";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Purpose:\n#   Create a static library for iPhone from within XCode\n#   Because Apple staff DELIBERATELY broke Xcode to make this impossible from the GUI (Xcode 3.2.3 specifically states this in the Release notes!)\n#   ...no, I don't understand why they did such a stupid thing either!\n#\n# Author: Adam Martin - http://twitter.com/redglassesapps\n# Based on: original script from Eonil (main changes: Eonil's script WILL NOT WORK in Xcode GUI - it WILL CRASH YOUR COMPUTER)\n#\n# More info: see this Stack Overflow question: http://stackoverflow.com/questions/3520977/build-fat-static-library-device-simulator-using-xcode-and-sdk-4\n\n\n#####################[ part 1 ]##################\n# First, work out the BASESDK version number (NB: Apple ought to report this, but they hide it)\n#    (incidental: searching for substrings in sh is a nightmare! Sob)\n\nSDK_VERSION=$(echo ${SDK_NAME} | grep -o '.\\{3\\}$')\n\n# Next, work out if we're in SIM or DEVICE\n\nif [ ${PLATFORM_NAME} = \"iphonesimulator\" ]\nthen\nOTHER_SDK_TO_BUILD=iphoneos${SDK_VERSION}\nelse\nOTHER_SDK_TO_BUILD=iphonesimulator${SDK_VERSION}\nfi\n\necho \"XCode has selected SDK: ${PLATFORM_NAME} with version: ${SDK_VERSION} (although back-targetting: ${IPHONEOS_DEPLOYMENT_TARGET})\"\necho \"...therefore, OTHER_SDK_TO_BUILD = ${OTHER_SDK_TO_BUILD}\"\n#\n#####################[ end of part 1 ]##################\n\n#####################[ part 2 ]##################\n#\n# IF this is the original invocation, invoke WHATEVER other builds are required\n#\n# Xcode is already building ONE target...\n#\n# ...but this is a LIBRARY, so Apple is wrong to set it to build just one.\n# ...we need to build ALL targets\n# ...we MUST NOT re-build the target that is ALREADY being built: Xcode WILL CRASH YOUR COMPUTER if you try this (infinite recursion!)\n#\n#\n# So: build ONLY the missing platforms/configurations.\n\nif [ \"true\" = ${ALREADYINVOKED} ]\nthen\necho \"RECURSION: I am NOT the root invocation, so I'm NOT going to recurse\"\nelse\n# CRITICAL:\n# Prevent infinite recursion (Xcode sucks)\nexport ALREADYINVOKED=\"true\"\n\necho \"RECURSION: I am the root ... recursing all missing build targets NOW...\"\necho \"RECURSION: ...about to invoke: xcodebuild -configuration \\\"${CONFIGURATION}\\\" -target \\\"${TARGET_NAME}\\\" -sdk \\\"${OTHER_SDK_TO_BUULD}\\\" ${ACTION} RUN_CLANG_STATIC_ANALYZER=NO\"\nxcodebuild -configuration \"${CONFIGURATION}\" -target \"${TARGET_NAME}\" -sdk \"${OTHER_SDK_TO_BUILD}\" ${ACTION} RUN_CLANG_STATIC_ANALYZER=NO\nfi\n\nACTION=\"build\"\n\n#Merge all platform binaries as a fat binary for each configurations.\n\nCURRENTCONFIG_DEVICE_DIR=${SYMROOT}/${CONFIGURATION}-iphoneos\nCURRENTCONFIG_SIMULATOR_DIR=${SYMROOT}/${CONFIGURATION}-iphonesimulator\nCURRENTCONFIG_UNIVERSAL_DIR=${SYMROOT}/${CONFIGURATION}-universal\n\n# ... remove the products of previous runs of this script\n#      NB: this directory is ONLY created by this script - it should be safe to delete!\n\nrm -rf \"${CURRENTCONFIG_UNIVERSAL_DIR}\"\nmkdir \"${CURRENTCONFIG_UNIVERSAL_DIR}\"\n\n#\necho \"lipo: for current configuration (${CONFIGURATION}) creating output file: ${CURRENTCONFIG_UNIVERSAL_DIR}/${EXECUTABLE_NAME}\"\nlipo -create -output \"${CURRENTCONFIG_UNIVERSAL_DIR}/${EXECUTABLE_NAME}\" \"${CURRENTCONFIG_DEVICE_DIR}/${EXECUTABLE_NAME}\" \"${CURRENTCONFIG_SIMULATOR_DIR}/${EXECUTABLE_NAME}\"\n\necho \"Creating ${TARGET_NAME}.framework @ ${CURRENTCONFIG_UNIVERSAL_DIR}/${TARGET_NAME}.framework\"\nmkdir \"${CURRENTCONFIG_UNIVERSAL_DIR}/${TARGET_NAME}\".framework\nmkdir \"${CURRENTCONFIG_UNIVERSAL_DIR}/${TARGET_NAME}\".framework/Headers\ncp \"${CURRENTCONFIG_UNIVERSAL_DIR}/${EXECUTABLE_NAME}\" \"${CURRENTCONFIG_UNIVERSAL_DIR}/${TARGET_NAME}\".framework/\"${TARGET_NAME}\"\ncp Source/*.h \"${CURRENTCONFIG_UNIVERSAL_DIR}/${TARGET_NAME}\".framework/Headers\ncp Source/JSON/*.h \"${CURRENTCONFIG_UNIVERSAL_DIR}/${TARGET_NAME}\".framework/Headers\ncp Source/Extensions/*.h \"${CURRENTCONFIG_UNIVERSAL_DIR}/${TARGET_NAME}\".framework/Headers\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -362,6 +448,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		71AE54A212826488001E99D3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				71AE54AB128264A5001E99D3 /* NSDictionary_JSONExtensions.m in Sources */,
+				71AE54AD128264A7001E99D3 /* NSCharacterSet_Extensions.m in Sources */,
+				71AE54B0128264A8001E99D3 /* CJSONSerializer.m in Sources */,
+				71AE54B2128264AA001E99D3 /* CJSONScanner.m in Sources */,
+				71AE54B4128264AC001E99D3 /* CJSONDeserializer.m in Sources */,
+				71AE54B8128264AF001E99D3 /* CDataScanner_Extensions.m in Sources */,
+				71AE54BA128264B0001E99D3 /* CDataScanner.m in Sources */,
+				71AE54D11282657F001E99D3 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -374,6 +475,11 @@
 			isa = PBXTargetDependency;
 			target = 453111B00A64EDBB00A970C2 /* Demo */;
 			targetProxy = 450038270D82FADC001F82C7 /* PBXContainerItemProxy */;
+		};
+		71AE54A912826490001E99D3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71AE54A412826488001E99D3 /* TouchJSON */;
+			targetProxy = 71AE54A812826490001E99D3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -564,6 +670,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_C_LANGUAGE_STANDARD = c99;
 				ONLY_ACTIVE_ARCH_PRE_XCODE_3_1 = "$(NATIVE_ARCH_ACTUAL)";
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 			};
@@ -589,9 +696,45 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_C_LANGUAGE_STANDARD = c99;
 				ONLY_ACTIVE_ARCH_PRE_XCODE_3_1 = "$(NATIVE_ARCH_ACTUAL)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+			};
+			name = Release;
+		};
+		71AE54A612826489001E99D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				PREBINDING = NO;
+				PRODUCT_NAME = TouchJSON;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		71AE54A712826489001E99D3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				PREBINDING = NO;
+				PRODUCT_NAME = TouchJSON;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -630,6 +773,15 @@
 			buildConfigurations = (
 				45FC538708FBF91C0091ABDF /* Debug */,
 				45FC538808FBF91C0091ABDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		71AE54BE128264E1001E99D3 /* Build configuration list for PBXNativeTarget "TouchJSON" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				71AE54A612826489001E99D3 /* Debug */,
+				71AE54A712826489001E99D3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
