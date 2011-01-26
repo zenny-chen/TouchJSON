@@ -385,19 +385,6 @@ while ([self currentCharacter] != ']')
 		return(NO);
 		}
 		
-	if(theValue == nil)
-		{
-		if (outError)
-			{
-			NSDictionary *theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-										 @"Could not scan array. Value is NULL.", NSLocalizedDescriptionKey,
-										 NULL];
-			*outError = [NSError errorWithDomain:kJSONScannerErrorDomain code:-9 userInfo:theUserInfo];
-			}
-		[theArray release];
-		return(NO);
-		}
-
     if (theValue == NULL)
         {
         if (self.nullObject != NULL)
