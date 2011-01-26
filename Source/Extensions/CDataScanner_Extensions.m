@@ -29,7 +29,12 @@
 
 #import "CDataScanner_Extensions.h"
 
-#import "NSCharacterSet_Extensions.h"
+#define LF 0x000a // Line Feed
+#define FF 0x000c // Form Feed
+#define CR 0x000d // Carriage Return
+#define NEL 0x0085 // Next Line
+#define LS 0x2028 // Line Separator
+#define PS 0x2029 // Paragraph Separator
 
 @implementation CDataScanner (CDataScanner_Extensions)
 
@@ -62,9 +67,12 @@ else
 {
 if ([self scanString:@"//" intoString:NULL] == YES)
 	{
+    unichar theCharacters[] = { LF, FF, CR, NEL, LS, PS, };
+    NSCharacterSet *theLineBreaksCharacterSet = [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithCharacters:theCharacters length:sizeof(theCharacters) / sizeof(*theCharacters)]];
+
 	NSString *theComment = NULL;
-	[self scanUpToCharactersFromSet:[NSCharacterSet linebreaksCharacterSet] intoString:&theComment];
-	[self scanCharactersFromSet:[NSCharacterSet linebreaksCharacterSet] intoString:NULL];
+	[self scanUpToCharactersFromSet:theLineBreaksCharacterSet intoString:&theComment];
+	[self scanCharactersFromSet:theLineBreaksCharacterSet intoString:NULL];
 
 	if (outComment != NULL)
 		*outComment = theComment;

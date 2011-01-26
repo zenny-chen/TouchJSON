@@ -29,7 +29,6 @@
 
 #import "CJSONScanner.h"
 
-#import "NSCharacterSet_Extensions.h"
 #import "CDataScanner_Extensions.h"
 
 #if !defined(TREAT_COMMENTS_AS_WHITESPACE)
