@@ -34,7 +34,7 @@ There's a relatively low traffic mailing list hosted on Google Groups: <http://g
 
 ## Bug Reporting
 
-File bugs on the github issue tracker <http://github.com/schwa/TouchJSON/issues> but please make sure that your JSON data is valid (see <http://www.jsonlint.com/> before filing bugs (of course if you've found a crash with TouchJSON's handling of invalid JSON feel free to file a bug or discuss on the mailing list).
+File bugs on the github issue tracker <http://github.com/TouchCode/TouchJSON/issues> but please make sure that your JSON data is valid (see <http://www.jsonlint.com/> before filing bugs (of course if you've found a crash with TouchJSON's handling of invalid JSON feel free to file a bug or discuss on the mailing list).
 
 ## How to Help
 
