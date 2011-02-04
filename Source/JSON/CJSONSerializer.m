@@ -38,18 +38,21 @@ static NSData *kTrue = NULL;
 @implementation CJSONSerializer
 
 + (void)initialize
-{
-NSAutoreleasePool *thePool = [[NSAutoreleasePool alloc] init];
+    {
+    NSAutoreleasePool *thePool = [[NSAutoreleasePool alloc] init];
 
-if (kNULL == NULL)
-    kNULL = [[NSData alloc] initWithBytesNoCopy:(void *)"null" length:4 freeWhenDone:NO];
-if (kFalse == NULL)
-    kFalse = [[NSData alloc] initWithBytesNoCopy:(void *)"false" length:5 freeWhenDone:NO];
-if (kTrue == NULL)
-    kTrue = [[NSData alloc] initWithBytesNoCopy:(void *)"true" length:4 freeWhenDone:NO];
+    if (self == [CJSONSerializer class])
+        {
+        if (kNULL == NULL)
+            kNULL = [[NSData alloc] initWithBytesNoCopy:(void *)"null" length:4 freeWhenDone:NO];
+        if (kFalse == NULL)
+            kFalse = [[NSData alloc] initWithBytesNoCopy:(void *)"false" length:5 freeWhenDone:NO];
+        if (kTrue == NULL)
+            kTrue = [[NSData alloc] initWithBytesNoCopy:(void *)"true" length:4 freeWhenDone:NO];
 
-[thePool release];
-}
+        [thePool release];
+        }
+    }
 
 + (id)serializer
 {
