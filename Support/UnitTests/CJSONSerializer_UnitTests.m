@@ -30,6 +30,7 @@
 #import "CJSONSerializer_UnitTests.h"
 
 #import "CJSONSerializer.h"
+#import "CJSONDeserializer.h"
 
 @implementation CJSONSerializer_UnitTests
 
@@ -136,6 +137,27 @@
     id theObject = [[CJSONSerializer serializer] serializeObject:dictionary error:nil];
     NSString *resultString = [[[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding] autorelease];
     STAssertEqualObjects(resultString, jsonEquivalent, nil);
+    }
+
+- (void)testMultibytesStrings_1
+    {
+    NSError *theError = NULL;
+    NSData *theData = [@"\"80\u540e\uff0c\u5904\u5973\u5ea7\uff0c\u65e0\u4e3b\u7684\u808b\u9aa8\uff0c\u5b85+\u5fae\u8150\u3002\u5b8c\u7f8e\u63a7\uff0c\u7ea0\u7ed3\u63a7\u3002\u5728\u76f8\u4eb2\u7684\u6253\u51fb\u4e0e\u88ab\u6253\u51fb\u4e2d\u4e0d\u65ad\u6210\u957fing\"" dataUsingEncoding:NSUTF8StringEncoding];
+//    NSData *theData = [@"\"\u062a\u062d\u064a\u0627 \u0645\u0635\u0631!\"" dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *theString = [[CJSONDeserializer deserializer] deserialize:theData error:&theError];
+    theData = [[CJSONSerializer serializer] serializeObject:theString error:&theError];
+    theString = [[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] autorelease];
+    STAssertNotNil(theString, @"fail");
+    }
+
+- (void)testMultibytesStrings_2
+    {
+    NSError *theError = NULL;
+    NSData *theData = [@"\"\u062a\u062d\u064a\u0627 \u0645\u0635\u0631!\"" dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *theString = [[CJSONDeserializer deserializer] deserialize:theData error:&theError];
+    theData = [[CJSONSerializer serializer] serializeObject:theString error:&theError];
+    theString = [[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] autorelease];
+    STAssertNotNil(theString, @"fail");
     }
 
 @end
