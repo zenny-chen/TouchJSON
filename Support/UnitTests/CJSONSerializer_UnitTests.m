@@ -160,4 +160,17 @@
     STAssertNotNil(theString, @"fail");
     }
 
+- (void)testMultibytesStrings_3
+    {
+    NSError *theError = NULL;
+    NSData *theData = [@"\"@janl \u24b6\u24c1\u24cc\u24b6\u24ce\u24c8 \u24cc\u24b6\u24ce\u24c8 \u24c9\u24c4 \u24be\u24c2\u24c5\u24c7\u24c4\u24cb\u24ba, \u24c9\u24bd\u24c4\u24ca\u24bc\u24bd\"" dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *theString = [[CJSONDeserializer deserializer] deserialize:theData error:&theError];
+    theData = [[CJSONSerializer serializer] serializeObject:theString error:&theError];
+    theString = [[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] autorelease];
+    STAssertNotNil(theString, @"fail");
+    }
+
+
+
+
 @end
