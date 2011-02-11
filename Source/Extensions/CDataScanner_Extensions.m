@@ -64,72 +64,72 @@ else
 }
 
 - (BOOL)scanCPlusPlusStyleComment:(NSString **)outComment
-{
-if ([self scanString:@"//" intoString:NULL] == YES)
-	{
-    unichar theCharacters[] = { LF, FF, CR, NEL, LS, PS, };
-    NSCharacterSet *theLineBreaksCharacterSet = [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithCharacters:theCharacters length:sizeof(theCharacters) / sizeof(*theCharacters)]];
+    {
+    if ([self scanString:@"//" intoString:NULL] == YES)
+        {
+        unichar theCharacters[] = { LF, FF, CR, NEL, LS, PS, };
+        NSCharacterSet *theLineBreaksCharacterSet = [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithCharacters:theCharacters length:sizeof(theCharacters) / sizeof(*theCharacters)]];
 
-	NSString *theComment = NULL;
-	[self scanUpToCharactersFromSet:theLineBreaksCharacterSet intoString:&theComment];
-	[self scanCharactersFromSet:theLineBreaksCharacterSet intoString:NULL];
+        NSString *theComment = NULL;
+        [self scanUpToCharactersFromSet:theLineBreaksCharacterSet intoString:&theComment];
+        [self scanCharactersFromSet:theLineBreaksCharacterSet intoString:NULL];
 
-	if (outComment != NULL)
-		*outComment = theComment;
+        if (outComment != NULL)
+            *outComment = theComment;
 
-	return(YES);
-	}
-else
-	{
-	return(NO);
-	}
-}
+        return(YES);
+        }
+    else
+        {
+        return(NO);
+        }
+    }
 
 - (NSUInteger)lineOfScanLocation
-{
-NSUInteger theLine = 0;
-for (const u_int8_t *C = start; C < current; ++C)
     {
-    // TODO: JIW What about MS-DOS line endings you bastard! (Also other unicode line endings)
-    if (*C == '\n' || *C == '\r')
+    NSUInteger theLine = 0;
+    for (const u_int8_t *C = start; C < current; ++C)
         {
-        ++theLine;
+        // TODO: JIW What about MS-DOS line endings you bastard! (Also other unicode line endings)
+        if (*C == '\n' || *C == '\r')
+            {
+            ++theLine;
+            }
         }
+    return(theLine);
     }
-return(theLine);
-}
 
 - (NSDictionary *)userInfoForScanLocation
-{
-NSUInteger theLine = 0;
-const u_int8_t *theLineStart = start;
-for (const u_int8_t *C = start; C < current; ++C)
     {
-    if (*C == '\n' || *C == '\r')
+    NSUInteger theLine = 0;
+    const u_int8_t *theLineStart = start;
+    for (const u_int8_t *C = start; C < current; ++C)
         {
-        theLineStart = C - 1;
-        ++theLine;
+        if (*C == '\n' || *C == '\r')
+            {
+            theLineStart = C - 1;
+            ++theLine;
+            }
         }
+
+    NSUInteger theCharacter = current - theLineStart;
+
+    NSRange theStartRange = NSIntersectionRange((NSRange){ .location = MAX((NSInteger)self.scanLocation - 20, 0), .length = 20 + (NSInteger)self.scanLocation - 20 }, (NSRange){ .location = 0, .length = self.data.length });
+    NSRange theEndRange = NSIntersectionRange((NSRange){ .location = self.scanLocation, .length = 20 }, (NSRange){ .location = 0, .length = self.data.length });
+
+
+    NSString *theSnippet = [NSString stringWithFormat:@"%@!HERE>!%@",
+        [[[NSString alloc] initWithData:[self.data subdataWithRange:theStartRange] encoding:NSUTF8StringEncoding] autorelease],
+        [[[NSString alloc] initWithData:[self.data subdataWithRange:theEndRange] encoding:NSUTF8StringEncoding] autorelease]
+        ];
+
+    NSDictionary *theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+        [NSNumber numberWithUnsignedInteger:theLine], @"line",
+        [NSNumber numberWithUnsignedInteger:theCharacter], @"character",
+        [NSNumber numberWithUnsignedInteger:self.scanLocation], @"location",
+        theSnippet, @"snippet",
+        NULL];
+    return(theUserInfo);    
     }
-
-NSUInteger theCharacter = current - theLineStart;
-
-NSRange theStartRange = NSIntersectionRange((NSRange){ .location = MAX((NSInteger)self.scanLocation - 20, 0), .length = 20 + (NSInteger)self.scanLocation - 20 }, (NSRange){ .location = 0, .length = self.data.length });
-NSRange theEndRange = NSIntersectionRange((NSRange){ .location = self.scanLocation, .length = 20 }, (NSRange){ .location = 0, .length = self.data.length });
-
-
-NSString *theSnippet = [NSString stringWithFormat:@"%@!HERE>!%@",
-    [[[NSString alloc] initWithData:[self.data subdataWithRange:theStartRange] encoding:NSUTF8StringEncoding] autorelease],
-    [[[NSString alloc] initWithData:[self.data subdataWithRange:theEndRange] encoding:NSUTF8StringEncoding] autorelease]
-    ];
-
-NSDictionary *theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-    [NSNumber numberWithUnsignedInteger:theLine], @"line",
-    [NSNumber numberWithUnsignedInteger:theCharacter], @"character",
-    [NSNumber numberWithUnsignedInteger:self.scanLocation], @"location",
-    theSnippet, @"snippet",
-    NULL];
-return(theUserInfo);    
-}
 
 @end
