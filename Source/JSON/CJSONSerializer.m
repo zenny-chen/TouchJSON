@@ -164,14 +164,15 @@ static NSData *kTrue = NULL;
     {
     #pragma unused (outError)
 
-    NSMutableData *theData = [NSMutableData dataWithLength:inString.length * 2 + 2];
+    const char *theUTF8String = [inString UTF8String];
+
+    NSMutableData *theData = [NSMutableData dataWithLength:strlen(theUTF8String) * 2 + 2];
 
     char *theOutputStart = [theData mutableBytes];
     char *OUT = theOutputStart;
 
     *OUT++ = '"';
 
-    const char *theUTF8String = [inString UTF8String];
     for (const char *IN = theUTF8String; IN && *IN != '\0'; ++IN)
         {
         switch (*IN)
