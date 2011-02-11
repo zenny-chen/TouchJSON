@@ -24,7 +24,6 @@
 /* Begin PBXBuildFile section */
 		4502F5ED12683D3B0003AC74 /* CJSONDeserializer_BlocksExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4502F5EA12683CF70003AC74 /* CJSONDeserializer_BlocksExtensions.m */; };
 		4502F5EE12683D3C0003AC74 /* CFilteringJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4569D5DB12683A9100AEC287 /* CFilteringJSONSerializer.m */; };
-		4502F7601268B2B10003AC74 /* twitter_public_timeline.json in Resources */ = {isa = PBXBuildFile; fileRef = 4502F75F1268B2B10003AC74 /* twitter_public_timeline.json */; };
 		4505889E0999539300FB865F /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4567B5B90951D51A00ECB961 /* CJSONDeserializer.m */; };
 		451F85B50DB6E06800136680 /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 451F85B40DB6E06800136680 /* CDataScanner.m */; };
 		451F85B60DB6E06800136680 /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 451F85B40DB6E06800136680 /* CDataScanner.m */; };
@@ -37,6 +36,7 @@
 		4531137A0A64EE5400A970C2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
 		457B5CAF10976E9300B564BC /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 457B5CA210976D7E00B564BC /* CJSONSerializer.m */; };
 		457B5CB210976E9E00B564BC /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 457B5CA210976D7E00B564BC /* CJSONSerializer.m */; };
+		45BB5FB31305E0DE00B196E4 /* Test Data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 45BB5FB21305E0D500B196E4 /* Test Data */; };
 		45DFEABD0DB6F289009267D5 /* CDataScanner_UnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DFEABB0DB6F289009267D5 /* CDataScanner_UnitTests.m */; };
 		45DFEBDF0DB7080D009267D5 /* CJSONSerializer_UnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4505886F099952F600FB865F /* CJSONSerializer_UnitTests.m */; };
 		45DFEBE00DB7080E009267D5 /* CJSONScanner_UnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4505886D099952F600FB865F /* CJSONScanner_UnitTests.m */; };
@@ -63,11 +63,23 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		454C11461305DE5A0082DD70 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				45BB5FB31305E0DE00B196E4 /* Test Data in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		4502F5E912683CF70003AC74 /* CJSONDeserializer_BlocksExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer_BlocksExtensions.h; sourceTree = "<group>"; };
 		4502F5EA12683CF70003AC74 /* CJSONDeserializer_BlocksExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer_BlocksExtensions.m; sourceTree = "<group>"; };
-		4502F75F1268B2B10003AC74 /* twitter_public_timeline.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = twitter_public_timeline.json; sourceTree = "<group>"; };
 		4502F8611268BB2A0003AC74 /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
 		4505886C099952F600FB865F /* CJSONScanner_UnitTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONScanner_UnitTests.h; sourceTree = "<group>"; };
 		4505886D099952F600FB865F /* CJSONScanner_UnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONScanner_UnitTests.m; sourceTree = "<group>"; };
@@ -86,6 +98,7 @@
 		457B5CA110976D7E00B564BC /* CJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializer.h; sourceTree = "<group>"; };
 		457B5CA210976D7E00B564BC /* CJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializer.m; sourceTree = "<group>"; };
 		45B15E110947D97B00AE66EB /* UnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		45BB5FB21305E0D500B196E4 /* Test Data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Test Data"; sourceTree = "<group>"; };
 		45DFEABA0DB6F289009267D5 /* CDataScanner_UnitTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDataScanner_UnitTests.h; sourceTree = "<group>"; };
 		45DFEABB0DB6F289009267D5 /* CDataScanner_UnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner_UnitTests.m; sourceTree = "<group>"; };
 		45F3F7730DB7C6CC00084331 /* NSDictionary_JSONExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDictionary_JSONExtensions.h; sourceTree = "<group>"; };
@@ -133,7 +146,7 @@
 				45FC53AB08FBFB490091ABDF /* Source */,
 				453111AD0A64EDAA00A970C2 /* Demo */,
 				4505886B099952F600FB865F /* UnitTests */,
-				4502F75E1268B2B10003AC74 /* Test Data */,
+				45BB5FB21305E0D500B196E4 /* Test Data */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -146,14 +159,6 @@
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		4502F75E1268B2B10003AC74 /* Test Data */ = {
-			isa = PBXGroup;
-			children = (
-				4502F75F1268B2B10003AC74 /* twitter_public_timeline.json */,
-			);
-			path = "Test Data";
 			sourceTree = "<group>";
 		};
 		4505886B099952F600FB865F /* UnitTests */ = {
@@ -239,6 +244,7 @@
 			buildPhases = (
 				453111AE0A64EDBB00A970C2 /* Sources */,
 				453111AF0A64EDBB00A970C2 /* Frameworks */,
+				454C11461305DE5A0082DD70 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -299,7 +305,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				453111830A64ECFA00A970C2 /* Blake.json in Resources */,
-				4502F7601268B2B10003AC74 /* twitter_public_timeline.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
