@@ -34,38 +34,43 @@
 
 @implementation CJSONDeserializer_UnitTests
 
--(void)testEmptyDictionary {
+-(void)testEmptyDictionary
+    {
 	NSString *theSource = @"{}";
 	NSData *theData = [theSource dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 	NSDictionary *theObject = [[CJSONDeserializer deserializer] deserializeAsDictionary:theData error:nil];
 	NSDictionary *dictionary = [NSDictionary dictionary];
 	STAssertEqualObjects(dictionary, theObject, nil);
-}
+    }
 
--(void)testSingleKeyValuePair {
+-(void)testSingleKeyValuePair
+    {
 	NSString *theSource = @"{\"a\":\"b\"}";
 	NSData *theData = [theSource dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 	NSDictionary *theObject = [[CJSONDeserializer deserializer] deserializeAsDictionary:theData error:nil];
 	NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"b" forKey:@"a"];
 	STAssertEqualObjects(dictionary, theObject, nil);
-}
+    }
 
--(void)testRootArray {
+-(void)testRootArray
+    {
 	NSString *theSource = @"[\"a\",\"b\",\"c\"]";
 	NSData *theData = [theSource dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 	NSArray *theObject = [[CJSONDeserializer deserializer] deserializeAsArray:theData error:nil];
 	NSArray *theArray = [NSArray arrayWithObjects:@"a", @"b", @"c", NULL];
 	STAssertEqualObjects(theArray, theObject, nil);
-}
+    }
 
--(void)testDeserializeDictionaryWithNonDictionary {
+-(void)testDeserializeDictionaryWithNonDictionary
+    {
 	NSString *emptyArrayInJSON = @"[]";
 	NSData *emptyArrayInJSONAsData = [emptyArrayInJSON dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 	NSDictionary *deserializedDictionary = [[CJSONDeserializer deserializer] deserializeAsDictionary:emptyArrayInJSONAsData error:nil];
 	STAssertNil(deserializedDictionary, nil);
-}
+    }
 
--(void)testDeserializeDictionaryWithAnEmbeddedArray {
+-(void)testDeserializeDictionaryWithAnEmbeddedArray
+    {
 	NSString *theSource = @"{\"version\":\"1.0\", \"method\":\"a_method\", \"params\":[ \"a_param\" ]}";
 	NSData *theData = [theSource dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 	NSDictionary *theObject = [[CJSONDeserializer deserializer] deserializeAsDictionary:theData error:nil];
@@ -75,9 +80,10 @@
 								[NSArray arrayWithObject:@"a_param"], @"params",
 								nil];
 	STAssertEqualObjects(dictionary, theObject, nil);	
-}
+    }
 
--(void)testDeserializeDictionaryWithAnEmbeddedArrayWithWhitespace {
+-(void)testDeserializeDictionaryWithAnEmbeddedArrayWithWhitespace
+    {
 	NSString *theSource = @"{\"version\":\"1.0\", \"method\":\"a_method\", \"params\":    [ \"a_param\" ]}";
 	NSData *theData = [theSource dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 	NSDictionary *theObject = [[CJSONDeserializer deserializer] deserializeAsDictionary:theData error:nil];
@@ -87,125 +93,141 @@
 								[NSArray arrayWithObject:@"a_param"], @"params",
 								nil];
 	STAssertEqualObjects(dictionary, theObject, nil);	
-}
+    }
 
 
--(void)testCheckForError {
+-(void)testCheckForError
+    {
 	NSString *jsonString = @"!";
 	NSData *jsonData = [jsonString dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 	NSError *error = nil;
 	NSDictionary *dictionary = [[CJSONDeserializer deserializer] deserializeAsDictionary:jsonData error:&error];
 	STAssertNotNil(error, @"An error should be reported when deserializing a badly formed JSON string", nil);
 	STAssertNil(dictionary, @"Dictionary will be nil when there is an error deserializing", nil);
-}
+    }
 
--(void)testCheckForErrorWithEmptyJSON {
+-(void)testCheckForErrorWithEmptyJSON
+    {
 	NSString *jsonString = @"";
 	NSData *jsonData = [jsonString dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 	NSError *error = nil;
 	NSDictionary *dictionary = [[CJSONDeserializer deserializer] deserializeAsDictionary:jsonData error:&error];
 	STAssertNotNil(error, @"An error should be reported when deserializing a badly formed JSON string", nil);
 	STAssertNil(dictionary, @"Dictionary will be nil when there is an error deserializing", nil);
-}
+    }
 
--(void)testCheckForErrorWithEmptyJSONAndIgnoringError {
+-(void)testCheckForErrorWithEmptyJSONAndIgnoringError
+    {
 	NSString *jsonString = @"";
 	NSData *jsonData = [jsonString dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 	NSDictionary *dictionary = [[CJSONDeserializer deserializer] deserializeAsDictionary:jsonData error:nil];
 	STAssertNil(dictionary, @"Dictionary will be nil when there is an error deserializing", nil);
-}
+    }
 
--(void)testCheckForErrorWithNilJSON {
+-(void)testCheckForErrorWithNilJSON
+    {
 	NSError *error = nil;
 	NSDictionary *dictionary = [[CJSONDeserializer deserializer] deserializeAsDictionary:nil error:&error];
 	STAssertNotNil(error, @"An error should be reported when deserializing a badly formed JSON string", nil);
 	STAssertNil(dictionary, @"Dictionary will be nil when there is an error deserializing", nil);
-}
+    }
 
--(void)testCheckForErrorWithNilJSONAndIgnoringError {
+-(void)testCheckForErrorWithNilJSONAndIgnoringError
+    {
 	NSDictionary *dictionary = [[CJSONDeserializer deserializer] deserializeAsDictionary:nil error:nil];
 	STAssertNil(dictionary, @"Dictionary will be nil when there is an error deserializing", nil);
-}
+    }
 
--(void)testNoError {
+-(void)testNoError
+    {
 	NSString *jsonString = @"{}";
 	NSData *jsonData = [jsonString dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 	NSError *error = nil;
 	NSDictionary *dictionary = [[CJSONDeserializer deserializer] deserializeAsDictionary:jsonData error:&error];
 	STAssertNil(error, @"No error should be reported when deserializing an empty dictionary", nil);
 	STAssertNotNil(dictionary, @"Dictionary will be nil when there is not an error deserializing", nil);
-}
+    }
 
 #pragma mark DeprecatedTests
--(void)testCheckForError_Deprecated {
+-(void)testCheckForError_Deprecated
+    {
 	NSString *jsonString = @"{!";
 	NSData *jsonData = [jsonString dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 	NSError *error = nil;
 	NSDictionary *dictionary = [[CJSONDeserializer deserializer] deserialize:jsonData error:&error];
 	STAssertNotNil(error, @"An error should be reported when deserializing a badly formed JSON string", nil);
 	STAssertNil(dictionary, @"Dictionary will be nil when there is an error deserializing", nil);
-}
+    }
 
--(void)testCheckForErrorWithEmptyJSON_Deprecated {
+-(void)testCheckForErrorWithEmptyJSON_Deprecated
+    {
 	NSString *jsonString = @"";
 	NSData *jsonData = [jsonString dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 	NSError *error = nil;
 	NSDictionary *dictionary = [[CJSONDeserializer deserializer] deserialize:jsonData error:&error];
 	STAssertNotNil(error, @"An error should be reported when deserializing a badly formed JSON string", nil);
 	STAssertNil(dictionary, @"Dictionary will be nil when there is an error deserializing", nil);
-}
+    }
 
--(void)testCheckForErrorWithEmptyJSONAndIgnoringError_Deprecated {
+-(void)testCheckForErrorWithEmptyJSONAndIgnoringError_Deprecated
+    {
 	NSString *jsonString = @"";
 	NSData *jsonData = [jsonString dataUsingEncoding:NSUTF32BigEndianStringEncoding];
 	NSDictionary *dictionary = [[CJSONDeserializer deserializer] deserialize:jsonData error:nil];
 	STAssertNil(dictionary, @"Dictionary will be nil when there is an error deserializing", nil);
-}
+    }
 
--(void)testCheckForErrorWithNilJSON_Deprecated {
+-(void)testCheckForErrorWithNilJSON_Deprecated
+    {
 	NSError *error = nil;
 	NSDictionary *dictionary = [[CJSONDeserializer deserializer] deserialize:nil error:&error];
 	STAssertNotNil(error, @"An error should be reported when deserializing a badly formed JSON string", nil);
 	STAssertNil(dictionary, @"Dictionary will be nil when there is an error deserializing", nil);
-}
+    }
 
--(void)testCheckForErrorWithNilJSONAndIgnoringError_Deprecated {
+-(void)testCheckForErrorWithNilJSONAndIgnoringError_Deprecated
+    {
 	NSDictionary *dictionary = [[CJSONDeserializer deserializer] deserialize:nil error:nil];
 	STAssertNil(dictionary, @"Dictionary will be nil when there is an error deserializing", nil);
-}
+    }
 
--(void)testSkipNullValueInArray {
+-(void)testSkipNullValueInArray
+    {
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
     theDeserializer.nullObject = NULL;
     NSData *theData = [@"[null]" dataUsingEncoding:NSUTF8StringEncoding];
 	NSArray *theArray = [theDeserializer deserialize:theData error:nil];
 	STAssertEqualObjects(theArray, [NSArray array], @"Skipping null did not produce empty array");
-}
+    }
 
--(void)testAlternativeNullValueInArray {
+-(void)testAlternativeNullValueInArray
+    {
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
     theDeserializer.nullObject = @"foo";
     NSData *theData = [@"[null]" dataUsingEncoding:NSUTF8StringEncoding];
 	NSArray *theArray = [theDeserializer deserialize:theData error:nil];
 	STAssertEqualObjects(theArray, [NSArray arrayWithObject:@"foo"], @"Skipping null did not produce array with placeholder");
-}
+    }
 
--(void)testDontSkipNullValueInArray {
+-(void)testDontSkipNullValueInArray
+    {
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
     NSData *theData = [@"[null]" dataUsingEncoding:NSUTF8StringEncoding];
 	NSArray *theArray = [theDeserializer deserialize:theData error:nil];
 	STAssertEqualObjects(theArray, [NSArray arrayWithObject:[NSNull null]], @"Didnt get the array we were looking for");
-}
+    }
 
--(void)testSkipNullValueInDictionary {
+-(void)testSkipNullValueInDictionary
+    {
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
     theDeserializer.nullObject = NULL;
     NSData *theData = [@"{\"foo\":null}" dataUsingEncoding:NSUTF8StringEncoding];
 	NSDictionary *theObject = [theDeserializer deserialize:theData error:nil];
 	STAssertEqualObjects(theObject, [NSDictionary dictionary], @"Skipping null did not produce empty dict");
-}
+    }
 
--(void)testMultipleRuns {
+-(void)testMultipleRuns
+    {
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
     NSData *theData = [@"{\"hello\":\"world\"}" dataUsingEncoding:NSUTF8StringEncoding];
 	NSDictionary *theObject = [theDeserializer deserialize:theData error:nil];
@@ -213,9 +235,10 @@
     theData = [@"{\"goodbye\":\"cruel world\"}" dataUsingEncoding:NSUTF8StringEncoding];
 	theObject = [theDeserializer deserialize:theData error:nil];
 	STAssertEqualObjects(theObject, [NSDictionary dictionaryWithObject:@"cruel world" forKey:@"goodbye"], @"Dictionary did not contain expected contents");
-}
+    }
 
--(void)testWindowsCP1252StringEncoding {
+-(void)testWindowsCP1252StringEncoding
+    {
 	CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
 	NSString *jsonString = @"[\"Expos\u00E9\"]";
 	NSData *jsonData = [jsonString dataUsingEncoding:NSWindowsCP1252StringEncoding];
@@ -227,15 +250,16 @@
 	theDeserializer.allowedEncoding = NSWindowsCP1252StringEncoding;
 	array = [theDeserializer deserialize:jsonData error:nil];
 	STAssertEqualObjects(array, [NSArray arrayWithObject:@"Expos\u00E9"], nil);
-}
+    }
 
 
--(void)testLargeNumbers {
+-(void)testLargeNumbers
+    {
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
     NSData *theData = [@"14399073641566209" dataUsingEncoding:NSUTF8StringEncoding];
 	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
 	STAssertEquals([theObject unsignedLongLongValue], 14399073641566209ULL, @"Numbers did not contain expected contents");
-}
+    }
 
 
 @end

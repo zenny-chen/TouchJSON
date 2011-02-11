@@ -35,31 +35,31 @@
 @implementation CDataScanner_UnitTests
 
 - (void)testSomething
-{
-CDataScanner *theScanner = [[[CDataScanner alloc] initWithData:[@"Hello World" dataUsingEncoding:NSUTF8StringEncoding]] autorelease];
+    {
+    CDataScanner *theScanner = [[[CDataScanner alloc] initWithData:[@"Hello World" dataUsingEncoding:NSUTF8StringEncoding]] autorelease];
 
-STAssertFalse(theScanner.isAtEnd, NULL);
+    STAssertFalse(theScanner.isAtEnd, NULL);
 
-NSString *theString = NULL;
-BOOL theResult = 
+    NSString *theString = NULL;
+    BOOL theResult = 
 
-theResult = [theScanner scanString:@"Hello" intoString:&theString];
-STAssertTrue(theResult, NULL);
-STAssertEqualObjects(theString, @"Hello", NULL);
-STAssertEquals((int)theScanner.scanLocation, 5, NULL);
+    theResult = [theScanner scanString:@"Hello" intoString:&theString];
+    STAssertTrue(theResult, NULL);
+    STAssertEqualObjects(theString, @"Hello", NULL);
+    STAssertEquals((int)theScanner.scanLocation, 5, NULL);
 
-theResult = [theScanner scanCharacter:' '];
-STAssertTrue(theResult, NULL);
-STAssertEquals((int)theScanner.scanLocation, 6, NULL);
+    theResult = [theScanner scanCharacter:' '];
+    STAssertTrue(theResult, NULL);
+    STAssertEquals((int)theScanner.scanLocation, 6, NULL);
 
-theResult = [theScanner scanCharactersFromSet:[NSCharacterSet alphanumericCharacterSet] intoString:&theString];
-STAssertTrue(theResult, NULL);
-STAssertEqualObjects(theString, @"World", NULL);
-STAssertEquals((int)theScanner.scanLocation, 11, NULL);
+    theResult = [theScanner scanCharactersFromSet:[NSCharacterSet alphanumericCharacterSet] intoString:&theString];
+    STAssertTrue(theResult, NULL);
+    STAssertEqualObjects(theString, @"World", NULL);
+    STAssertEquals((int)theScanner.scanLocation, 11, NULL);
 
 
-STAssertTrue(theScanner.isAtEnd, NULL);
+    STAssertTrue(theScanner.isAtEnd, NULL);
 
-}
+    }
 
 @end
