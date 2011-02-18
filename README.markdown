@@ -47,6 +47,7 @@ There are many things you can do to help TouchJSON
 * Help improve the documentation
 * Help profile and optimise TouchJSON for speed and memory usage
 
+<!--
 ## Donations
 
 Click here to lend your support to TouchCode and make a donation:
@@ -55,6 +56,7 @@ Click here to lend your support to TouchCode and make a donation:
 
 [1]: http://www.pledgie.com/campaigns/14660
 [2]: http://www.pledgie.com/campaigns/14660.png?skin_name=chrome
+-->
 
 ## How to use TouchJSON in your Cocoa or Cocoa Touch application.
 
