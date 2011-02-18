@@ -8,8 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol CJSONSerializable <NSObject>
+@property (readonly, nonatomic, retain) NSData *serializedJSONData;
+@end
 
-@interface CJSONSerializedData : NSObject {
+#pragma mark -
+
+@interface CJSONSerializedData : NSObject <CJSONSerializable> {
     NSData *data;
 }
 

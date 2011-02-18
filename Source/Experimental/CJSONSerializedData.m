@@ -8,6 +8,10 @@
 
 #import "CJSONSerializedData.h"
 
+@interface CJSONSerializedData ()
+@end
+
+#pragma mark -
 
 @implementation CJSONSerializedData
 
@@ -28,6 +32,11 @@
     data = NULL;
     //
     [super dealloc];
+    }
+
+- (NSData *)serializedJSONData
+    {
+    return(self.data);
     }
 
 @end

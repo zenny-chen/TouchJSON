@@ -86,6 +86,8 @@
 		4505886E099952F600FB865F /* CJSONSerializer_UnitTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializer_UnitTests.h; sourceTree = "<group>"; };
 		4505886F099952F600FB865F /* CJSONSerializer_UnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializer_UnitTests.m; sourceTree = "<group>"; };
 		45058870099952F600FB865F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		451CC8D2130F06AB0004385E /* CJSONSerializedData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializedData.h; sourceTree = "<group>"; };
+		451CC8D3130F06AB0004385E /* CJSONSerializedData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializedData.m; sourceTree = "<group>"; };
 		451F85B30DB6E06800136680 /* CDataScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDataScanner.h; sourceTree = "<group>"; };
 		451F85B40DB6E06800136680 /* CDataScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner.m; sourceTree = "<group>"; };
 		453111820A64ECFA00A970C2 /* Blake.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Blake.json; sourceTree = "<group>"; };
@@ -193,6 +195,8 @@
 				4569D5DB12683A9100AEC287 /* CFilteringJSONSerializer.m */,
 				4502F5E912683CF70003AC74 /* CJSONDeserializer_BlocksExtensions.h */,
 				4502F5EA12683CF70003AC74 /* CJSONDeserializer_BlocksExtensions.m */,
+				451CC8D2130F06AB0004385E /* CJSONSerializedData.h */,
+				451CC8D3130F06AB0004385E /* CJSONSerializedData.m */,
 			);
 			path = Experimental;
 			sourceTree = "<group>";
