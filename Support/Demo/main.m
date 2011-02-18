@@ -43,7 +43,14 @@ int main(int argc, char **argv)
 
 	NSAutoreleasePool *theAutoreleasePool = [[NSAutoreleasePool alloc] init];
 
-    test();
+    if (1)
+        {
+        test();
+        }
+    else
+        {
+        test_twitter_public_timeline();
+        }
 
 	[theAutoreleasePool release];
 	//
