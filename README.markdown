@@ -47,6 +47,12 @@ There are many things you can do to help TouchJSON
 * Help improve the documentation
 * Help profile and optimise TouchJSON for speed and memory usage
 
+## Donations
+
+You can donate to Touchcode via the following "Pledgie" link:
+
+<a href='http://www.pledgie.com/campaigns/14659'><img alt='Click here to lend your support to: Touchcode and make a donation at www.pledgie.com !' src='http://www.pledgie.com/campaigns/14659.png?skin_name=chrome' border='0' /></a>
+
 ## How to use TouchJSON in your Cocoa or Cocoa Touch application.
 
 TouchJSON is incredibly easy to use. Usually you can convert JSON data to and from a Cocoa representation in just a line of code.
