@@ -51,3 +51,28 @@
 @end
 
 extern NSString *const kJSONScannerErrorDomain /* = @"CJSONScannerErrorDomain" */;
+
+typedef enum {
+    CJSONScannerErrorGeneral = -1, 
+    CJSONScannerErrorNothingToScan = -1, 
+    CJSONScannerErrorCouldNotDecodeData = -1, 
+    CJSONScannerErrorCouldNotSerializeData = -1,
+    CJSONScannerErrorCouldNotSerializeObject = -1, 
+    CJSONScannerErrorObjectInvalidStartCharacter = -1, 
+    CJSONScannerErrorDictionaryStartCharacterMissing = -1, 
+    CJSONScannerErrorDictionaryKeyScanFailed = -2, 
+    CJSONScannerErrorDictionaryKeyNotTerminated = -3, 
+    CJSONScannerErrorDictionaryValueScanFailed = -4, 
+    CJSONScannerErrorDictionaryKeyValuePairNoDelimiter = -5, 
+    CJSONScannerErrorDictionaryNotTerminated = -6, 
+    CJSONScannerErrorArrayStartCharacterMissing = -7, 
+    CJSONScannerErrorArrayValueScanFailed = -8, 
+    CJSONScannerErrorArrayValueIsNull = -9, 
+    CJSONScannerErrorArrayNotTerminated = -9, // This value was duplicated with the prior error's value in the original source. - BK
+    CJSONScannerErrorArrayNotTerminated2 = -10, // Same message, similar path, different code as prior entry in original source. - BK
+    CJSONScannerErrorStringNotStartedWithBackslash = -11, 
+    CJSONScannerErrorStringUnicodeNotDecoded = -12, 
+    CJSONScannerErrorStringUnknownEscapeCode = -13, 
+    CJSONScannerErrorStringNotTerminated = -14,
+    CJSONScannerErrorNumberNotScannable = -14 // This value was duplicated with the prior error's value in the original source. - BK
+} CJSONScannerErrorCode;

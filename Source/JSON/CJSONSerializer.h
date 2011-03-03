@@ -44,3 +44,8 @@
 - (NSData *)serializeDictionary:(NSDictionary *)inDictionary error:(NSError **)outError;
 
 @end
+
+typedef enum {
+    CJSONSerializerErrorCouldNotSerializeDataType = -1,
+    CJSONSerializerErrorCouldNotSerializeObject = -1
+} CJSONSerializerError;
