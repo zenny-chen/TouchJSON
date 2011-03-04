@@ -196,7 +196,7 @@ inline static int HexToInt(char inCharacter)
                     @"Could not scan object. Character not a valid JSON character.", NSLocalizedDescriptionKey,
                     NULL];
                 [theUserInfo addEntriesFromDictionary:self.userInfoForScanLocation];
-                *outError = [NSError errorWithDomain:kJSONScannerErrorDomain code:CJSONScannerErrorObjectInvalidStartCharacter userInfo:theUserInfo];
+                *outError = [NSError errorWithDomain:kJSONScannerErrorDomain code:CJSONScannerErrorCouldNotScanObject userInfo:theUserInfo];
                 }
             break;
         }
@@ -440,7 +440,7 @@ inline static int HexToInt(char inCharacter)
                 @"Could not scan array. Array not terminated by a ']' character.", NSLocalizedDescriptionKey,
                 NULL];
             [theUserInfo addEntriesFromDictionary:self.userInfoForScanLocation];
-            *outError = [NSError errorWithDomain:kJSONScannerErrorDomain code:CJSONScannerErrorArrayNotTerminated2 userInfo:theUserInfo];
+            *outError = [NSError errorWithDomain:kJSONScannerErrorDomain code:CJSONScannerErrorArrayNotTerminated userInfo:theUserInfo];
             }
         [theArray release];
         return(NO);

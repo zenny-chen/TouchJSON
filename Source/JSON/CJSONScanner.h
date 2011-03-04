@@ -53,26 +53,37 @@
 extern NSString *const kJSONScannerErrorDomain /* = @"CJSONScannerErrorDomain" */;
 
 typedef enum {
-    CJSONScannerErrorGeneral = -1, 
-    CJSONScannerErrorNothingToScan = -1, 
-    CJSONScannerErrorCouldNotDecodeData = -1, 
-    CJSONScannerErrorCouldNotSerializeData = -1,
-    CJSONScannerErrorCouldNotSerializeObject = -1, 
-    CJSONScannerErrorObjectInvalidStartCharacter = -1, 
-    CJSONScannerErrorDictionaryStartCharacterMissing = -1, 
-    CJSONScannerErrorDictionaryKeyScanFailed = -2, 
-    CJSONScannerErrorDictionaryKeyNotTerminated = -3, 
-    CJSONScannerErrorDictionaryValueScanFailed = -4, 
-    CJSONScannerErrorDictionaryKeyValuePairNoDelimiter = -5, 
-    CJSONScannerErrorDictionaryNotTerminated = -6, 
-    CJSONScannerErrorArrayStartCharacterMissing = -7, 
-    CJSONScannerErrorArrayValueScanFailed = -8, 
-    CJSONScannerErrorArrayValueIsNull = -9, 
-    CJSONScannerErrorArrayNotTerminated = -9, // This value was duplicated with the prior error's value in the original source. - BK
-    CJSONScannerErrorArrayNotTerminated2 = -10, // Same message, similar path, different code as prior entry in original source. - BK
-    CJSONScannerErrorStringNotStartedWithBackslash = -11, 
-    CJSONScannerErrorStringUnicodeNotDecoded = -12, 
-    CJSONScannerErrorStringUnknownEscapeCode = -13, 
-    CJSONScannerErrorStringNotTerminated = -14,
-    CJSONScannerErrorNumberNotScannable = -14 // This value was duplicated with the prior error's value in the original source. - BK
+    
+    CJSONScannerErrorNone = 0,
+    
+    // Fundamental scanning errors
+    CJSONScannerErrorNothingToScan = -11, 
+    CJSONScannerErrorCouldNotDecodeData = -12, 
+    CJSONScannerErrorCouldNotSerializeData = -13,
+    CJSONScannerErrorCouldNotSerializeObject = -14, 
+    CJSONScannerErrorCouldNotScanObject = -15, 
+    
+    // Dictionary scanning
+    CJSONScannerErrorDictionaryStartCharacterMissing = -101, 
+    CJSONScannerErrorDictionaryKeyScanFailed = -102, 
+    CJSONScannerErrorDictionaryKeyNotTerminated = -103, 
+    CJSONScannerErrorDictionaryValueScanFailed = -104, 
+    CJSONScannerErrorDictionaryKeyValuePairNoDelimiter = -105, 
+    CJSONScannerErrorDictionaryNotTerminated = -106, 
+    
+    // Array scanning
+    CJSONScannerErrorArrayStartCharacterMissing = -201, 
+    CJSONScannerErrorArrayValueScanFailed = -202, 
+    CJSONScannerErrorArrayValueIsNull = -203, 
+    CJSONScannerErrorArrayNotTerminated = -204,
+    
+    // String scanning
+    CJSONScannerErrorStringNotStartedWithBackslash = -301, 
+    CJSONScannerErrorStringUnicodeNotDecoded = -302, 
+    CJSONScannerErrorStringUnknownEscapeCode = -303, 
+    CJSONScannerErrorStringNotTerminated = -304,
+    
+    // Number scanning
+    CJSONScannerErrorNumberNotScannable = -401
+    
 } CJSONScannerErrorCode;
