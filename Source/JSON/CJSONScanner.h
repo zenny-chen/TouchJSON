@@ -50,40 +50,38 @@
 
 @end
 
-extern NSString *const kJSONScannerErrorDomain /* = @"CJSONScannerErrorDomain" */;
+extern NSString *const kJSONScannerErrorDomain /* = @"kJSONScannerErrorDomain" */;
 
 typedef enum {
     
-    CJSONScannerErrorNone = 0,
-    
     // Fundamental scanning errors
-    CJSONScannerErrorNothingToScan = -11, 
-    CJSONScannerErrorCouldNotDecodeData = -12, 
-    CJSONScannerErrorCouldNotSerializeData = -13,
-    CJSONScannerErrorCouldNotSerializeObject = -14, 
-    CJSONScannerErrorCouldNotScanObject = -15, 
+    kJSONScannerErrorCode_NothingToScan = -11, 
+    kJSONScannerErrorCode_CouldNotDecodeData = -12, 
+    kJSONScannerErrorCode_CouldNotSerializeData = -13,
+    kJSONScannerErrorCode_CouldNotSerializeObject = -14, 
+    kJSONScannerErrorCode_CouldNotScanObject = -15, 
     
     // Dictionary scanning
-    CJSONScannerErrorDictionaryStartCharacterMissing = -101, 
-    CJSONScannerErrorDictionaryKeyScanFailed = -102, 
-    CJSONScannerErrorDictionaryKeyNotTerminated = -103, 
-    CJSONScannerErrorDictionaryValueScanFailed = -104, 
-    CJSONScannerErrorDictionaryKeyValuePairNoDelimiter = -105, 
-    CJSONScannerErrorDictionaryNotTerminated = -106, 
+    kJSONScannerErrorCode_DictionaryStartCharacterMissing = -101, 
+    kJSONScannerErrorCode_DictionaryKeyScanFailed = -102, 
+    kJSONScannerErrorCode_DictionaryKeyNotTerminated = -103, 
+    kJSONScannerErrorCode_DictionaryValueScanFailed = -104, 
+    kJSONScannerErrorCode_DictionaryKeyValuePairNoDelimiter = -105, 
+    kJSONScannerErrorCode_DictionaryNotTerminated = -106, 
     
     // Array scanning
-    CJSONScannerErrorArrayStartCharacterMissing = -201, 
-    CJSONScannerErrorArrayValueScanFailed = -202, 
-    CJSONScannerErrorArrayValueIsNull = -203, 
-    CJSONScannerErrorArrayNotTerminated = -204,
+    kJSONScannerErrorCode_ArrayStartCharacterMissing = -201, 
+    kJSONScannerErrorCode_ArrayValueScanFailed = -202, 
+    kJSONScannerErrorCode_ArrayValueIsNull = -203, 
+    kJSONScannerErrorCode_ArrayNotTerminated = -204,
     
     // String scanning
-    CJSONScannerErrorStringNotStartedWithBackslash = -301, 
-    CJSONScannerErrorStringUnicodeNotDecoded = -302, 
-    CJSONScannerErrorStringUnknownEscapeCode = -303, 
-    CJSONScannerErrorStringNotTerminated = -304,
+    kJSONScannerErrorCode_StringNotStartedWithBackslash = -301, 
+    kJSONScannerErrorCode_StringUnicodeNotDecoded = -302, 
+    kJSONScannerErrorCode_StringUnknownEscapeCode = -303, 
+    kJSONScannerErrorCode_StringNotTerminated = -304,
     
     // Number scanning
-    CJSONScannerErrorNumberNotScannable = -401
+    kJSONScannerErrorCode_NumberNotScannable = -401
     
-} CJSONScannerErrorCode;
+} EJSONScannerErrorCode;
