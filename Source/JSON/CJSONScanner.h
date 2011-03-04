@@ -29,16 +29,24 @@
 
 #import "CDataScanner.h"
 
+enum {
+    kJSONScannerOptions_MutableContainers = 0x1,
+    kJSONScannerOptions_MutableLeaves = 0x2,
+};
+typedef NSUInteger EJSONScannerOptions;
+
 /// CDataScanner subclass that understands JSON syntax natively. You should generally use CJSONDeserializer instead of this class. (TODO - this could have been a category?)
 @interface CJSONScanner : CDataScanner {
 	BOOL strictEscapeCodes;
     id nullObject;
 	NSStringEncoding allowedEncoding;
+    EJSONScannerOptions options;
 }
 
 @property (readwrite, nonatomic, assign) BOOL strictEscapeCodes;
 @property (readwrite, nonatomic, retain) id nullObject;
 @property (readwrite, nonatomic, assign) NSStringEncoding allowedEncoding;
+@property (readwrite, nonatomic, assign) EJSONScannerOptions options;
 
 - (BOOL)setData:(NSData *)inData error:(NSError **)outError;
 

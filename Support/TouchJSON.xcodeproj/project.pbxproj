@@ -34,6 +34,8 @@
 		453111C90A64EE4100A970C2 /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4567B5B90951D51A00ECB961 /* CJSONDeserializer.m */; };
 		453111CD0A64EE4700A970C2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
 		4531137A0A64EE5400A970C2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
+		45576B1713219B7200941B47 /* CJSONSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 45576B1513219A3000941B47 /* CJSONSerialization.m */; };
+		45576B1813219B7300941B47 /* CJSONSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 45576B1513219A3000941B47 /* CJSONSerialization.m */; };
 		457B5CAF10976E9300B564BC /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 457B5CA210976D7E00B564BC /* CJSONSerializer.m */; };
 		457B5CB210976E9E00B564BC /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 457B5CA210976D7E00B564BC /* CJSONSerializer.m */; };
 		45BB5FB31305E0DE00B196E4 /* Test Data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 45BB5FB21305E0D500B196E4 /* Test Data */; };
@@ -93,6 +95,8 @@
 		453111820A64ECFA00A970C2 /* Blake.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Blake.json; sourceTree = "<group>"; };
 		453111B10A64EDBB00A970C2 /* TouchJSON Demo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "TouchJSON Demo"; sourceTree = BUILT_PRODUCTS_DIR; };
 		453111B50A64EDDE00A970C2 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		45576B1413219A3000941B47 /* CJSONSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerialization.h; sourceTree = "<group>"; };
+		45576B1513219A3000941B47 /* CJSONSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerialization.m; sourceTree = "<group>"; };
 		4567B5B80951D51A00ECB961 /* CJSONDeserializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer.h; sourceTree = "<group>"; };
 		4567B5B90951D51A00ECB961 /* CJSONDeserializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer.m; sourceTree = "<group>"; };
 		4569D5DA12683A9100AEC287 /* CFilteringJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFilteringJSONSerializer.h; sourceTree = "<group>"; };
@@ -195,6 +199,8 @@
 				4569D5DB12683A9100AEC287 /* CFilteringJSONSerializer.m */,
 				4502F5E912683CF70003AC74 /* CJSONDeserializer_BlocksExtensions.h */,
 				4502F5EA12683CF70003AC74 /* CJSONDeserializer_BlocksExtensions.m */,
+				45576B1413219A3000941B47 /* CJSONSerialization.h */,
+				45576B1513219A3000941B47 /* CJSONSerialization.m */,
 				451CC8D2130F06AB0004385E /* CJSONSerializedData.h */,
 				451CC8D3130F06AB0004385E /* CJSONSerializedData.m */,
 			);
@@ -344,6 +350,7 @@
 				457B5CAF10976E9300B564BC /* CJSONSerializer.m in Sources */,
 				4502F5ED12683D3B0003AC74 /* CJSONDeserializer_BlocksExtensions.m in Sources */,
 				4502F5EE12683D3C0003AC74 /* CFilteringJSONSerializer.m in Sources */,
+				45576B1713219B7200941B47 /* CJSONSerialization.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,6 +367,7 @@
 				45DFEBE00DB7080E009267D5 /* CJSONScanner_UnitTests.m in Sources */,
 				DEDF6D770E4A4000005D2575 /* CJSONDeserializer_UnitTests.m in Sources */,
 				457B5CB210976E9E00B564BC /* CJSONSerializer.m in Sources */,
+				45576B1813219B7300941B47 /* CJSONSerialization.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

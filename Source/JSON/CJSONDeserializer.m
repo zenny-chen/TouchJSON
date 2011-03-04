@@ -40,6 +40,7 @@ NSString *const kJSONDeserializerErrorDomain  = @"CJSONDeserializerErrorDomain";
 @implementation CJSONDeserializer
 
 @synthesize scanner;
+@synthesize options;
 
 + (id)deserializer
     {
@@ -74,26 +75,26 @@ NSString *const kJSONDeserializerErrorDomain  = @"CJSONDeserializerErrorDomain";
     }
 
 - (id)nullObject
-        {
-        return(self.scanner.nullObject);
-        }
+    {
+    return(self.scanner.nullObject);
+    }
 
 - (void)setNullObject:(id)inNullObject
-        {
-        self.scanner.nullObject = inNullObject;
-        }
+    {
+    self.scanner.nullObject = inNullObject;
+    }
 
 #pragma mark -
 
 - (NSStringEncoding)allowedEncoding
-        {
-        return(self.scanner.allowedEncoding);
-        }
+    {
+    return(self.scanner.allowedEncoding);
+    }
 
 - (void)setAllowedEncoding:(NSStringEncoding)inAllowedEncoding
-        {
-        self.scanner.allowedEncoding = inAllowedEncoding;
-        }
+    {
+    self.scanner.allowedEncoding = inAllowedEncoding;
+    }
 
 #pragma mark -
 

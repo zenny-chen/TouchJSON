@@ -58,6 +58,42 @@ static NSData *kTrue = NULL;
     {
     return([[[self alloc] init] autorelease]);
     }
+    
+- (BOOL)isValidJSONObject:(id)inObject
+    {
+    if ([inObject isKindOfClass:[NSNull class]])
+        {
+        return(YES);
+        }
+    else if ([inObject isKindOfClass:[NSNumber class]])
+        {
+        return(YES);
+        }
+    else if ([inObject isKindOfClass:[NSString class]])
+        {
+        return(YES);
+        }
+    else if ([inObject isKindOfClass:[NSArray class]])
+        {
+        return(YES);
+        }
+    else if ([inObject isKindOfClass:[NSDictionary class]])
+        {
+        return(YES);
+        }
+    else if ([inObject isKindOfClass:[NSData class]])
+        {
+        return(YES);
+        }
+    else if ([inObject respondsToSelector:@selector(JSONDataRepresentation)])
+        {
+        return(YES);
+        }
+    else
+        {
+        return(NO);
+        }
+    }
 
 - (NSData *)serializeObject:(id)inObject error:(NSError **)outError
     {

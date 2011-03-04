@@ -57,6 +57,7 @@ inline static int HexToInt(char inCharacter)
 @synthesize strictEscapeCodes;
 @synthesize nullObject;
 @synthesize allowedEncoding;
+@synthesize options;
 
 - (id)init
     {
@@ -337,9 +338,21 @@ inline static int HexToInt(char inCharacter)
         }
 
     if (outDictionary != NULL)
-        *outDictionary = [[theDictionary copy] autorelease];
-
-    [theDictionary release];
+        {
+        if (self.options & kJSONScannerOptions_MutableContainers)
+            {
+            *outDictionary = [theDictionary autorelease];
+            }
+        else
+            {
+            *outDictionary = [[theDictionary copy] autorelease];
+            [theDictionary release];
+            }
+        }
+    else
+        {
+        [theDictionary release];
+        }
 
     return(YES);
     }
@@ -447,10 +460,21 @@ inline static int HexToInt(char inCharacter)
         }
 
     if (outArray != NULL)
-        *outArray = [[theArray copy] autorelease];
-
-    [theArray release];
-
+        {
+        if (self.options & kJSONScannerOptions_MutableContainers)
+            {
+            *outArray = [theArray autorelease];
+            }
+        else
+            {
+            *outArray = [[theArray copy] autorelease];
+            [theArray release];
+            }
+        }
+    else
+        {
+        [theArray release];
+        }
     return(YES);
     }
 
@@ -568,13 +592,24 @@ inline static int HexToInt(char inCharacter)
             [theString release];
             return(NO);
             }
-
         }
         
     if (outStringConstant != NULL)
-        *outStringConstant = [[theString copy] autorelease];
-
-    [theString release];
+        {
+        if (self.options & kJSONScannerOptions_MutableLeaves)
+            {
+            *outStringConstant = [theString autorelease];
+            }
+        else
+            {
+            *outStringConstant = [[theString copy] autorelease];
+            [theString release];
+            }
+        }
+    else
+        {
+        [theString release];
+        }
 
     return(YES);
     }
