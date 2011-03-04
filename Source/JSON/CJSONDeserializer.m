@@ -102,7 +102,7 @@ NSString *const kJSONDeserializerErrorDomain  = @"CJSONDeserializerErrorDomain";
     if (inData == NULL || [inData length] == 0)
         {
         if (outError)
-            *outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:CJSONDeserializerErrorNothingToScan userInfo:NULL];
+            *outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:kJSONScannerErrorCode_NothingToScan userInfo:NULL];
 
         return(NULL);
         }
@@ -122,7 +122,7 @@ NSString *const kJSONDeserializerErrorDomain  = @"CJSONDeserializerErrorDomain";
     if (inData == NULL || [inData length] == 0)
         {
         if (outError)
-            *outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:CJSONDeserializerErrorNothingToScan userInfo:NULL];
+            *outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:kJSONScannerErrorCode_NothingToScan userInfo:NULL];
 
         return(NULL);
         }
@@ -142,7 +142,7 @@ NSString *const kJSONDeserializerErrorDomain  = @"CJSONDeserializerErrorDomain";
     if (inData == NULL || [inData length] == 0)
         {
         if (outError)
-            *outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:CJSONDeserializerErrorNothingToScan userInfo:NULL];
+            *outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:kJSONScannerErrorCode_NothingToScan userInfo:NULL];
 
         return(NULL);
         }

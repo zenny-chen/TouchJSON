@@ -31,10 +31,6 @@
 
 extern NSString *const kJSONDeserializerErrorDomain /* = @"CJSONDeserializerErrorDomain" */;
 
-typedef enum {
-    CJSONDeserializerErrorNothingToScan = -1
-} CJSONDeserializerErrorCode;
-
 @class CJSONScanner;
 
 @interface CJSONDeserializer : NSObject {
