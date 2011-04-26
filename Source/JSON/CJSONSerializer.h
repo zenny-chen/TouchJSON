@@ -32,7 +32,7 @@
 @interface CJSONSerializer : NSObject {
 }
 
-+ (id)serializer;
++ (CJSONSerializer *)serializer;
 
 - (BOOL)isValidJSONObject:(id)inObject;
 

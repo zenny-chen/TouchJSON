@@ -54,7 +54,7 @@ static NSData *kTrue = NULL;
         }
     }
 
-+ (id)serializer
++ (CJSONSerializer *)serializer
     {
     return([[[self alloc] init] autorelease]);
     }
