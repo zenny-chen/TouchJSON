@@ -27,6 +27,16 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "45B15E100947D97B00AE66EB"
+               BuildableName = "UnitTests.octest"
+               BlueprintName = "UnitTests"
+               ReferencedContainer = "container:TouchJSON.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
