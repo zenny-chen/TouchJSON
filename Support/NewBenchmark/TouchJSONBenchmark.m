@@ -46,6 +46,7 @@ int main (int argc, const char * argv[])
         }
 
 
+    CFAbsoluteTime theEnd = CFAbsoluteTimeGetCurrent();
 
     NSLog(@"%g", theEnd - theStart);
 
