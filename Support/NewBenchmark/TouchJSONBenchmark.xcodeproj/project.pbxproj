@@ -148,7 +148,7 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		459A1F5313DB5296004E9CFE /* JSON */ = {
+		45DEF06113A17FE3002E95B9 /* JSON */ = {
 			isa = PBXGroup;
 			children = (
 				459A1F5413DB5296004E9CFE /* CJSONDeserializer.h */,
