@@ -51,6 +51,14 @@ static NSCharacterSet *sDoubleCharacters = NULL;
 
 @implementation CDataScanner
 
++ (void)initialize
+    {
+    if (sDoubleCharacters == NULL)
+        {
+        sDoubleCharacters = [NSCharacterSet characterSetWithCharactersInString:@"0123456789eE-+."];
+        }
+    }
+
 - (id)init
     {
     if ((self = [super init]) != NULL)
@@ -66,20 +74,6 @@ static NSCharacterSet *sDoubleCharacters = NULL;
         [self setData:inData];
         }
     return(self);
-    }
-
-+ (void)initialize
-    {
-    if (sDoubleCharacters == NULL)
-        {
-        sDoubleCharacters = [NSCharacterSet characterSetWithCharactersInString:@"0123456789eE-+."];
-        }
-    }
-
-- (void)dealloc
-    {
-    data = NULL;
-    //
     }
 
 - (NSUInteger)scanLocation
