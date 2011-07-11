@@ -29,8 +29,6 @@
 
 #import "CDataScanner.h"
 
-#import "CDataScanner_Extensions.h"
-
 @interface CDataScanner ()
 @end
 
@@ -296,6 +294,22 @@ static NSCharacterSet *sDoubleCharacters = NULL;
         return(NO);
         }
 
+- (BOOL)scanDataOfLength:(NSUInteger)inLength intoPointer:(void **)outPointer
+    {
+        if (self.bytesRemaining < inLength)
+            {
+            return(NO);
+            }
+        
+        if (outPointer)
+            {
+            *outPointer = current;
+            }
+
+        current += inLength;
+        return(YES);
+    }
+
 - (BOOL)scanDataOfLength:(NSUInteger)inLength intoData:(NSData **)outData;
         {
         if (self.bytesRemaining < inLength)
@@ -335,4 +349,4 @@ static NSCharacterSet *sDoubleCharacters = NULL;
     return(theRemainingData);
     }
 
-    @end
+@end

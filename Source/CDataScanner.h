@@ -61,6 +61,7 @@
 - (BOOL)scanNumber:(NSNumber **)outValue;
 - (BOOL)scanDecimalNumber:(NSDecimalNumber **)outValue;
 
+- (BOOL)scanDataOfLength:(NSUInteger)inLength intoPointer:(void **)outPointer;
 - (BOOL)scanDataOfLength:(NSUInteger)inLength intoData:(NSData **)outData;
 
 - (void)skipWhitespace;
