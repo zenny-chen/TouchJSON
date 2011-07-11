@@ -1,6 +1,6 @@
 //
 //  CFilteringJSONSerializer.m
-//  CouchNotes
+//  TouchJSON
 //
 //  Created by Jonathan Wight on 06/20/10.
 //  Copyright 2010 toxicsoftware.com. All rights reserved.
