@@ -46,6 +46,8 @@ inline static int HexToInt(char inCharacter)
         return(-1);
     }
 
+static id kNSYES = NULL;
+static id kNSNO = NULL;
 @interface CJSONScanner ()
 - (BOOL)scanNotQuoteCharactersIntoString:(NSString **)outValue;
 @end
@@ -58,6 +60,16 @@ inline static int HexToInt(char inCharacter)
 @synthesize nullObject;
 @synthesize allowedEncoding;
 @synthesize options;
+
++ (void)initialize
+    {
+    static dispatch_once_t sOnceToken = 0;
+    dispatch_once(&sOnceToken, ^{
+        kNSYES = [NSNumber numberWithBool:YES];
+        kNSNO = [NSNumber numberWithBool:NO];
+        });
+    }
+
 
 - (id)init
     {
@@ -151,13 +163,13 @@ inline static int HexToInt(char inCharacter)
         case 't':
             if ([self scanUTF8String:"true" intoString:NULL])
                 {
-                theObject = [NSNumber numberWithBool:YES];
+                theObject = kNSYES;
                 }
             break;
         case 'f':
             if ([self scanUTF8String:"false" intoString:NULL])
                 {
-                theObject = [NSNumber numberWithBool:NO];
+                theObject = kNSNO;
                 }
             break;
         case 'n':
