@@ -36,10 +36,8 @@
 
 #pragma mark -
 
-inline static unichar CharacterAtPointer(void *start, void *end)
+inline static unichar CharacterAtPointer(void *start)
     {
-    #pragma unused(end)
-
     const u_int8_t theByte = *(u_int8_t *)start;
     if (theByte & 0x80)
         {
@@ -49,9 +47,9 @@ inline static unichar CharacterAtPointer(void *start, void *end)
     return(theCharacter);
     }
 
-    static NSCharacterSet *sDoubleCharacters = NULL;
+static NSCharacterSet *sDoubleCharacters = NULL;
 
-    @implementation CDataScanner
+@implementation CDataScanner
 
 - (id)init
     {
@@ -70,7 +68,7 @@ inline static unichar CharacterAtPointer(void *start, void *end)
     return(self);
     }
 
-    + (void)initialize
++ (void)initialize
     {
     if (sDoubleCharacters == NULL)
         {
@@ -137,20 +135,20 @@ inline static unichar CharacterAtPointer(void *start, void *end)
 
 - (unichar)currentCharacter
     {
-    return(CharacterAtPointer(current, end));
+    return(CharacterAtPointer(current));
     }
 
 #pragma mark -
 
 - (unichar)scanCharacter
     {
-    const unichar theCharacter = CharacterAtPointer(current++, end);
+    const unichar theCharacter = CharacterAtPointer(current++);
     return(theCharacter);
     }
 
 - (BOOL)scanCharacter:(unichar)inCharacter
     {
-    unichar theCharacter = CharacterAtPointer(current, end);
+    unichar theCharacter = CharacterAtPointer(current);
     if (theCharacter == inCharacter)
         {
         ++current;
