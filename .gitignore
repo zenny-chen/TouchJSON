@@ -1,19 +1,12 @@
 # xcode noise
 build
-*.pbxuser
-*.mode1v3
-*.mode2v3
-*.pbxuser
-*.perspective
-*.perspectivev3
-*.xcuserdatad
-
-# old skool
-.svn
+*.xcodeproj/*.pbxuser
+*.xcodeproj/*.perspectivev3
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
 
 # osx noise
 .DS_Store
-profile
 
 Support/NewBenchmark/build/
 Support/build/
