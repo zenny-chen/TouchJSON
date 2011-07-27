@@ -124,7 +124,7 @@ Here is a code sample:
 
 	NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"b" forKey:@"a"];
 	NSError *error = NULL;
-	NSData *jsonData = [[CJSONSerializer serializer] serializeObject:dictionary error&error];
+	NSData *jsonData = [[CJSONSerializer serializer] serializeObject:dictionary error:&error];
 
 ## Invalid JSON
 
