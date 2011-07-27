@@ -298,7 +298,7 @@ static id kNSNO = NULL;
                 [self setScanLocation:theScanLocation];
                 if (outError)
                     {
-                    *outError = [self error:kJSONScannerErrorDomain description:@"kJSONScannerErrorCode_DictionaryKeyValuePairNoDelimiter"];
+                    *outError = [self error:kJSONScannerErrorCode_DictionaryKeyValuePairNoDelimiter description:@"Could not scan dictionary close delimiter."];
                     }
                 [theDictionary release];
                 return(NO);
