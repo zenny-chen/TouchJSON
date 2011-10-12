@@ -227,7 +227,7 @@ static NSData *kTrue = NULL;
                 break;
             case '/':
                 {
-                if (self.options && kJSONSerializationOptions_EncodeSlashes)
+                if (self.options & kJSONSerializationOptions_EncodeSlashes)
                     {
                     *OUT++ = '\\';
                     *OUT++ = '/';
