@@ -8,6 +8,44 @@ It is based on Jonathan Wight's CocoaJSON code: <http://toxicsoftware.com/cocoaj
 
 TouchJSON is part of the TouchCode "family" of open source software.
 
+## License
+
+This code is licensed under the 2-clause BSD license ("Simplified BSD License" or "FreeBSD License") license. The license is reproduced below:
+
+Copyright 2011 Jonathan Wight. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are
+permitted provided that the following conditions are met:
+
+   1. Redistributions of source code must retain the above copyright notice, this list of
+      conditions and the following disclaimer.
+
+   2. Redistributions in binary form must reproduce the above copyright notice, this list
+      of conditions and the following disclaimer in the documentation and/or other materials
+      provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY JONATHAN WIGHT ''AS IS'' AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL JONATHAN WIGHT OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are those of the
+authors and should not be interpreted as representing official policies, either expressed
+or implied, of Jonathan Wight.
+
+## Automatic Reference Counting (ARC)
+
+The "master" branch of TouchJSON does NOT use Automatic Reference Counting (ARC).
+
+There is a branch that does use ARC - this is found at "features/ARC".
+
+Most new development occurs on the ARC branch. At some point the non-ARC branch will put into maintenance mode and the ARC branch will become the primary branch.
+
 ## Home
 
 The main home page for touchcode is <http://touchcode.com/>
@@ -23,10 +61,6 @@ The primary author is Jonathan Wight <http://toxicsoftware.com/> with several ot
 * <http://www.ietf.org/rfc/rfc4627.txt?number=4627>
 * <http://www.json.org/>
 * <http://en.wikipedia.org/wiki/JSON>
-
-## License
-
-TouchJSON (and all of TouchCode unless otherwise specified) is licensed under the MIT license.
 
 ## Support
 
