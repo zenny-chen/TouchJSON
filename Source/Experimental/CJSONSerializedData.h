@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @protocol CJSONSerializable <NSObject>
-@property (readonly, nonatomic, retain) NSData *serializedJSONData;
+@property (readonly, nonatomic, strong) NSData *serializedJSONData;
 @end
 
 #pragma mark -
@@ -18,7 +18,7 @@
     NSData *data;
 }
 
-@property (readonly, nonatomic, retain) NSData *data;
+@property (readonly, nonatomic, strong) NSData *data;
 
 - (id)initWithData:(NSData *)inData;
 
