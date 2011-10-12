@@ -159,26 +159,6 @@
     STAssertEqualObjects(resultString, jsonEquivalent, nil);
     }
 
-- (void)testSlashInStrings
-    {
-    NSString *jsonEquivalent = @"{\"a\":\"slash/slash\"}";
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"slash/slash" forKey:@"a"];
-    id theObject = [[CJSONSerializer serializer] serializeObject:dictionary error:nil];
-    NSString *resultString = [[[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding] autorelease];
-    STAssertEqualObjects(resultString, jsonEquivalent, nil);
-    }
-
-- (void)testEscapedSlashInStrings
-    {
-    NSString *jsonEquivalent = @"{\"a\":\"slash\\/slash\"}";
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"slash/slash" forKey:@"a"];
-    CJSONSerializer *theSerializer = [CJSONSerializer serializer];
-    theSerializer.options = kJSONSerializationOptions_EncodeSlashes;
-    id theObject = [theSerializer serializeObject:dictionary error:nil];
-    NSString *resultString = [[[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding] autorelease];
-    STAssertEqualObjects(resultString, jsonEquivalent, nil);
-    }
-
 - (void)testMultibytesStrings_1
     {
     NSError *theError = NULL;
