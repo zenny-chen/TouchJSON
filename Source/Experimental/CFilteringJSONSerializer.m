@@ -13,6 +13,15 @@
 @synthesize tests;
 @synthesize convertersByName;
 
+- (id)init
+	{
+    if ((self = [super init]) != NULL)
+		{
+        tests = [[NSSet alloc] init];
+        convertersByName = [[NSDictionary alloc] init];
+    	}
+    return(self);
+	}
 
 - (NSData *)serializeObject:(id)inObject error:(NSError **)outError
     {
