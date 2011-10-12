@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		036A8E301356413D001DC50C /* CDataScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = 37A8C0C212B720A8009953BD /* CDataScanner.h */; };
 		036A8E311356413D001DC50C /* CFilteringJSONSerializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 37A8C0C512B720A8009953BD /* CFilteringJSONSerializer.h */; };
-		036A8E321356413D001DC50C /* CJSONDeserializer_BlocksExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 37A8C0C712B720A8009953BD /* CJSONDeserializer_BlocksExtensions.h */; };
 		036A8E331356413D001DC50C /* CJSONSerializedData.h in Headers */ = {isa = PBXBuildFile; fileRef = 37A8C0C912B720A8009953BD /* CJSONSerializedData.h */; };
 		036A8E341356413D001DC50C /* CDataScanner_Extensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 37A8C0CC12B720A8009953BD /* CDataScanner_Extensions.h */; };
 		036A8E351356413D001DC50C /* NSDictionary_JSONExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 37A8C0D012B720A8009953BD /* NSDictionary_JSONExtensions.h */; };
@@ -19,7 +18,6 @@
 		036A8E391356413D001DC50C /* JSONRepresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 37A8C0DB12B720A8009953BD /* JSONRepresentation.h */; };
 		036A8E3B1356413D001DC50C /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A8C0C312B720A8009953BD /* CDataScanner.m */; };
 		036A8E3C1356413D001DC50C /* CFilteringJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A8C0C612B720A8009953BD /* CFilteringJSONSerializer.m */; };
-		036A8E3D1356413D001DC50C /* CJSONDeserializer_BlocksExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A8C0C812B720A8009953BD /* CJSONDeserializer_BlocksExtensions.m */; };
 		036A8E3E1356413D001DC50C /* CJSONSerializedData.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A8C0CA12B720A8009953BD /* CJSONSerializedData.m */; };
 		036A8E3F1356413D001DC50C /* CDataScanner_Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A8C0CD12B720A8009953BD /* CDataScanner_Extensions.m */; };
 		036A8E401356413D001DC50C /* NSDictionary_JSONExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A8C0D112B720A8009953BD /* NSDictionary_JSONExtensions.m */; };
@@ -31,8 +29,6 @@
 		37A8C0DD12B720A8009953BD /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A8C0C312B720A8009953BD /* CDataScanner.m */; };
 		37A8C0DE12B720A8009953BD /* CFilteringJSONSerializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 37A8C0C512B720A8009953BD /* CFilteringJSONSerializer.h */; };
 		37A8C0DF12B720A8009953BD /* CFilteringJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A8C0C612B720A8009953BD /* CFilteringJSONSerializer.m */; };
-		37A8C0E012B720A8009953BD /* CJSONDeserializer_BlocksExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 37A8C0C712B720A8009953BD /* CJSONDeserializer_BlocksExtensions.h */; };
-		37A8C0E112B720A8009953BD /* CJSONDeserializer_BlocksExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A8C0C812B720A8009953BD /* CJSONDeserializer_BlocksExtensions.m */; };
 		37A8C0E212B720A8009953BD /* CJSONSerializedData.h in Headers */ = {isa = PBXBuildFile; fileRef = 37A8C0C912B720A8009953BD /* CJSONSerializedData.h */; };
 		37A8C0E312B720A8009953BD /* CJSONSerializedData.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A8C0CA12B720A8009953BD /* CJSONSerializedData.m */; };
 		37A8C0E412B720A8009953BD /* CDataScanner_Extensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 37A8C0CC12B720A8009953BD /* CDataScanner_Extensions.h */; };
@@ -55,8 +51,6 @@
 		37A8C0C312B720A8009953BD /* CDataScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner.m; sourceTree = "<group>"; };
 		37A8C0C512B720A8009953BD /* CFilteringJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFilteringJSONSerializer.h; sourceTree = "<group>"; };
 		37A8C0C612B720A8009953BD /* CFilteringJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFilteringJSONSerializer.m; sourceTree = "<group>"; };
-		37A8C0C712B720A8009953BD /* CJSONDeserializer_BlocksExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer_BlocksExtensions.h; sourceTree = "<group>"; };
-		37A8C0C812B720A8009953BD /* CJSONDeserializer_BlocksExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer_BlocksExtensions.m; sourceTree = "<group>"; };
 		37A8C0C912B720A8009953BD /* CJSONSerializedData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializedData.h; sourceTree = "<group>"; };
 		37A8C0CA12B720A8009953BD /* CJSONSerializedData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializedData.m; sourceTree = "<group>"; };
 		37A8C0CC12B720A8009953BD /* CDataScanner_Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDataScanner_Extensions.h; sourceTree = "<group>"; };
@@ -139,8 +133,6 @@
 			children = (
 				37A8C0C512B720A8009953BD /* CFilteringJSONSerializer.h */,
 				37A8C0C612B720A8009953BD /* CFilteringJSONSerializer.m */,
-				37A8C0C712B720A8009953BD /* CJSONDeserializer_BlocksExtensions.h */,
-				37A8C0C812B720A8009953BD /* CJSONDeserializer_BlocksExtensions.m */,
 				37A8C0C912B720A8009953BD /* CJSONSerializedData.h */,
 				37A8C0CA12B720A8009953BD /* CJSONSerializedData.m */,
 			);
@@ -181,7 +173,6 @@
 			files = (
 				036A8E301356413D001DC50C /* CDataScanner.h in Headers */,
 				036A8E311356413D001DC50C /* CFilteringJSONSerializer.h in Headers */,
-				036A8E321356413D001DC50C /* CJSONDeserializer_BlocksExtensions.h in Headers */,
 				036A8E331356413D001DC50C /* CJSONSerializedData.h in Headers */,
 				036A8E341356413D001DC50C /* CDataScanner_Extensions.h in Headers */,
 				036A8E351356413D001DC50C /* NSDictionary_JSONExtensions.h in Headers */,
@@ -198,7 +189,6 @@
 			files = (
 				37A8C0DC12B720A8009953BD /* CDataScanner.h in Headers */,
 				37A8C0DE12B720A8009953BD /* CFilteringJSONSerializer.h in Headers */,
-				37A8C0E012B720A8009953BD /* CJSONDeserializer_BlocksExtensions.h in Headers */,
 				37A8C0E212B720A8009953BD /* CJSONSerializedData.h in Headers */,
 				37A8C0E412B720A8009953BD /* CDataScanner_Extensions.h in Headers */,
 				37A8C0E812B720A8009953BD /* NSDictionary_JSONExtensions.h in Headers */,
@@ -282,7 +272,6 @@
 			files = (
 				036A8E3B1356413D001DC50C /* CDataScanner.m in Sources */,
 				036A8E3C1356413D001DC50C /* CFilteringJSONSerializer.m in Sources */,
-				036A8E3D1356413D001DC50C /* CJSONDeserializer_BlocksExtensions.m in Sources */,
 				036A8E3E1356413D001DC50C /* CJSONSerializedData.m in Sources */,
 				036A8E3F1356413D001DC50C /* CDataScanner_Extensions.m in Sources */,
 				036A8E401356413D001DC50C /* NSDictionary_JSONExtensions.m in Sources */,
@@ -298,7 +287,6 @@
 			files = (
 				37A8C0DD12B720A8009953BD /* CDataScanner.m in Sources */,
 				37A8C0DF12B720A8009953BD /* CFilteringJSONSerializer.m in Sources */,
-				37A8C0E112B720A8009953BD /* CJSONDeserializer_BlocksExtensions.m in Sources */,
 				37A8C0E312B720A8009953BD /* CJSONSerializedData.m in Sources */,
 				37A8C0E512B720A8009953BD /* CDataScanner_Extensions.m in Sources */,
 				37A8C0E912B720A8009953BD /* NSDictionary_JSONExtensions.m in Sources */,
@@ -323,6 +311,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = "TouchJSON-iphonesimulator";
 				SUPPORTED_PLATFORMS = iphonesimulator;
@@ -339,6 +328,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = "TouchJSON-iphonesimulator";
 				SUPPORTED_PLATFORMS = iphonesimulator;
@@ -391,6 +381,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)";
 				GCC_C_LANGUAGE_STANDARD = c99;
@@ -408,6 +399,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)";
 				GCC_C_LANGUAGE_STANDARD = c99;
