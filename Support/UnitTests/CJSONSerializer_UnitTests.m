@@ -144,7 +144,7 @@
     NSString *jsonEquivalent = @"{\"a\":\"slash/slash\"}";
     NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"slash/slash" forKey:@"a"];
     id theObject = [[CJSONSerializer serializer] serializeObject:dictionary error:nil];
-    NSString *resultString = [[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding];
+    NSString *resultString = [[[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding] autorelease];
     STAssertEqualObjects(resultString, jsonEquivalent, nil);
     }
 
@@ -155,7 +155,7 @@
     CJSONSerializer *theSerializer = [CJSONSerializer serializer];
     theSerializer.options = kJSONSerializationOptions_EncodeSlashes;
     id theObject = [theSerializer serializeObject:dictionary error:nil];
-    NSString *resultString = [[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding];
+    NSString *resultString = [[[NSString alloc] initWithData:theObject encoding:NSUTF8StringEncoding] autorelease];
     STAssertEqualObjects(resultString, jsonEquivalent, nil);
     }
 
