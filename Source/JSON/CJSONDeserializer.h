@@ -42,8 +42,6 @@ typedef NSUInteger EJSONDeserializationOptions;
 @class CJSONScanner;
 
 @interface CJSONDeserializer : NSObject {
-    CJSONScanner *scanner;
-    EJSONDeserializationOptions options;
 }
 
 @property (readwrite, nonatomic, strong) CJSONScanner *scanner;
