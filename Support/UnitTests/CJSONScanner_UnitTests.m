@@ -44,7 +44,7 @@ static id TXPropertyList(NSString *inString)
 
 static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     {
-    CJSONScanner *theScanner = [[[CJSONScanner alloc] initWithData:[inString dataUsingEncoding:NSUTF8StringEncoding]] autorelease];
+    CJSONScanner *theScanner = [[CJSONScanner alloc] initWithData:[inString dataUsingEncoding:NSUTF8StringEncoding]];
     for (NSString *theKey in inOptions)
         {
         id theValue = [inOptions objectForKey:theKey];
