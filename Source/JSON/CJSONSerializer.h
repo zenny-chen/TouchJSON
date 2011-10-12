@@ -36,6 +36,7 @@ typedef NSUInteger EJSONSerializationOptions;
 
 
 @interface CJSONSerializer : NSObject {
+    EJSONSerializationOptions options;
 }
 
 @property (readwrite, nonatomic, assign) EJSONSerializationOptions options;
