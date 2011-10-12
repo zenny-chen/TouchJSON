@@ -37,6 +37,8 @@ static NSData *kTrue = NULL;
 
 @implementation CJSONSerializer
 
+@synthesize options;
+
 + (void)initialize
     {
 
@@ -225,8 +227,15 @@ static NSData *kTrue = NULL;
                 break;
             case '/':
                 {
-                *OUT++ = '\\';
-                *OUT++ = '/';
+                if (self.options && kJSONSerializationOptions_EncodeSlashes)
+                    {
+                    *OUT++ = '\\';
+                    *OUT++ = '/';
+                    }
+                else
+                    {
+                    *OUT++ = *IN;
+                    }
                 }
                 break;
             case '\b':
