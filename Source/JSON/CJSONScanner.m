@@ -485,7 +485,7 @@ static id kNSNO = NULL;
                     int theShift;
                     for (theShift = 12; theShift >= 0; theShift -= 4)
                         {
-                        const int theDigit = HexToInt([self scanCharacter]);
+                        const int theDigit = HexToInt((char)[self scanCharacter]);
                         if (theDigit == -1)
                             {
                             [self setScanLocation:theScanLocation];
