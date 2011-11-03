@@ -41,8 +41,7 @@ static NSData *kTrue = NULL;
 
 + (void)initialize
     {
-
-    if (self == [CJSONSerializer class])
+    @autoreleasepool
         {
         if (kNULL == NULL)
             kNULL = [[NSData alloc] initWithBytesNoCopy:(void *)"null" length:4 freeWhenDone:NO];
@@ -50,7 +49,6 @@ static NSData *kTrue = NULL;
             kFalse = [[NSData alloc] initWithBytesNoCopy:(void *)"false" length:5 freeWhenDone:NO];
         if (kTrue == NULL)
             kTrue = [[NSData alloc] initWithBytesNoCopy:(void *)"true" length:4 freeWhenDone:NO];
-
         }
     }
 
