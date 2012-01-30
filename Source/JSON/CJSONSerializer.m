@@ -31,6 +31,9 @@
 
 #import "JSONRepresentation.h"
 
+NSString *const kJSONSerializerErrorDomain = @"CJSONSerializerErrorDomain";
+
+
 static NSData *kNULL = NULL;
 static NSData *kFalse = NULL;
 static NSData *kTrue = NULL;
@@ -120,7 +123,20 @@ static NSData *kTrue = NULL;
     else if ([inObject isKindOfClass:[NSData class]])
         {
         NSString *theString = [[NSString alloc] initWithData:inObject encoding:NSUTF8StringEncoding];
-        theResult = [self serializeString:theString error:outError];
+        if (theString == NULL)
+            {
+            if (outError)
+                {
+                NSDictionary *theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                    [NSString stringWithFormat:@"Cannot serialize data of type '%@'", NSStringFromClass([inObject class])], NSLocalizedDescriptionKey,
+                    NULL];
+                *outError = [NSError errorWithDomain:kJSONSerializerErrorDomain code:CJSONSerializerErrorCouldNotSerializeDataType userInfo:theUserInfo];
+                }
+            }
+        else
+            {
+            theResult = [self serializeString:theString error:outError];
+            }
         }
     else if ([inObject respondsToSelector:@selector(JSONDataRepresentation)])
         {
@@ -133,7 +149,7 @@ static NSData *kTrue = NULL;
             NSDictionary *theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
                 [NSString stringWithFormat:@"Cannot serialize data of type '%@'", NSStringFromClass([inObject class])], NSLocalizedDescriptionKey,
                 NULL];
-            *outError = [NSError errorWithDomain:@"TODO_DOMAIN" code:CJSONSerializerErrorCouldNotSerializeDataType userInfo:theUserInfo];
+            *outError = [NSError errorWithDomain:kJSONSerializerErrorDomain code:CJSONSerializerErrorCouldNotSerializeDataType userInfo:theUserInfo];
             }
         return(NULL);
         }
@@ -144,7 +160,7 @@ static NSData *kTrue = NULL;
             NSDictionary *theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
                 [NSString stringWithFormat:@"Could not serialize object '%@'", inObject], NSLocalizedDescriptionKey,
                 NULL];
-            *outError = [NSError errorWithDomain:@"TODO_DOMAIN" code:CJSONSerializerErrorCouldNotSerializeObject userInfo:theUserInfo];
+            *outError = [NSError errorWithDomain:kJSONSerializerErrorDomain code:CJSONSerializerErrorCouldNotSerializeObject userInfo:theUserInfo];
             }
         return(NULL);
         }
