@@ -63,8 +63,6 @@ maintenance mode and the ARC branch will become the primary branch.
 
 ## Home
 
-The main home page for touchcode is <http://touchcode.com/>
-
 The main source repository for touchcode is on github at <http://github.com/TouchCode/TouchJSON>
 
 ## Author
