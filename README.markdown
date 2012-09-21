@@ -1,5 +1,17 @@
 # TouchJSON HOWTO
 
+## IMPORTANT
+
+TouchJSON has been deprecated. Expect no more improvements, bug fixes or merged pull requests.
+
+iOS and Mac OS X have had native JSON support for since iOS 5.0 and OS X 10.7 - as of today these are two OS versions ago. You should be using the OS JSON support (NSJSONSerialization) and _not_ using _any_ third party JSON library. The OS native JSON class is more than good enough for most people who can run on iOS 5/OSX 10.7 and up.
+
+This repository will not be going away any time soon. But you should NOT be using this code in your new projects.
+
+Thank you for all your bug reports, feature ideas, general support and beer.
+
+	Jon. (@schwa)
+
 ## Introduction
 
 TouchJSON is an Objective-C based parser and generator for JSON encoded data. TouchJSON compiles for
