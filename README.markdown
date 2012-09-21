@@ -10,7 +10,7 @@ This repository will not be going away any time soon. But you should NOT be usin
 
 Thank you for all your bug reports, feature ideas, general support and beer.
 
-	Jon. (@schwa)
+Jon. (@schwa)
 
 ## Introduction
 
