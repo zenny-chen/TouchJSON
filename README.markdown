@@ -1,5 +1,17 @@
 # TouchJSON HOWTO
 
+## IMPORTANT
+
+TouchJSON has been deprecated. Expect no more improvements, bug fixes or merged pull requests.
+
+iOS and Mac OS X have had native JSON support since iOS 5.0 and OS X 10.7 - as of today these are two OS versions ago. You should be using the OS JSON support ([NSJSONSerialization](http://developer.apple.com/library/ios/#documentation/Foundation/Reference/NSJSONSerialization_Class/Reference/Reference.html)) and _not_ using _any_ third party JSON library. The OS native JSON class is more than good enough for most people who can run on iOS 5/OSX 10.7 and up.
+
+This repository will not be going away any time soon. But you should NOT be using this code in your new projects.
+
+Thank you for all your bug reports, feature ideas, general support and beer.
+
+Jon. (@schwa)
+
 ## Introduction
 
 TouchJSON is an Objective-C based parser and generator for JSON encoded data. TouchJSON compiles for
@@ -50,8 +62,6 @@ Most new development occurs on the ARC branch. At some point the non-ARC branch 
 maintenance mode and the ARC branch will become the primary branch.
 
 ## Home
-
-The main home page for touchcode is <http://touchcode.com/>
 
 The main source repository for touchcode is on github at <http://github.com/TouchCode/TouchJSON>
 
