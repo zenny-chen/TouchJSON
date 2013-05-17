@@ -24,11 +24,8 @@
 /* Begin PBXBuildFile section */
 		4502F5EE12683D3C0003AC74 /* CFilteringJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4569D5DB12683A9100AEC287 /* CFilteringJSONSerializer.m */; };
 		4505889E0999539300FB865F /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4567B5B90951D51A00ECB961 /* CJSONDeserializer.m */; };
-		451F85B50DB6E06800136680 /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 451F85B40DB6E06800136680 /* CDataScanner.m */; };
-		451F85B60DB6E06800136680 /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 451F85B40DB6E06800136680 /* CDataScanner.m */; };
 		453111830A64ECFA00A970C2 /* Blake.json in Resources */ = {isa = PBXBuildFile; fileRef = 453111820A64ECFA00A970C2 /* Blake.json */; };
 		453111C40A64EE3D00A970C2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 453111B50A64EDDE00A970C2 /* main.m */; };
-		453111C60A64EE3E00A970C2 /* CDataScanner_Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FDB4B5094E056800A8B4AB /* CDataScanner_Extensions.m */; };
 		453111C70A64EE3F00A970C2 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FDB4BB094E056800A8B4AB /* CJSONScanner.m */; };
 		453111C90A64EE4100A970C2 /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4567B5B90951D51A00ECB961 /* CJSONDeserializer.m */; };
 		453111CD0A64EE4700A970C2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
@@ -43,7 +40,6 @@
 		45DFEBE00DB7080E009267D5 /* CJSONScanner_UnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4505886D099952F600FB865F /* CJSONScanner_UnitTests.m */; };
 		45F3F7750DB7C6CC00084331 /* NSDictionary_JSONExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F3F7740DB7C6CC00084331 /* NSDictionary_JSONExtensions.m */; };
 		45FDB4D9094E057C00A8B4AB /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FDB4BB094E056800A8B4AB /* CJSONScanner.m */; };
-		45FDB4DB094E058000A8B4AB /* CDataScanner_Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FDB4B5094E056800A8B4AB /* CDataScanner_Extensions.m */; };
 		DEDF6D770E4A4000005D2575 /* CJSONDeserializer_UnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DEDF6D750E4A3F64005D2575 /* CJSONDeserializer_UnitTests.m */; };
 /* End PBXBuildFile section */
 
@@ -87,8 +83,6 @@
 		45058870099952F600FB865F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		451CC8D2130F06AB0004385E /* CJSONSerializedData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializedData.h; sourceTree = "<group>"; };
 		451CC8D3130F06AB0004385E /* CJSONSerializedData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializedData.m; sourceTree = "<group>"; };
-		451F85B30DB6E06800136680 /* CDataScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDataScanner.h; sourceTree = "<group>"; };
-		451F85B40DB6E06800136680 /* CDataScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner.m; sourceTree = "<group>"; };
 		453111820A64ECFA00A970C2 /* Blake.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Blake.json; sourceTree = "<group>"; };
 		453111B10A64EDBB00A970C2 /* TouchJSON Demo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "TouchJSON Demo"; sourceTree = BUILT_PRODUCTS_DIR; };
 		453111B50A64EDDE00A970C2 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -106,8 +100,6 @@
 		45DFEABB0DB6F289009267D5 /* CDataScanner_UnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner_UnitTests.m; sourceTree = "<group>"; };
 		45F3F7730DB7C6CC00084331 /* NSDictionary_JSONExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDictionary_JSONExtensions.h; sourceTree = "<group>"; };
 		45F3F7740DB7C6CC00084331 /* NSDictionary_JSONExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDictionary_JSONExtensions.m; sourceTree = "<group>"; };
-		45FDB4B4094E056800A8B4AB /* CDataScanner_Extensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDataScanner_Extensions.h; sourceTree = "<group>"; };
-		45FDB4B5094E056800A8B4AB /* CDataScanner_Extensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDataScanner_Extensions.m; sourceTree = "<group>"; };
 		45FDB4BA094E056800A8B4AB /* CJSONScanner.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CJSONScanner.h; sourceTree = "<group>"; };
 		45FDB4BB094E056800A8B4AB /* CJSONScanner.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CJSONScanner.m; sourceTree = "<group>"; };
 		DEDF6D740E4A3F64005D2575 /* CJSONDeserializer_UnitTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer_UnitTests.h; sourceTree = "<group>"; };
@@ -208,8 +200,6 @@
 				4569D5D912683A9100AEC287 /* Experimental */,
 				45FDB4B1094E056800A8B4AB /* Extensions */,
 				45FDB4B9094E056800A8B4AB /* JSON */,
-				451F85B30DB6E06800136680 /* CDataScanner.h */,
-				451F85B40DB6E06800136680 /* CDataScanner.m */,
 			);
 			name = Source;
 			path = ../Source;
@@ -218,8 +208,6 @@
 		45FDB4B1094E056800A8B4AB /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				45FDB4B4094E056800A8B4AB /* CDataScanner_Extensions.h */,
-				45FDB4B5094E056800A8B4AB /* CDataScanner_Extensions.m */,
 				45F3F7730DB7C6CC00084331 /* NSDictionary_JSONExtensions.h */,
 				45F3F7740DB7C6CC00084331 /* NSDictionary_JSONExtensions.m */,
 			);
@@ -284,7 +272,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0460;
 			};
 			buildConfigurationList = 45FC538608FBF91C0091ABDF /* Build configuration list for PBXProject "TouchJSON" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -340,10 +328,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				453111C40A64EE3D00A970C2 /* main.m in Sources */,
-				453111C60A64EE3E00A970C2 /* CDataScanner_Extensions.m in Sources */,
 				453111C70A64EE3F00A970C2 /* CJSONScanner.m in Sources */,
 				453111C90A64EE4100A970C2 /* CJSONDeserializer.m in Sources */,
-				451F85B50DB6E06800136680 /* CDataScanner.m in Sources */,
 				45F3F7750DB7C6CC00084331 /* NSDictionary_JSONExtensions.m in Sources */,
 				457B5CAF10976E9300B564BC /* CJSONSerializer.m in Sources */,
 				4502F5EE12683D3C0003AC74 /* CFilteringJSONSerializer.m in Sources */,
@@ -356,9 +342,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				45FDB4D9094E057C00A8B4AB /* CJSONScanner.m in Sources */,
-				45FDB4DB094E058000A8B4AB /* CDataScanner_Extensions.m in Sources */,
 				4505889E0999539300FB865F /* CJSONDeserializer.m in Sources */,
-				451F85B60DB6E06800136680 /* CDataScanner.m in Sources */,
 				45DFEABD0DB6F289009267D5 /* CDataScanner_UnitTests.m in Sources */,
 				45DFEBDF0DB7080D009267D5 /* CJSONSerializer_UnitTests.m in Sources */,
 				45DFEBE00DB7080E009267D5 /* CJSONScanner_UnitTests.m in Sources */,
@@ -387,6 +371,7 @@
 		450038220D82FAD6001F82C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -397,6 +382,7 @@
 		450038230D82FAD6001F82C7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				PRODUCT_NAME = All;
@@ -491,6 +477,7 @@
 		45B15E140947D97C00AE66EB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(value)",
@@ -521,6 +508,7 @@
 		45B15E150947D97C00AE66EB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(value)",

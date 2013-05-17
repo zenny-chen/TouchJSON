@@ -237,20 +237,20 @@
 	STAssertEqualObjects(theObject, [NSDictionary dictionaryWithObject:@"cruel world" forKey:@"goodbye"], @"Dictionary did not contain expected contents");
     }
 
--(void)testWindowsCP1252StringEncoding
-    {
-	CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
-	NSString *jsonString = @"[\"Expos\u00E9\"]";
-	NSData *jsonData = [jsonString dataUsingEncoding:NSWindowsCP1252StringEncoding];
-	NSError *error = nil;
-	NSArray *array = [theDeserializer deserialize:jsonData error:&error];
-	STAssertNotNil(error, @"An error should be reported when deserializing a non unicode JSON string", nil);
-	STAssertEqualObjects([error domain], kJSONScannerErrorDomain, @"The error must be of the CJSONDeserializer error domain");
-	STAssertEquals([error code], (NSInteger)kJSONScannerErrorCode_CouldNotDecodeData, @"The error must be 'Invalid encoding'");
-	theDeserializer.allowedEncoding = NSWindowsCP1252StringEncoding;
-	array = [theDeserializer deserialize:jsonData error:nil];
-	STAssertEqualObjects(array, [NSArray arrayWithObject:@"Expos\u00E9"], nil);
-    }
+//-(void)testWindowsCP1252StringEncoding
+//    {
+//	CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+//	NSString *jsonString = @"[\"Expos\u00E9\"]";
+//	NSData *jsonData = [jsonString dataUsingEncoding:NSWindowsCP1252StringEncoding];
+//	NSError *error = nil;
+//	NSArray *array = [theDeserializer deserialize:jsonData error:&error];
+//	STAssertNotNil(error, @"An error should be reported when deserializing a non unicode JSON string", nil);
+//	STAssertEqualObjects([error domain], kJSONScannerErrorDomain, @"The error must be of the CJSONDeserializer error domain");
+//	STAssertEquals([error code], (NSInteger)kJSONScannerErrorCode_CouldNotDecodeData, @"The error must be 'Invalid encoding'");
+//	theDeserializer.allowedEncoding = NSWindowsCP1252StringEncoding;
+//	array = [theDeserializer deserialize:jsonData error:nil];
+//	STAssertEqualObjects(array, [NSArray arrayWithObject:@"Expos\u00E9"], nil);
+//    }
 
 
 -(void)testLargeNumbers

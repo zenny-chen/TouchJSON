@@ -36,7 +36,8 @@
 static void test(void);
 static void test_repeated_array(void);
 static void test_twitter_public_timeline(void);
-
+static void test_number_array(void);
+static void test_unicode(void);
 
 int main(int argc, char **argv)
 	{
@@ -46,7 +47,7 @@ int main(int argc, char **argv)
 
 //  test();
 //    test_twitter_public_timeline();
-     test_repeated_array();
+     test_unicode();
 
 	}
 	//
@@ -63,6 +64,16 @@ static void test(void)
     theData = [[CJSONSerializer serializer] serializeObject:theString error:&theError];
     theString = [[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding];
     NSLog(@"%@", theString);
+    }
+
+static void test_number_array(void)
+    {
+    id d = @[ @(1), @(2), @(3), @(4), @(5), @(6), @(7), @(8) ];
+    NSError *theError = NULL;
+    NSData *theData = [[CJSONSerializer serializer] serializeObject:d error:&theError];
+//    NSData *theData = [@"\"\u062a\u062d\u064a\u0627 \u0645\u0635\u0631!\"" dataUsingEncoding:NSUTF8StringEncoding];
+    d = [[CJSONDeserializer deserializer] deserialize:theData error:&theError];
+    NSLog(@"%@", d);
     }
 
 
@@ -82,6 +93,22 @@ static void test_twitter_public_timeline(void)
 	{
     NSError *theError = NULL;
     NSData *inputData = [NSData dataWithContentsOfFile:@"Test Data/atomicbird.json"];
+    NSLog(@"Input data: %ld", inputData.length);
+    id json = [[CJSONDeserializer deserializer] deserialize:inputData error:&theError];
+    NSLog(@"JSON Object: %@ %p (Error: %@)", [json class], json, theError);
+    NSData *jsonData = [[CJSONSerializer serializer] serializeObject:json error:&theError];
+    NSLog(@"%@", jsonData);
+    
+    NSLog(@"JSON data: %ld  (Error: %@)", jsonData.length, theError);
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSLog(@"JSON string: %ld", jsonString.length);
+    NSLog(@"> %@", jsonString);
+	}
+
+static void test_unicode(void)
+	{
+    NSError *theError = NULL;
+    NSData *inputData = [NSData dataWithContentsOfFile:@"Test Data/unicode_test.json"];
     NSLog(@"Input data: %ld", inputData.length);
     id json = [[CJSONDeserializer deserializer] deserialize:inputData error:&theError];
     NSLog(@"JSON Object: %@ %p (Error: %@)", [json class], json, theError);

@@ -29,13 +29,30 @@
 
 #import "CJSONScanner.h"
 
-#import "CDataScanner_Extensions.h"
+#define LF 0x000a // Line Feed
+#define FF 0x000c // Form Feed
+#define CR 0x000d // Carriage Return
+#define NEL 0x0085 // Next Line
+#define LS 0x2028 // Line Separator
+#define PS 0x2029 // Paragraph Separator
 
-#if !defined(TREAT_COMMENTS_AS_WHITESPACE)
-#define TREAT_COMMENTS_AS_WHITESPACE 0
-#endif // !defined(TREAT_COMMENTS_AS_WHITESPACE)
+typedef struct {
+    void *location;
+    NSUInteger length;
+    } PtrRange;
 
-NSString *const kJSONScannerErrorDomain = @"kJSONScannerErrorDomain";
+inline static BOOL PtrRangeContainsCharacter(PtrRange inPtrRange, char C)
+    {
+    char *P = inPtrRange.location;
+    for (NSUInteger N = inPtrRange.length; --N && *P; P++)
+        {
+        if (*P == C)
+            {
+            return(YES);
+            }
+        }
+    return(NO);
+    }
 
 inline static int HexToInt(char inCharacter)
     {
@@ -46,52 +63,83 @@ inline static int HexToInt(char inCharacter)
         return(-1);
     }
 
-static id kNSYES = NULL;
-static id kNSNO = NULL;
+#pragma mark -
+
+NSString *const kJSONScannerErrorDomain = @"kJSONScannerErrorDomain";
 
 @interface CJSONScanner ()
-- (BOOL)scanNotQuoteCharactersIntoString:(NSString **)outValue;
-
-- (NSError *)error:(NSInteger)inCode description:(NSString *)inDescription;
+@property (readonly, nonatomic, assign) char *end;
+@property (readonly, nonatomic, assign) NSUInteger length;
+@property (readonly, nonatomic, assign) char *current;
+@property (readonly, nonatomic, assign) char *start;
+@property (readwrite, nonatomic, strong) NSMutableData *scratchData;
 @end
 
 #pragma mark -
 
 @implementation CJSONScanner
 
-@synthesize strictEscapeCodes;
-@synthesize nullObject;
-@synthesize allowedEncoding;
-@synthesize options;
+#pragma mark -
 
-+ (void)initialize
+@synthesize data = _data;
+
+#pragma mark -
+
+inline static void SkipWhiteSpace(CJSONScanner *scanner)
     {
-    @autoreleasepool
-        {
-        if (kNSYES == NULL)
-            {
-            kNSYES = [NSNumber numberWithBool:YES];
-            }
-            
-        if (kNSNO == NULL)
-            {
-            kNSNO = [NSNumber numberWithBool:NO];
-            }
-        }
+    char *P;
+    for (P = scanner->_current; P < scanner->_end && isspace(*P); ++P)
+        ;
+
+    scanner->_current = P;
     }
+
+static inline BOOL ScanCharacter(CJSONScanner *scanner, char inCharacter)
+    {
+    char theCharacter = *scanner->_current;
+    if (theCharacter == inCharacter)
+        {
+        ++scanner->_current;
+        return(YES);
+        }
+    else
+        return(NO);
+    }
+
+static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, size_t inLength)
+    {
+    if ((size_t)(scanner->_end - scanner->_current) < inLength)
+        return(NO);
+    if (strncmp(scanner->_current, inString, inLength) == 0)
+        {
+        scanner->_current += inLength;
+        return(YES);
+        }
+    return(NO);
+    }
+
+#pragma mark -
 
 - (id)init
     {
     if ((self = [super init]) != NULL)
         {
-        strictEscapeCodes = NO;
-        nullObject = [NSNull null];
+        _strictEscapeCodes = NO;
+        _nullObject = [NSNull null];
         }
     return(self);
     }
 
-
 #pragma mark -
+
+- (id)initWithData:(NSData *)inData error:(NSError **)outError
+    {
+    if ((self = [self init]) != NULL)
+        {
+        [self setData:inData error:outError];
+        }
+    return(self);
+    }
 
 - (BOOL)setData:(NSData *)inData error:(NSError **)outError;
     {
@@ -115,18 +163,21 @@ static id kNSNO = NULL;
             else if (theChars[1] != 0)
                 theEncoding = NSUTF16BigEndianStringEncoding;
             }
-            
-        NSString *theString = [[NSString alloc] initWithData:theData encoding:theEncoding];
-        if (theString == NULL && self.allowedEncoding != 0)
+
+        if (theEncoding != NSUTF8StringEncoding)
             {
-            theString = [[NSString alloc] initWithData:theData encoding:self.allowedEncoding];
+            NSString *theString = [[NSString alloc] initWithData:theData encoding:theEncoding];
+            if (theString == NULL && _allowedEncoding != 0)
+                {
+                theString = [[NSString alloc] initWithData:theData encoding:_allowedEncoding];
+                }
+            theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
             }
-        theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
         }
 
     if (theData)
         {
-        [super setData:theData];
+        [self setData:theData];
         return(YES);
         }
     else
@@ -139,40 +190,35 @@ static id kNSNO = NULL;
         }
     }
 
-- (void)setData:(NSData *)inData
-    {
-    [self setData:inData error:NULL];
-    }
-
 #pragma mark -
 
 - (BOOL)scanJSONObject:(id *)outObject error:(NSError **)outError
     {
     BOOL theResult = YES;
 
-    [self skipWhitespace];
+    SkipWhiteSpace(self);
 
     id theObject = NULL;
 
-    const unichar C = [self currentCharacter];
+    const char C = *_current;
     switch (C)
         {
         case 't':
-            if ([self scanUTF8String:"true" intoString:NULL])
+            if (ScanUTF8String(self, "true", 4))
                 {
-                theObject = kNSYES;
+                theObject = (__bridge_transfer id)kCFBooleanTrue;
                 }
             break;
         case 'f':
-            if ([self scanUTF8String:"false" intoString:NULL])
+            if (ScanUTF8String(self, "false", 5))
                 {
-                theObject = kNSNO;
+                theObject = (__bridge_transfer id)kCFBooleanFalse;
                 }
             break;
         case 'n':
-            if ([self scanUTF8String:"null" intoString:NULL])
+            if (ScanUTF8String(self, "null", 4))
                 {
-                theObject = self.nullObject;
+                theObject = _nullObject;
                 }
             break;
         case '\"':
@@ -202,7 +248,6 @@ static id kNSNO = NULL;
             theResult = NO;
             if (outError)
                 {
-                *outError = [self error:kJSONScannerErrorCode_CouldNotScanObject description:@"Could not scan object. Character not a valid JSON character."];
                 NSMutableDictionary *theUserInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                     @"Could not scan object. Character not a valid JSON character.", NSLocalizedDescriptionKey,
                     NULL];
@@ -220,11 +265,11 @@ static id kNSNO = NULL;
 
 - (BOOL)scanJSONDictionary:(NSDictionary **)outDictionary error:(NSError **)outError
     {
-    NSUInteger theScanLocation = [self scanLocation];
+    NSUInteger theScanLocation = _current - _start;
 
-    [self skipWhitespace];
+    SkipWhiteSpace(self);
 
-    if ([self scanCharacter:'{'] == NO)
+    if (ScanCharacter(self, '{') == NO)
         {
         if (outError)
             {
@@ -233,19 +278,21 @@ static id kNSNO = NULL;
         return(NO);
         }
 
-    NSMutableDictionary *theDictionary = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *theDictionary = (__bridge_transfer NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 
-    while ([self currentCharacter] != '}')
+    NSString *theKey = NULL;
+    id theValue = NULL;
+
+    while (*_current != '}')
         {
-        [self skipWhitespace];
+        SkipWhiteSpace(self);
         
-        if ([self currentCharacter] == '}')
+        if (*_current == '}')
             break;
 
-        NSString *theKey = NULL;
         if ([self scanJSONStringConstant:&theKey error:outError] == NO)
             {
-            [self setScanLocation:theScanLocation];
+            _current = _start + theScanLocation;
             if (outError)
                 {
                 *outError = [self error:kJSONScannerErrorCode_DictionaryKeyScanFailed description:@"Could not scan dictionary. Failed to scan a key."];
@@ -253,11 +300,11 @@ static id kNSNO = NULL;
             return(NO);
             }
 
-        [self skipWhitespace];
+        SkipWhiteSpace(self);
 
-        if ([self scanCharacter:':'] == NO)
+        if (ScanCharacter(self, ':') == NO)
             {
-            [self setScanLocation:theScanLocation];
+            _current = _start + theScanLocation;
             if (outError)
                 {
                 *outError = [self error:kJSONScannerErrorCode_DictionaryKeyNotTerminated description:@"Could not scan dictionary. Key was not terminated with a ':' character."];
@@ -265,10 +312,9 @@ static id kNSNO = NULL;
             return(NO);
             }
 
-        id theValue = NULL;
         if ([self scanJSONObject:&theValue error:outError] == NO)
             {
-            [self setScanLocation:theScanLocation];
+            _current = _start + theScanLocation;
             if (outError)
                 {
                 *outError = [self error:kJSONScannerErrorCode_DictionaryValueScanFailed description:@"Could not scan dictionary. Failed to scan a value."];
@@ -276,21 +322,22 @@ static id kNSNO = NULL;
             return(NO);
             }
 
-        if (theValue == NULL && self.nullObject == NULL)
+        if (theValue == NULL && _nullObject == NULL)
             {
             // If the value is a null and nullObject is also null then we're skipping this key/value pair.
             }
         else
             {
-            [theDictionary setValue:theValue forKey:theKey];
+            CFDictionarySetValue((__bridge CFMutableDictionaryRef)theDictionary, (__bridge void *)theKey, (__bridge void *)theValue);
             }
 
-        [self skipWhitespace];
-        if ([self scanCharacter:','] == NO)
+        SkipWhiteSpace(self);
+
+        if (ScanCharacter(self, ',') == NO)
             {
-            if ([self currentCharacter] != '}')
+            if (*_current != '}')
                 {
-                [self setScanLocation:theScanLocation];
+                _current = _start + theScanLocation;
                 if (outError)
                     {
                     *outError = [self error:kJSONScannerErrorCode_DictionaryNotTerminated description:@"kJSONScannerErrorCode_DictionaryKeyValuePairNoDelimiter"];
@@ -301,15 +348,16 @@ static id kNSNO = NULL;
             }
         else
             {
-            [self skipWhitespace];
-            if ([self currentCharacter] == '}')
+            SkipWhiteSpace(self);
+
+            if (*_current == '}')
                 break;
             }
         }
 
-    if ([self scanCharacter:'}'] == NO)
+    if (ScanCharacter(self, '}') == NO)
         {
-        [self setScanLocation:theScanLocation];
+        _current = _start + theScanLocation;
         if (outError)
             {
             *outError = [self error:kJSONScannerErrorCode_DictionaryNotTerminated description:@"Could not scan dictionary. Dictionary not terminated by a '}' character."];
@@ -319,17 +367,7 @@ static id kNSNO = NULL;
 
     if (outDictionary != NULL)
         {
-        if (self.options & kJSONScannerOptions_MutableContainers)
-            {
-            *outDictionary = theDictionary;
-            }
-        else
-            {
-            *outDictionary = [theDictionary copy];
-            }
-        }
-    else
-        {
+        *outDictionary = theDictionary;
         }
 
     return(YES);
@@ -337,11 +375,11 @@ static id kNSNO = NULL;
 
 - (BOOL)scanJSONArray:(NSArray **)outArray error:(NSError **)outError
     {
-    NSUInteger theScanLocation = [self scanLocation];
+    NSUInteger theScanLocation = _current - _start;
 
-    [self skipWhitespace];
+    SkipWhiteSpace(self);
 
-    if ([self scanCharacter:'['] == NO)
+    if (ScanCharacter(self, '[') == NO)
         {
         if (outError)
             {
@@ -350,18 +388,18 @@ static id kNSNO = NULL;
         return(NO);
         }
 
-    NSMutableArray *theArray = [[NSMutableArray alloc] init];
+    NSMutableArray *theArray = (__bridge_transfer NSMutableArray *)CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
 
-    [self skipWhitespace];
-    while ([self currentCharacter] != ']')
+    SkipWhiteSpace(self);
+
+    NSString *theValue = NULL;
+    while (*_current != ']')
         {
-        NSString *theValue = NULL;
         if ([self scanJSONObject:&theValue error:outError] == NO)
             {
-            [self setScanLocation:theScanLocation];
+            _current = _start + theScanLocation;
             if (outError)
                 {
-                *outError = [self error:kJSONScannerErrorCode_ArrayValueScanFailed description:@"Could not scan array. Could not scan a value."];
                 NSMutableDictionary *theUserInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                     @"Could not scan array. Could not scan a value.", NSLocalizedDescriptionKey,
                     NULL];
@@ -373,7 +411,7 @@ static id kNSNO = NULL;
             
         if (theValue == NULL)
             {
-            if (self.nullObject != NULL)
+            if (_nullObject != NULL)
                 {
                 if (outError)
                     {
@@ -384,16 +422,18 @@ static id kNSNO = NULL;
             }
         else
             {
-            [theArray addObject:theValue];
+            CFArrayAppendValue((__bridge CFMutableArrayRef)theArray, (__bridge void *)theValue);
             }
         
-        [self skipWhitespace];
-        if ([self scanCharacter:','] == NO)
+        SkipWhiteSpace(self);
+
+        if (ScanCharacter(self, ',') == NO)
             {
-            [self skipWhitespace];
-            if ([self currentCharacter] != ']')
+            SkipWhiteSpace(self);
+
+            if (*_current != ']')
                 {
-                [self setScanLocation:theScanLocation];
+                _current = _start + theScanLocation;
                 if (outError)
                     {
                     *outError = [self error:kJSONScannerErrorCode_ArrayNotTerminated description:@"Could not scan array. Array not terminated by a ']' character."];
@@ -403,14 +443,15 @@ static id kNSNO = NULL;
             
             break;
             }
-        [self skipWhitespace];
+
+        SkipWhiteSpace(self);
         }
 
-    [self skipWhitespace];
+//    SkipWhiteSpace2(self);
 
-    if ([self scanCharacter:']'] == NO)
+    if (ScanCharacter(self, ']') == NO)
         {
-        [self setScanLocation:theScanLocation];
+        _current = _start + theScanLocation;
         if (outError)
             {
             *outError = [self error:kJSONScannerErrorCode_ArrayNotTerminated description:@"Could not scan array. Array not terminated by a ']' character."];
@@ -420,32 +461,20 @@ static id kNSNO = NULL;
 
     if (outArray != NULL)
         {
-        if (self.options & kJSONScannerOptions_MutableContainers)
-            {
-            *outArray = theArray;
-            }
-        else
-            {
-            *outArray = [theArray copy];
-            }
-        }
-    else
-        {
+        *outArray = theArray;
         }
     return(YES);
     }
 
 - (BOOL)scanJSONStringConstant:(NSString **)outStringConstant error:(NSError **)outError
     {
-    NSUInteger theScanLocation = [self scanLocation];
+    NSUInteger theScanLocation = _current - _start;
 
-    [self skipWhitespace];
+//    SkipWhiteSpace2(self);
 
-    NSMutableString *theString = [[NSMutableString alloc] init];
-
-    if ([self scanCharacter:'"'] == NO)
+    if (ScanCharacter(self, '"') == NO)
         {
-        [self setScanLocation:theScanLocation];
+        _current = _start + theScanLocation;
         if (outError)
             {
             *outError = [self error:kJSONScannerErrorCode_StringNotStartedWithBackslash description:@"Could not scan string constant. String not started by a '\"' character."];
@@ -453,16 +482,26 @@ static id kNSNO = NULL;
         return(NO);
         }
 
-    while ([self scanCharacter:'"'] == NO)
+    if (_scratchData == NULL)
         {
-        NSString *theStringChunk = NULL;
-        if ([self scanNotQuoteCharactersIntoString:&theStringChunk])
+        _scratchData = [NSMutableData dataWithCapacity:8 * 1024];
+        }
+    else
+        {
+        [_scratchData setLength:0];
+        }
+
+    NSString *theString = NULL;
+    PtrRange thePtrRange;
+    while (ScanCharacter(self, '"') == NO)
+        {
+        if ([self scanNotQuoteCharactersIntoRange:&thePtrRange])
             {
-            CFStringAppend((__bridge CFMutableStringRef)theString, (__bridge CFStringRef)theStringChunk);
+            [_scratchData appendBytes:thePtrRange.location length:thePtrRange.length];
             }
-        else if ([self scanCharacter:'\\'] == YES)
+        else if (ScanCharacter(self, '\\') == YES)
             {
-            unichar theCharacter = [self scanCharacter];
+            char theCharacter = *_current++;
             switch (theCharacter)
                 {
                 case '"':
@@ -486,30 +525,35 @@ static id kNSNO = NULL;
                     break;
                 case 'u':
                     {
-                    theCharacter = 0;
+                    unichar theUnichar = 0;
 
                     int theShift;
                     for (theShift = 12; theShift >= 0; theShift -= 4)
                         {
-                        const int theDigit = HexToInt((char)[self scanCharacter]);
+                        const int theDigit = HexToInt(*_current++);
                         if (theDigit == -1)
                             {
-                            [self setScanLocation:theScanLocation];
+                            _current = _start + theScanLocation;
                             if (outError)
                                 {
                                 *outError = [self error:kJSONScannerErrorCode_StringUnicodeNotDecoded description:@"Could not scan string constant. Unicode character could not be decoded."];
                                 }
                             return(NO);
                             }
-                        theCharacter |= (theDigit << theShift);
+                        theUnichar |= (theDigit << theShift);
                         }
+
+                    theString = [[NSString alloc] initWithCharacters:&theUnichar length:1];
+                    [_scratchData appendData:[theString dataUsingEncoding:NSUTF8StringEncoding]];
+
+                    theCharacter = 0;
                     }
                     break;
                 default:
                     {
-                    if (strictEscapeCodes == YES)
+                    if (_strictEscapeCodes == YES)
                         {
-                        [self setScanLocation:theScanLocation];
+                        _current = _start + theScanLocation;
                         if (outError)
                             {
                             *outError = [self error:kJSONScannerErrorCode_StringUnknownEscapeCode description:@"Could not scan string constant. Unknown escape code."];
@@ -519,7 +563,10 @@ static id kNSNO = NULL;
                     }
                     break;
                 }
-            CFStringAppendCharacters((__bridge CFMutableStringRef)theString, &theCharacter, 1);
+            if (theCharacter != 0)
+                {
+                [_scratchData appendBytes:&theCharacter length:1];
+                }
             }
         else
             {
@@ -533,88 +580,191 @@ static id kNSNO = NULL;
         
     if (outStringConstant != NULL)
         {
-        if (self.options & kJSONScannerOptions_MutableLeaves)
-            {
-            *outStringConstant = theString;
-            }
-        else
-            {
-            *outStringConstant = [theString copy];
-            }
-        }
-    else
-        {
+        *outStringConstant = (__bridge_transfer NSString *)CFStringCreateFromExternalRepresentation(kCFAllocatorDefault, (__bridge CFDataRef)_scratchData, kCFStringEncodingUTF8);
         }
 
     return(YES);
     }
 
-- (BOOL)scanJSONNumberConstant:(NSNumber **)outNumberConstant error:(NSError **)outError
+- (BOOL)scanJSONNumberConstant:(NSNumber **)outValue error:(NSError **)outError
     {
-    NSNumber *theNumber = NULL;
+    SkipWhiteSpace(self);
 
-    [self skipWhitespace];
-
-    if ([self scanNumber:&theNumber] == YES)
+    PtrRange theRange;
+    if ([self scanDoubleCharactersIntoRange:&theRange] == YES)
         {
-        if (outNumberConstant != NULL)
-            *outNumberConstant = theNumber;
-        return(YES);
-        }
-    else
-        {
-        if (outError)
+        if (PtrRangeContainsCharacter(theRange, '.') == YES)
             {
-            *outError = [self error:kJSONScannerErrorCode_NumberNotScannable description:@"Could not scan number constant."];
+            if (outValue)
+                {
+                CFStringRef theString = CFStringCreateWithBytes(kCFAllocatorDefault, theRange.location, theRange.length, kCFStringEncodingASCII, NO);
+                double n = CFStringGetDoubleValue(theString);
+                *outValue = (__bridge_transfer NSNumber *)CFNumberCreate(kCFAllocatorDefault, kCFNumberDoubleType, &n);
+                CFRelease(theString);
+                }
+            return(YES);
             }
-        return(NO);
-        }
-    }
+//        else if (PtrRangeContainsCharacter(theRange, '-') == YES)
+//            {
+//            if (outValue != NULL)
+//                {
+//                long long n = strtoll(theRange.location, NULL, 0);
+//                *outValue = (__bridge_transfer NSNumber *)CFNumberCreate(kCFAllocatorDefault, kCFNumberLongLongType, &n);
+//                }
+//            return(YES);
+//            }
+//        else
+            {
+            if (outValue != NULL)
+                {
+                /* unsigned */ long long n = strtoull(theRange.location, NULL, 0);
+                *outValue = (__bridge_transfer NSNumber *)CFNumberCreate(kCFAllocatorDefault, kCFNumberLongLongType, &n);
+                }
+            return(YES);
+            }
 
-#if TREAT_COMMENTS_AS_WHITESPACE
-- (void)skipWhitespace
-    {
-    [super skipWhitespace];
-    [self scanCStyleComment:NULL];
-    [self scanCPlusPlusStyleComment:NULL];
-    [super skipWhitespace];
+        }
+
+    if (outError)
+        {
+        *outError = [self error:kJSONScannerErrorCode_NumberNotScannable description:@"Could not scan number constant."];
+        }
+    return(NO);
     }
-#endif // TREAT_COMMENTS_AS_WHITESPACE
 
 #pragma mark -
 
-- (BOOL)scanNotQuoteCharactersIntoString:(NSString **)outValue
+- (BOOL)scanNotQuoteCharactersIntoRange:(PtrRange *)outValue
     {
-    u_int8_t *P;
-    for (P = current; P < end && *P != '\"' && *P != '\\'; ++P)
+    char *P;
+    for (P = _current; P < _end && *P != '\"' && *P != '\\'; ++P)
         ;
 
-    if (P == current)
+    if (P == _current)
         {
         return(NO);
         }
 
     if (outValue)
         {
-        *outValue = [[NSString alloc] initWithBytes:current length:P - current encoding:NSUTF8StringEncoding];
+        *outValue = (PtrRange){ .location = _current, .length = P - _current };
         }
         
-    current = P;
+    _current = P;
 
     return(YES);
     }
 
 #pragma mark -
 
+- (NSUInteger)scanLocation
+    {
+    return(_current - _start);
+    }
+
+- (void)setData:(NSData *)inData
+    {
+    if (_data != inData)
+        {
+        _data = inData;
+        }
+
+    if (_data)
+        {
+        _start = (char *) _data.bytes;
+        _end = _start + _data.length;
+        _current = _start;
+        _length = _data.length;
+        }
+    else
+        {
+        _start = NULL;
+        _end = NULL;
+        _current = NULL;
+        _length = 0;
+        }
+    }
+
+#pragma mark -
+
+- (BOOL)scanDoubleCharactersIntoRange:(PtrRange *)outRange
+    {
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Winitializer-overrides"
+    static BOOL double_characters[256] = {
+       [0 ... 255] = NO,
+       ['0' ... '9'] = YES,
+       ['e'] = YES,
+       ['E'] = YES,
+       ['-'] = YES,
+       ['+'] = YES,
+       ['.'] = YES,
+    };
+    #pragma clang diagnostic pop
+
+    char *P;
+    for (P = _current; P < _end && double_characters[*P] == YES; ++P)
+        ;
+
+    if (P == _current)
+        {
+        return(NO);
+        }
+
+    if (outRange)
+        {
+        *outRange = (PtrRange){ .location = _current, .length = P - _current };
+        }
+
+    _current = P;
+
+    return(YES);
+    }
+
+#pragma mark -
+
+- (NSDictionary *)userInfoForScanLocation
+    {
+    NSUInteger theLine = 0;
+    const char *theLineStart = _start;
+    for (const char *C = _start; C < _current; ++C)
+        {
+        if (*C == '\n' || *C == '\r')
+            {
+            theLineStart = C - 1;
+            ++theLine;
+            }
+        }
+
+    NSUInteger theCharacter = _current - theLineStart;
+
+    NSRange theStartRange = NSIntersectionRange((NSRange){ .location = MAX((NSInteger)self.scanLocation - 20, 0), .length = 20 + (NSInteger)self.scanLocation - 20 }, (NSRange){ .location = 0, .length = _data.length });
+    NSRange theEndRange = NSIntersectionRange((NSRange){ .location = self.scanLocation , .length = 20 }, (NSRange){ .location = 0, .length = _data.length });
+
+    NSString *theSnippet = [NSString stringWithFormat:@"%@!HERE>!%@",
+        [[NSString alloc] initWithData:[_data subdataWithRange:theStartRange] encoding:NSUTF8StringEncoding],
+        [[NSString alloc] initWithData:[_data subdataWithRange:theEndRange] encoding:NSUTF8StringEncoding]
+        ];
+
+    NSDictionary *theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+        [NSNumber numberWithUnsignedInteger:theLine], @"line",
+        [NSNumber numberWithUnsignedInteger:theCharacter], @"character",
+        [NSNumber numberWithUnsignedInteger:self.scanLocation ], @"location",
+        theSnippet, @"snippet",
+        NULL];
+    return(theUserInfo);    
+    }
+
 - (NSError *)error:(NSInteger)inCode description:(NSString *)inDescription
     {
     NSParameterAssert(inDescription != NULL);
     NSMutableDictionary *theUserInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-        inDescription, NSLocalizedDescriptionKey,
-        NULL];
+            inDescription, NSLocalizedDescriptionKey,
+            NULL];
     [theUserInfo addEntriesFromDictionary:self.userInfoForScanLocation];
     NSError *theError = [NSError errorWithDomain:kJSONScannerErrorDomain code:inCode userInfo:theUserInfo];
     return(theError);
     }
+
 
 @end

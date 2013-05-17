@@ -30,7 +30,6 @@
 #import "CJSONDeserializer.h"
 
 #import "CJSONScanner.h"
-#import "CDataScanner.h"
 
 NSString *const kJSONDeserializerErrorDomain  = @"CJSONDeserializerErrorDomain";
 
