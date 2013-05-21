@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 
 //  test();
 //    test_twitter_public_timeline();
-     test_unicode();
+     test();
 
 	}
 	//
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
 static void test(void)
     {
     NSError *theError = NULL;
-    NSData *theData = [@"{(\n)}" dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *theData = [@"{\"version\":\"1.0\", \"method\":\"a_method\", \"params\":[ \"a_param\", \"a_param\" ]}" dataUsingEncoding:NSUTF8StringEncoding];
 //    NSData *theData = [@"\"\u062a\u062d\u064a\u0627 \u0645\u0635\u0631!\"" dataUsingEncoding:NSUTF8StringEncoding];
     NSString *theString = [[CJSONDeserializer deserializer] deserialize:theData error:&theError];
     theData = [[CJSONSerializer serializer] serializeObject:theString error:&theError];

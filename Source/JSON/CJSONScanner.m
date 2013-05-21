@@ -54,6 +54,15 @@ inline static BOOL PtrRangeContainsCharacter(PtrRange inPtrRange, char C)
     return(NO);
     }
 
+inline static char *SkipWhiteSpace(char *_current, char *_end)
+    {
+    char *P;
+    for (P = _current; P < _end && isspace(*P); ++P)
+        ;
+
+    return(P);
+    }
+
 inline static int HexToInt(char inCharacter)
     {
     int theValues[] = { 0x0 /* 48 '0' */, 0x1 /* 49 '1' */, 0x2 /* 50 '2' */, 0x3 /* 51 '3' */, 0x4 /* 52 '4' */, 0x5 /* 53 '5' */, 0x6 /* 54 '6' */, 0x7 /* 55 '7' */, 0x8 /* 56 '8' */, 0x9 /* 57 '9' */, -1 /* 58 ':' */, -1 /* 59 ';' */, -1 /* 60 '<' */, -1 /* 61 '=' */, -1 /* 62 '>' */, -1 /* 63 '?' */, -1 /* 64 '@' */, 0xa /* 65 'A' */, 0xb /* 66 'B' */, 0xc /* 67 'C' */, 0xd /* 68 'D' */, 0xe /* 69 'E' */, 0xf /* 70 'F' */, -1 /* 71 'G' */, -1 /* 72 'H' */, -1 /* 73 'I' */, -1 /* 74 'J' */, -1 /* 75 'K' */, -1 /* 76 'L' */, -1 /* 77 'M' */, -1 /* 78 'N' */, -1 /* 79 'O' */, -1 /* 80 'P' */, -1 /* 81 'Q' */, -1 /* 82 'R' */, -1 /* 83 'S' */, -1 /* 84 'T' */, -1 /* 85 'U' */, -1 /* 86 'V' */, -1 /* 87 'W' */, -1 /* 88 'X' */, -1 /* 89 'Y' */, -1 /* 90 'Z' */, -1 /* 91 '[' */, -1 /* 92 '\' */, -1 /* 93 ']' */, -1 /* 94 '^' */, -1 /* 95 '_' */, -1 /* 96 '`' */, 0xa /* 97 'a' */, 0xb /* 98 'b' */, 0xc /* 99 'c' */, 0xd /* 100 'd' */, 0xe /* 101 'e' */, 0xf /* 102 'f' */, };
@@ -73,6 +82,7 @@ NSString *const kJSONScannerErrorDomain = @"kJSONScannerErrorDomain";
 @property (readonly, nonatomic, assign) char *current;
 @property (readonly, nonatomic, assign) char *start;
 @property (readwrite, nonatomic, strong) NSMutableData *scratchData;
+@property (readwrite, nonatomic, assign) CFMutableDictionaryRef stringsByHash;
 @end
 
 #pragma mark -
@@ -84,15 +94,6 @@ NSString *const kJSONScannerErrorDomain = @"kJSONScannerErrorDomain";
 @synthesize data = _data;
 
 #pragma mark -
-
-inline static void SkipWhiteSpace(CJSONScanner *scanner)
-    {
-    char *P;
-    for (P = scanner->_current; P < scanner->_end && isspace(*P); ++P)
-        ;
-
-    scanner->_current = P;
-    }
 
 static inline BOOL ScanCharacter(CJSONScanner *scanner, char inCharacter)
     {
@@ -126,20 +127,18 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
         {
         _strictEscapeCodes = NO;
         _nullObject = [NSNull null];
+        CFDictionaryKeyCallBacks theCallbacks = {};
+        _stringsByHash = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &theCallbacks, &kCFTypeDictionaryValueCallBacks);
         }
     return(self);
+    }
+
+- (void)dealloc
+    {
+    CFRelease(_stringsByHash);
     }
 
 #pragma mark -
-
-- (id)initWithData:(NSData *)inData error:(NSError **)outError
-    {
-    if ((self = [self init]) != NULL)
-        {
-        [self setData:inData error:outError];
-        }
-    return(self);
-    }
 
 - (BOOL)setData:(NSData *)inData error:(NSError **)outError;
     {
@@ -196,7 +195,7 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
     {
     BOOL theResult = YES;
 
-    SkipWhiteSpace(self);
+    _current = SkipWhiteSpace(_current, _end);
 
     id theObject = NULL;
 
@@ -206,13 +205,13 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
         case 't':
             if (ScanUTF8String(self, "true", 4))
                 {
-                theObject = (__bridge_transfer id)kCFBooleanTrue;
+                theObject = (__bridge id)kCFBooleanTrue;
                 }
             break;
         case 'f':
             if (ScanUTF8String(self, "false", 5))
                 {
-                theObject = (__bridge_transfer id)kCFBooleanFalse;
+                theObject = (__bridge id)kCFBooleanFalse;
                 }
             break;
         case 'n':
@@ -223,7 +222,7 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
             break;
         case '\"':
         case '\'':
-            theResult = [self scanJSONStringConstant:&theObject error:outError];
+            theResult = [self scanJSONStringConstant:&theObject key:NO error:outError];
             break;
         case '0':
         case '1':
@@ -267,7 +266,7 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
     {
     NSUInteger theScanLocation = _current - _start;
 
-    SkipWhiteSpace(self);
+    _current = SkipWhiteSpace(_current, _end);
 
     if (ScanCharacter(self, '{') == NO)
         {
@@ -285,12 +284,12 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
 
     while (*_current != '}')
         {
-        SkipWhiteSpace(self);
+        _current = SkipWhiteSpace(_current, _end);
         
         if (*_current == '}')
             break;
 
-        if ([self scanJSONStringConstant:&theKey error:outError] == NO)
+        if ([self scanJSONStringConstant:&theKey key:YES error:outError] == NO)
             {
             _current = _start + theScanLocation;
             if (outError)
@@ -300,7 +299,7 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
             return(NO);
             }
 
-        SkipWhiteSpace(self);
+        _current = SkipWhiteSpace(_current, _end);
 
         if (ScanCharacter(self, ':') == NO)
             {
@@ -331,7 +330,7 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
             CFDictionarySetValue((__bridge CFMutableDictionaryRef)theDictionary, (__bridge void *)theKey, (__bridge void *)theValue);
             }
 
-        SkipWhiteSpace(self);
+        _current = SkipWhiteSpace(_current, _end);
 
         if (ScanCharacter(self, ',') == NO)
             {
@@ -348,7 +347,7 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
             }
         else
             {
-            SkipWhiteSpace(self);
+            _current = SkipWhiteSpace(_current, _end);
 
             if (*_current == '}')
                 break;
@@ -377,7 +376,7 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
     {
     NSUInteger theScanLocation = _current - _start;
 
-    SkipWhiteSpace(self);
+    _current = SkipWhiteSpace(_current, _end);
 
     if (ScanCharacter(self, '[') == NO)
         {
@@ -390,7 +389,7 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
 
     NSMutableArray *theArray = (__bridge_transfer NSMutableArray *)CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
 
-    SkipWhiteSpace(self);
+    _current = SkipWhiteSpace(_current, _end);
 
     NSString *theValue = NULL;
     while (*_current != ']')
@@ -425,11 +424,11 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
             CFArrayAppendValue((__bridge CFMutableArrayRef)theArray, (__bridge void *)theValue);
             }
         
-        SkipWhiteSpace(self);
+        _current = SkipWhiteSpace(_current, _end);
 
         if (ScanCharacter(self, ',') == NO)
             {
-            SkipWhiteSpace(self);
+            _current = SkipWhiteSpace(_current, _end);
 
             if (*_current != ']')
                 {
@@ -444,10 +443,10 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
             break;
             }
 
-        SkipWhiteSpace(self);
+        _current = SkipWhiteSpace(_current, _end);
         }
 
-//    SkipWhiteSpace2(self);
+//    _current = SkipwhiteSpace(_current, _end);
 
     if (ScanCharacter(self, ']') == NO)
         {
@@ -466,11 +465,9 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
     return(YES);
     }
 
-- (BOOL)scanJSONStringConstant:(NSString **)outStringConstant error:(NSError **)outError
+- (BOOL)scanJSONStringConstant:(NSString **)outStringConstant key:(BOOL)inKey error:(NSError **)outError
     {
     NSUInteger theScanLocation = _current - _start;
-
-//    SkipWhiteSpace2(self);
 
     if (ScanCharacter(self, '"') == NO)
         {
@@ -577,10 +574,25 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
             return(NO);
             }
         }
-        
+
+    if ([_scratchData length] <= 4096)
+        {
+        NSUInteger hash = [_scratchData hash];
+        theString = (__bridge NSString *)CFDictionaryGetValue(_stringsByHash, (const void *)hash);
+        if (theString == NULL)
+            {
+            theString = (__bridge_transfer NSString *)CFStringCreateWithBytes(kCFAllocatorDefault, [_scratchData bytes], [_scratchData length], kCFStringEncodingUTF8, NO);
+            CFDictionarySetValue(_stringsByHash, (const void *)hash, (__bridge void *)theString);
+            }
+        }
+    else
+        {
+        theString = (__bridge_transfer NSString *)CFStringCreateWithBytes(kCFAllocatorDefault, [_scratchData bytes], [_scratchData length], kCFStringEncodingUTF8, NO);
+        }
+
     if (outStringConstant != NULL)
         {
-        *outStringConstant = (__bridge_transfer NSString *)CFStringCreateFromExternalRepresentation(kCFAllocatorDefault, (__bridge CFDataRef)_scratchData, kCFStringEncodingUTF8);
+        *outStringConstant = theString;
         }
 
     return(YES);
@@ -588,7 +600,7 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
 
 - (BOOL)scanJSONNumberConstant:(NSNumber **)outValue error:(NSError **)outError
     {
-    SkipWhiteSpace(self);
+    _current = SkipWhiteSpace(_current, _end);
 
     PtrRange theRange;
     if ([self scanDoubleCharactersIntoRange:&theRange] == YES)
@@ -617,7 +629,7 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
             {
             if (outValue != NULL)
                 {
-                /* unsigned */ long long n = strtoull(theRange.location, NULL, 0);
+                /* unsigned */ long long n = strtoll(theRange.location, NULL, 0);
                 *outValue = (__bridge_transfer NSNumber *)CFNumberCreate(kCFAllocatorDefault, kCFNumberLongLongType, &n);
                 }
             return(YES);

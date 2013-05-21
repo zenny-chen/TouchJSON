@@ -46,14 +46,14 @@ typedef NSUInteger EJSONScannerOptions;
 @property (readwrite, nonatomic, assign) NSStringEncoding allowedEncoding;
 @property (readwrite, nonatomic, assign) EJSONScannerOptions options;
 
-- (id)initWithData:(NSData *)inData error:(NSError **)outError;
+- (id)init;
 
 - (BOOL)setData:(NSData *)inData error:(NSError **)outError;
 
 - (BOOL)scanJSONObject:(id *)outObject error:(NSError **)outError;
 - (BOOL)scanJSONDictionary:(NSDictionary **)outDictionary error:(NSError **)outError;
 - (BOOL)scanJSONArray:(NSArray **)outArray error:(NSError **)outError;
-- (BOOL)scanJSONStringConstant:(NSString **)outStringConstant error:(NSError **)outError;
+- (BOOL)scanJSONStringConstant:(NSString **)outStringConstant key:(BOOL)inKey error:(NSError **)outError;
 - (BOOL)scanJSONNumberConstant:(NSNumber **)outNumberConstant error:(NSError **)outError;
 
 @end
