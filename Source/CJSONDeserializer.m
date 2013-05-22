@@ -38,9 +38,6 @@ NSString *const kJSONDeserializerErrorDomain  = @"CJSONDeserializerErrorDomain";
 
 @implementation CJSONDeserializer
 
-@synthesize scanner;
-@synthesize options;
-
 + (CJSONDeserializer *)deserializer
     {
     return([[self alloc] init]);
@@ -54,16 +51,15 @@ NSString *const kJSONDeserializerErrorDomain  = @"CJSONDeserializerErrorDomain";
     return(self);
     }
 
-
 #pragma mark -
 
 - (CJSONScanner *)scanner
     {
-    if (scanner == NULL)
+    if (_scanner == NULL)
         {
-        scanner = [[CJSONScanner alloc] init];
+        _scanner = [[CJSONScanner alloc] init];
         }
-    return(scanner);
+    return(_scanner);
     }
 
 - (id)nullObject

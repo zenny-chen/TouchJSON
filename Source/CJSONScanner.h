@@ -65,17 +65,14 @@ typedef enum {
     // Fundamental scanning errors
     kJSONScannerErrorCode_NothingToScan = -11, 
     kJSONScannerErrorCode_CouldNotDecodeData = -12, 
-    kJSONScannerErrorCode_CouldNotSerializeData = -13,
-    kJSONScannerErrorCode_CouldNotSerializeObject = -14, 
-    kJSONScannerErrorCode_CouldNotScanObject = -15, 
+    kJSONScannerErrorCode_CouldNotScanObject = -15,
     
     // Dictionary scanning
     kJSONScannerErrorCode_DictionaryStartCharacterMissing = -101, 
     kJSONScannerErrorCode_DictionaryKeyScanFailed = -102, 
     kJSONScannerErrorCode_DictionaryKeyNotTerminated = -103, 
     kJSONScannerErrorCode_DictionaryValueScanFailed = -104, 
-    kJSONScannerErrorCode_DictionaryKeyValuePairNoDelimiter = -105, 
-    kJSONScannerErrorCode_DictionaryNotTerminated = -106, 
+    kJSONScannerErrorCode_DictionaryNotTerminated = -106,
     
     // Array scanning
     kJSONScannerErrorCode_ArrayStartCharacterMissing = -201, 

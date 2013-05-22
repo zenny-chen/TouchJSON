@@ -29,13 +29,6 @@
 
 #import "CJSONScanner.h"
 
-#define LF 0x000a // Line Feed
-#define FF 0x000c // Form Feed
-#define CR 0x000d // Carriage Return
-#define NEL 0x0085 // Next Line
-#define LS 0x2028 // Line Separator
-#define PS 0x2029 // Paragraph Separator
-
 typedef struct {
     void *location;
     NSUInteger length;
@@ -78,7 +71,6 @@ NSString *const kJSONScannerErrorDomain = @"kJSONScannerErrorDomain";
 
 @interface CJSONScanner ()
 @property (readonly, nonatomic, assign) char *end;
-@property (readonly, nonatomic, assign) NSUInteger length;
 @property (readonly, nonatomic, assign) char *current;
 @property (readonly, nonatomic, assign) char *start;
 @property (readwrite, nonatomic, strong) NSMutableData *scratchData;
@@ -467,6 +459,7 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
 
 - (BOOL)scanJSONStringConstant:(NSString **)outStringConstant key:(BOOL)inKey error:(NSError **)outError
     {
+    #pragma unused (inKey)
     NSUInteger theScanLocation = _current - _start;
 
     if (ScanCharacter(self, '"') == NO)
@@ -686,14 +679,12 @@ static inline BOOL ScanUTF8String(CJSONScanner *scanner, const char *inString, s
         _start = (char *) _data.bytes;
         _end = _start + _data.length;
         _current = _start;
-        _length = _data.length;
         }
     else
         {
         _start = NULL;
         _end = NULL;
         _current = NULL;
-        _length = 0;
         }
     }
 
