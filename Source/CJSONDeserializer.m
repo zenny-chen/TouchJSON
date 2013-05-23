@@ -95,12 +95,21 @@ typedef struct
     id theObject = NULL;
     if ([self _scanJSONObject:&theObject error:outError] == YES)
         {
-        return (theObject);
+        if (!(_options & kJSONDeserializationOptions_AllowFragments))
+            {
+            if ([theObject isKindOfClass:[NSArray class]] == NO && [theObject isKindOfClass:[NSDictionary class]])
+                {
+                if (outError != NULL)
+                    {
+                    *outError = [self _error:-1 description:NULL];
+                    return(NULL);
+                    }
+                }
+            }
+
         }
-    else
-        {
-        return (NULL);
-        }
+
+    return (theObject);
     }
 
 - (id)deserializeAsDictionary:(NSData *)inData error:(NSError **)outError

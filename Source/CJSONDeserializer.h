@@ -66,6 +66,7 @@ enum {
     kJSONDeserializationOptions_MutableContainers = 0x01,
     kJSONDeserializationOptions_MutableLeaves = 0x02,
     kJSONDeserializationOptions_LaxEscapeCodes = 0x04,
+    kJSONDeserializationOptions_AllowFragments = 0x08,
     kJSONDeserializationOptions_Default = kJSONDeserializationOptions_MutableContainers,
 };
 typedef NSUInteger EJSONDeserializationOptions;
