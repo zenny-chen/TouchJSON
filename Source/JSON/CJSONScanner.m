@@ -66,8 +66,6 @@ static id kNSNO = NULL;
 
 + (void)initialize
     {
-    @autoreleasepool
-
     if (kNSYES == NULL)
         {
         if (kNSYES == NULL)
@@ -80,8 +78,6 @@ static id kNSNO = NULL;
             kNSNO = [NSNumber numberWithBool:NO];
             }
         }
-
-    [thePool release];
     }
 
 - (id)init

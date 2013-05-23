@@ -46,8 +46,6 @@ static NSData *kTrue = NULL;
     {
     @autoreleasepool
         {
-        NSAutoreleasePool *thePool = [[NSAutoreleasePool alloc] init];
-
         if (kNULL == NULL)
             kNULL = [[NSData alloc] initWithBytesNoCopy:(void *)"null" length:4 freeWhenDone:NO];
         if (kFalse == NULL)
