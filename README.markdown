@@ -54,12 +54,10 @@ or implied, of Jonathan Wight.
 
 ## Automatic Reference Counting (ARC)
 
-The "master" branch of TouchJSON does NOT use Automatic Reference Counting (ARC).
+The "master" branch of TouchJSON now uses ARC.
 
-There is a branch that does use ARC - this is found at "features/ARC".
-
-Most new development occurs on the ARC branch. At some point the non-ARC branch will put into
-maintenance mode and the ARC branch will become the primary branch.
+The "feature/nonARC" branch is deprecated and no more fixes will be made to it. You're welcome to
+use it if it works for you but no bugs will be accepted and no changes made.
 
 ## Home
 
