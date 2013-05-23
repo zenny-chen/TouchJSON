@@ -28,15 +28,12 @@
 		4531137A0A64EE5400A970C2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
 		45BB4623174D6C79000473E5 /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 45BB461B174D6C79000473E5 /* CJSONDeserializer.m */; };
 		45BB4624174D6C79000473E5 /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 45BB461B174D6C79000473E5 /* CJSONDeserializer.m */; };
-		45BB4625174D6C79000473E5 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 45BB461D174D6C79000473E5 /* CJSONScanner.m */; };
-		45BB4626174D6C79000473E5 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 45BB461D174D6C79000473E5 /* CJSONScanner.m */; };
 		45BB4627174D6C79000473E5 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 45BB461F174D6C79000473E5 /* CJSONSerializer.m */; };
 		45BB4628174D6C79000473E5 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 45BB461F174D6C79000473E5 /* CJSONSerializer.m */; };
 		45BB4629174D6C79000473E5 /* NSDictionary_JSONExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45BB4622174D6C79000473E5 /* NSDictionary_JSONExtensions.m */; };
 		45BB462A174D6C79000473E5 /* NSDictionary_JSONExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45BB4622174D6C79000473E5 /* NSDictionary_JSONExtensions.m */; };
 		45BB5FB31305E0DE00B196E4 /* Test Data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 45BB5FB21305E0D500B196E4 /* Test Data */; };
 		45DFEBDF0DB7080D009267D5 /* CJSONSerializer_UnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4505886F099952F600FB865F /* CJSONSerializer_UnitTests.m */; };
-		45DFEBE00DB7080E009267D5 /* CJSONScanner_UnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4505886D099952F600FB865F /* CJSONScanner_UnitTests.m */; };
 		DEDF6D770E4A4000005D2575 /* CJSONDeserializer_UnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DEDF6D750E4A3F64005D2575 /* CJSONDeserializer_UnitTests.m */; };
 /* End PBXBuildFile section */
 
@@ -72,8 +69,6 @@
 
 /* Begin PBXFileReference section */
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		4505886C099952F600FB865F /* CJSONScanner_UnitTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONScanner_UnitTests.h; sourceTree = "<group>"; };
-		4505886D099952F600FB865F /* CJSONScanner_UnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONScanner_UnitTests.m; sourceTree = "<group>"; };
 		4505886E099952F600FB865F /* CJSONSerializer_UnitTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializer_UnitTests.h; sourceTree = "<group>"; };
 		4505886F099952F600FB865F /* CJSONSerializer_UnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializer_UnitTests.m; sourceTree = "<group>"; };
 		45058870099952F600FB865F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -83,8 +78,6 @@
 		45B15E110947D97B00AE66EB /* UnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		45BB461A174D6C79000473E5 /* CJSONDeserializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer.h; sourceTree = "<group>"; };
 		45BB461B174D6C79000473E5 /* CJSONDeserializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer.m; sourceTree = "<group>"; };
-		45BB461C174D6C79000473E5 /* CJSONScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONScanner.h; sourceTree = "<group>"; };
-		45BB461D174D6C79000473E5 /* CJSONScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONScanner.m; sourceTree = "<group>"; };
 		45BB461E174D6C79000473E5 /* CJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializer.h; sourceTree = "<group>"; };
 		45BB461F174D6C79000473E5 /* CJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializer.m; sourceTree = "<group>"; };
 		45BB4620174D6C79000473E5 /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
@@ -148,8 +141,6 @@
 		4505886B099952F600FB865F /* UnitTests */ = {
 			isa = PBXGroup;
 			children = (
-				4505886C099952F600FB865F /* CJSONScanner_UnitTests.h */,
-				4505886D099952F600FB865F /* CJSONScanner_UnitTests.m */,
 				4505886E099952F600FB865F /* CJSONSerializer_UnitTests.h */,
 				4505886F099952F600FB865F /* CJSONSerializer_UnitTests.m */,
 				45058870099952F600FB865F /* Info.plist */,
@@ -173,8 +164,6 @@
 			children = (
 				45BB461A174D6C79000473E5 /* CJSONDeserializer.h */,
 				45BB461B174D6C79000473E5 /* CJSONDeserializer.m */,
-				45BB461C174D6C79000473E5 /* CJSONScanner.h */,
-				45BB461D174D6C79000473E5 /* CJSONScanner.m */,
 				45BB461E174D6C79000473E5 /* CJSONSerializer.h */,
 				45BB461F174D6C79000473E5 /* CJSONSerializer.m */,
 				45BB4620174D6C79000473E5 /* JSONRepresentation.h */,
@@ -286,7 +275,6 @@
 			files = (
 				453111C40A64EE3D00A970C2 /* main.m in Sources */,
 				45BB4624174D6C79000473E5 /* CJSONDeserializer.m in Sources */,
-				45BB4626174D6C79000473E5 /* CJSONScanner.m in Sources */,
 				45BB4628174D6C79000473E5 /* CJSONSerializer.m in Sources */,
 				45BB462A174D6C79000473E5 /* NSDictionary_JSONExtensions.m in Sources */,
 			);
@@ -297,10 +285,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				45DFEBDF0DB7080D009267D5 /* CJSONSerializer_UnitTests.m in Sources */,
-				45DFEBE00DB7080E009267D5 /* CJSONScanner_UnitTests.m in Sources */,
 				DEDF6D770E4A4000005D2575 /* CJSONDeserializer_UnitTests.m in Sources */,
 				45BB4623174D6C79000473E5 /* CJSONDeserializer.m in Sources */,
-				45BB4625174D6C79000473E5 /* CJSONScanner.m in Sources */,
 				45BB4627174D6C79000473E5 /* CJSONSerializer.m in Sources */,
 				45BB4629174D6C79000473E5 /* NSDictionary_JSONExtensions.m in Sources */,
 			);
@@ -325,6 +311,7 @@
 		450038220D82FAD6001F82C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -336,6 +323,7 @@
 		450038230D82FAD6001F82C7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";

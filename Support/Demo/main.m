@@ -31,7 +31,6 @@
 
 #import "CJSONSerializer.h"
 #import "CJSONDeserializer.h"
-#import "CJSONScanner.h"
 
 static void test(void);
 static void test_repeated_array(void);
@@ -95,7 +94,7 @@ static void test_twitter_public_timeline(void)
     NSData *inputData = [NSData dataWithContentsOfFile:@"Test Data/atomicbird.json"];
     NSLog(@"Input data: %ld", inputData.length);
     id json = [[CJSONDeserializer deserializer] deserialize:inputData error:&theError];
-    NSLog(@"JSON Object: %@ %p (Error: %@)", [json class], json, theError);
+    NSLog(@"JSON Object: %@ %p (Error: %@)", [json class], (__bridge void *)json, theError);
     NSData *jsonData = [[CJSONSerializer serializer] serializeObject:json error:&theError];
     NSLog(@"%@", jsonData);
     
@@ -111,7 +110,7 @@ static void test_unicode(void)
     NSData *inputData = [NSData dataWithContentsOfFile:@"Test Data/unicode_test.json"];
     NSLog(@"Input data: %ld", inputData.length);
     id json = [[CJSONDeserializer deserializer] deserialize:inputData error:&theError];
-    NSLog(@"JSON Object: %@ %p (Error: %@)", [json class], json, theError);
+    NSLog(@"JSON Object: %@ %p (Error: %@)", [json class], (__bridge void *)json, theError);
     NSData *jsonData = [[CJSONSerializer serializer] serializeObject:json error:&theError];
     NSLog(@"%@", jsonData);
     

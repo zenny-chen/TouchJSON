@@ -29,25 +29,54 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CJSONScanner.h"
-
 extern NSString *const kJSONDeserializerErrorDomain /* = @"CJSONDeserializerErrorDomain" */;
 
+typedef enum {
+    
+    // Fundamental scanning errors
+    kJSONDeserializerErrorCode_NothingToScan = -11,
+    kJSONDeserializerErrorCode_CouldNotDecodeData = -12,
+    kJSONDeserializerErrorCode_CouldNotScanObject = -15,
+    
+    // Dictionary scanning
+    kJSONDeserializerErrorCode_DictionaryStartCharacterMissing = -101,
+    kJSONDeserializerErrorCode_DictionaryKeyScanFailed = -102,
+    kJSONDeserializerErrorCode_DictionaryKeyNotTerminated = -103,
+    kJSONDeserializerErrorCode_DictionaryValueScanFailed = -104,
+    kJSONDeserializerErrorCode_DictionaryNotTerminated = -106,
+    
+    // Array scanning
+    kJSONDeserializerErrorCode_ArrayStartCharacterMissing = -201,
+    kJSONDeserializerErrorCode_ArrayValueScanFailed = -202,
+    kJSONDeserializerErrorCode_ArrayValueIsNull = -203,
+    kJSONDeserializerErrorCode_ArrayNotTerminated = -204,
+    
+    // String scanning
+    kJSONDeserializerErrorCode_StringNotStartedWithBackslash = -301,
+    kJSONDeserializerErrorCode_StringUnicodeNotDecoded = -302,
+    kJSONDeserializerErrorCode_StringUnknownEscapeCode = -303,
+    kJSONDeserializerErrorCode_StringNotTerminated = -304,
+    
+    // Number scanning
+    kJSONDeserializerErrorCode_NumberNotScannable = -401
+    
+} EJSONDeserializerErrorCode;
+
 enum {
-    kJSONDeserializationOptions_MutableContainers = kJSONScannerOptions_MutableContainers,
-    kJSONDeserializationOptions_MutableLeaves = kJSONScannerOptions_MutableLeaves,
+    kJSONDeserializationOptions_MutableContainers = 0x01,
+    kJSONDeserializationOptions_MutableLeaves = 0x02,
+    kJSONDeserializationOptions_LaxEscapeCodes = 0x04,
+    kJSONDeserializationOptions_Default = kJSONDeserializationOptions_MutableContainers,
 };
 typedef NSUInteger EJSONDeserializationOptions;
 
-@class CJSONScanner;
+@interface CJSONDeserializer : NSObject
 
-@interface CJSONDeserializer : NSObject {
-}
-
-@property (readwrite, nonatomic, strong) CJSONScanner *scanner;
-/// Object to return instead when a null encountered in the JSON. Defaults to NSNull. Setting to null causes the scanner to skip null values.
+/// Object to return instead when a null encountered in the JSON. Defaults to NSNull. Setting to null causes the deserializer to skip null values.
 @property (readwrite, nonatomic, strong) id nullObject;
+
 /// JSON must be encoded in Unicode (UTF-8, UTF-16 or UTF-32). Use this if you expect to get the JSON in another encoding.
+
 @property (readwrite, nonatomic, assign) NSStringEncoding allowedEncoding;
 @property (readwrite, nonatomic, assign) EJSONDeserializationOptions options;
 
