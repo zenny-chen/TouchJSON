@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 
 	@autoreleasepool {
 
-//  test();
+    test();
 //    test_twitter_public_timeline();
      test();
 
@@ -57,9 +57,20 @@ int main(int argc, char **argv)
 static void test(void)
     {
     NSError *theError = NULL;
+    NSString *theString = @"{ \
+\"siteinfo\": [ \
+{ \
+\"title\": \"My Title\", \
+\"address\": \"My Addres\", \
+\"phone1\": \"(559) 426-4444\", \
+\"welcomeMessage\": \"msg\", \
+\"mainLogoUrl\": \"data:image/png;base64, iVBORw0KG...\" \
+} \
+] \
+}";
     NSData *theData = [@"{\"version\":\"1.0\", \"method\":\"a_method\", \"params\":[ \"a_param\", \"a_param\" ]}" dataUsingEncoding:NSUTF8StringEncoding];
 //    NSData *theData = [@"\"\u062a\u062d\u064a\u0627 \u0645\u0635\u0631!\"" dataUsingEncoding:NSUTF8StringEncoding];
-    NSString *theString = [[CJSONDeserializer deserializer] deserialize:theData error:&theError];
+    theString = [[CJSONDeserializer deserializer] deserialize:theData error:&theError];
     theData = [[CJSONSerializer serializer] serializeObject:theString error:&theError];
     theString = [[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding];
     NSLog(@"%@", theString);
