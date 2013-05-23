@@ -1,17 +1,5 @@
 # TouchJSON HOWTO
 
-## IMPORTANT
-
-TouchJSON has been deprecated. Expect no more improvements, bug fixes or merged pull requests.
-
-iOS and Mac OS X have had native JSON support since iOS 5.0 and OS X 10.7 - as of today these are two OS versions ago. You should be using the OS JSON support ([NSJSONSerialization](http://developer.apple.com/library/ios/#documentation/Foundation/Reference/NSJSONSerialization_Class/Reference/Reference.html)) and _not_ using _any_ third party JSON library. The OS native JSON class is more than good enough for most people who can run on iOS 5/OSX 10.7 and up.
-
-This repository will not be going away any time soon. But you should NOT be using this code in your new projects.
-
-Thank you for all your bug reports, feature ideas, general support and beer.
-
-Jon. (@schwa)
-
 ## Introduction
 
 TouchJSON is an Objective-C based parser and generator for JSON encoded data. TouchJSON compiles for
@@ -19,38 +7,13 @@ Mac OS X and iOS devices (currently iPhone, iPad and iPod Touch).
 
 It is based on Jonathan Wight's CocoaJSON code: <http://toxicsoftware.com/cocoajson/>
 
-TouchJSON is part of the TouchCode "family" of open source software.
+TouchJSON was deprecated but is now back from the dead. I'll be updating the
+README and explaining why soon.
+
 
 ## License
 
-This code is licensed under the 2-clause BSD license ("Simplified BSD License" or "FreeBSD License")
-license. The license is reproduced below:
-
-Copyright 2011 Jonathan Wight. All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are
-permitted provided that the following conditions are met:
-
-   1. Redistributions of source code must retain the above copyright notice, this list of
-      conditions and the following disclaimer.
-
-   2. Redistributions in binary form must reproduce the above copyright notice, this list
-      of conditions and the following disclaimer in the documentation and/or other materials
-      provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY JONATHAN WIGHT ''AS IS'' AND ANY EXPRESS OR IMPLIED
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL JONATHAN WIGHT OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-The views and conclusions contained in the software and documentation are those of the
-authors and should not be interpreted as representing official policies, either expressed
-or implied, of Jonathan Wight.
+See LICENSE file.
 
 ## Automatic Reference Counting (ARC)
 
