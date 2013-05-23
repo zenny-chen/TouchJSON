@@ -42,13 +42,13 @@ int main(int argc, char **argv)
 	{
 	#pragma unused(argc, argv)
 
-	NSAutoreleasePool *theAutoreleasePool = [[NSAutoreleasePool alloc] init];
+	@autoreleasepool {
 
     test();
 //    test_twitter_public_timeline();
 //     test_repeated_array();
 
-	[theAutoreleasePool release];
+	}
 	//
 	return(0);
 	}
@@ -72,7 +72,7 @@ static void test(void)
 //    NSData *theData = [@"\"\u062a\u062d\u064a\u0627 \u0645\u0635\u0631!\"" dataUsingEncoding:NSUTF8StringEncoding];
     theString = [[CJSONDeserializer deserializer] deserialize:theData error:&theError];
     theData = [[CJSONSerializer serializer] serializeObject:theString error:&theError];
-    theString = [[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] autorelease];
+    theString = [[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding];
     NSLog(@"%@", theString);
     }
 
@@ -84,7 +84,7 @@ static void test_repeated_array(void)
 
     NSError *theError = NULL;
     NSData *theData = [[CJSONSerializer serializer] serializeObject:array error:&theError];
-    NSString *theString = [[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] autorelease];
+    NSString *theString = [[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding];
     NSLog(@"%@", theString);
 
     }
@@ -100,7 +100,7 @@ static void test_twitter_public_timeline(void)
     NSLog(@"%@", jsonData);
     
     NSLog(@"JSON data: %ld  (Error: %@)", jsonData.length, theError);
-    NSString *jsonString = [[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] autorelease];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     NSLog(@"JSON string: %ld", jsonString.length);
     NSLog(@"> %@", jsonString);
 	}

@@ -36,7 +36,6 @@ typedef NSUInteger EJSONSerializationOptions;
 
 
 @interface CJSONSerializer : NSObject {
-    EJSONSerializationOptions options;
 }
 
 @property (readwrite, nonatomic, assign) EJSONSerializationOptions options;
@@ -56,7 +55,9 @@ typedef NSUInteger EJSONSerializationOptions;
 
 @end
 
+extern NSString *const kJSONSerializerErrorDomain /* = @"CJSONSerializerErrorDomain" */;
+
 typedef enum {
     CJSONSerializerErrorCouldNotSerializeDataType = -1,
-    CJSONSerializerErrorCouldNotSerializeObject = -1
+    CJSONSerializerErrorCouldNotSerializeObject = -2,
 } CJSONSerializerError;

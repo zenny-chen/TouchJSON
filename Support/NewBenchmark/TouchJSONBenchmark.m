@@ -12,9 +12,15 @@
 #import "CJSONDeserializer.h"
 
 int main (int argc, const char * argv[])
-    {
-    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+{
+@autoreleasepool {
 
+    NSDictionary *theDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+        @"Hello", @"World",
+        NULL];
+        
+    CJSONSerializer *theSerializer = [CJSONSerializer serializer];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
 
     NSDictionary *theDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
         @"Hello", @"World",
@@ -40,12 +46,11 @@ int main (int argc, const char * argv[])
         }
 
 
-
     CFAbsoluteTime theEnd = CFAbsoluteTimeGetCurrent();
 
     NSLog(@"%g", theEnd - theStart);
 
 
-    [pool drain];
-    return 0;
     }
+return 0;
+}

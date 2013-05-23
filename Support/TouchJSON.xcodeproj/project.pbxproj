@@ -22,7 +22,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		4502F5ED12683D3B0003AC74 /* CJSONDeserializer_BlocksExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4502F5EA12683CF70003AC74 /* CJSONDeserializer_BlocksExtensions.m */; };
 		4502F5EE12683D3C0003AC74 /* CFilteringJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4569D5DB12683A9100AEC287 /* CFilteringJSONSerializer.m */; };
 		4505889E0999539300FB865F /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4567B5B90951D51A00ECB961 /* CJSONDeserializer.m */; };
 		451F85B50DB6E06800136680 /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 451F85B40DB6E06800136680 /* CDataScanner.m */; };
@@ -80,8 +79,6 @@
 
 /* Begin PBXFileReference section */
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		4502F5E912683CF70003AC74 /* CJSONDeserializer_BlocksExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer_BlocksExtensions.h; sourceTree = "<group>"; };
-		4502F5EA12683CF70003AC74 /* CJSONDeserializer_BlocksExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer_BlocksExtensions.m; sourceTree = "<group>"; };
 		4502F8611268BB2A0003AC74 /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
 		4505886C099952F600FB865F /* CJSONScanner_UnitTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONScanner_UnitTests.h; sourceTree = "<group>"; };
 		4505886D099952F600FB865F /* CJSONScanner_UnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONScanner_UnitTests.m; sourceTree = "<group>"; };
@@ -197,8 +194,6 @@
 			children = (
 				4569D5DA12683A9100AEC287 /* CFilteringJSONSerializer.h */,
 				4569D5DB12683A9100AEC287 /* CFilteringJSONSerializer.m */,
-				4502F5E912683CF70003AC74 /* CJSONDeserializer_BlocksExtensions.h */,
-				4502F5EA12683CF70003AC74 /* CJSONDeserializer_BlocksExtensions.m */,
 				45576B1413219A3000941B47 /* CJSONSerialization.h */,
 				45576B1513219A3000941B47 /* CJSONSerialization.m */,
 				451CC8D2130F06AB0004385E /* CJSONSerializedData.h */,
@@ -351,7 +346,6 @@
 				451F85B50DB6E06800136680 /* CDataScanner.m in Sources */,
 				45F3F7750DB7C6CC00084331 /* NSDictionary_JSONExtensions.m in Sources */,
 				457B5CAF10976E9300B564BC /* CJSONSerializer.m in Sources */,
-				4502F5ED12683D3B0003AC74 /* CJSONDeserializer_BlocksExtensions.m in Sources */,
 				4502F5EE12683D3C0003AC74 /* CFilteringJSONSerializer.m in Sources */,
 				45576B1713219B7200941B47 /* CJSONSerialization.m in Sources */,
 			);
@@ -413,6 +407,7 @@
 		453111B80A64EDDE00A970C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -422,6 +417,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -453,6 +449,7 @@
 		453111B90A64EDDE00A970C2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = YES;
@@ -462,6 +459,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -551,11 +549,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
@@ -578,11 +578,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;

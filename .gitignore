@@ -1,19 +1,13 @@
-# xcode noise
-build
-*.pbxuser
-*.mode1v3
-*.mode2v3
-*.pbxuser
-*.perspective
-*.perspectivev3
-*.xcuserdatad
-
-# old skool
-.svn
-
-# osx noise
+#### Mac OS X Finder droppings
 .DS_Store
-profile
 
+#### Xcode Per User Files
+*.pbxuser
+*.perspectivev3
+xcuserdata/
+
+build
 Support/NewBenchmark/build/
 Support/build/
+
+
