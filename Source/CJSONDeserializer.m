@@ -97,7 +97,7 @@ typedef struct
         {
         if (!(_options & kJSONDeserializationOptions_AllowFragments))
             {
-            if ([theObject isKindOfClass:[NSArray class]] == NO && [theObject isKindOfClass:[NSDictionary class]])
+            if ([theObject isKindOfClass:[NSArray class]] == NO && [theObject isKindOfClass:[NSDictionary class]] == NO)
                 {
                 if (outError != NULL)
                     {
@@ -829,7 +829,6 @@ typedef struct
 
 - (NSError *)_error:(NSInteger)inCode description:(NSString *)inDescription
     {
-    NSParameterAssert(inDescription != NULL);
     NSMutableDictionary *theUserInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
         inDescription, NSLocalizedDescriptionKey,
         NULL];
