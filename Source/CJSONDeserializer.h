@@ -63,10 +63,11 @@ typedef enum {
 } EJSONDeserializerErrorCode;
 
 enum {
-    kJSONDeserializationOptions_MutableContainers = 0x01,
-    kJSONDeserializationOptions_MutableLeaves = 0x02,
-    kJSONDeserializationOptions_LaxEscapeCodes = 0x04,
-    kJSONDeserializationOptions_AllowFragments = 0x08,
+    // The first three flags map to the corresponding NSJSONSerialization flags.
+    kJSONDeserializationOptions_MutableContainers = (1UL << 0),
+    kJSONDeserializationOptions_MutableLeaves = (1UL << 1),
+    kJSONDeserializationOptions_AllowFragments = (1UL << 2),
+    kJSONDeserializationOptions_LaxEscapeCodes = (1UL << 3),
     kJSONDeserializationOptions_Default = kJSONDeserializationOptions_MutableContainers,
 };
 typedef NSUInteger EJSONDeserializationOptions;
