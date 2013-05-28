@@ -56,7 +56,17 @@ static void test_files(void)
         CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
         theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
         id theResult = [theDeserializer deserialize:theData error:&theError];
+
+        id theOtherResult = [NSJSONSerialization JSONObjectWithData:theData options:0 error:NULL];
+
         NSLog(@"%@ : %p %@", [theURL lastPathComponent], theResult, theError);
+        NSLog(@"%d", [theResult isEqual:theOtherResult]);
+        if ([theResult isEqual:theOtherResult] == NO)
+            {
+            NSLog(@"OOPS");
+            NSLog(@"%@", theResult);
+            NSLog(@"%@", theOtherResult);
+            }
         }
     }
 

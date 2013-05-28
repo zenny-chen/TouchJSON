@@ -607,6 +607,24 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 	STAssertEquals([theObject unsignedLongLongValue], 14399073641566209ULL, @"Numbers did not contain expected contents");
     }
 
+- (void)testCloseHashes
+    {
+    STAssertEquals(
+        [[@"0.000000,0.000000,2.000000,2.000000" dataUsingEncoding:NSUTF8StringEncoding] hash],
+        [[@"2.000000,0.000000,0.000000,2.000000" dataUsingEncoding:NSUTF8StringEncoding] hash],
+        @"Ohoh");
+
+    NSData *theData = [@"[\"0.000000,0.000000,2.000000,2.000000\",\"2.000000,0.000000,0.000000,2.000000\"]" dataUsingEncoding:NSUTF8StringEncoding];
+
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	id theResult = [theDeserializer deserialize:theData error:nil];
+    id theExpectedResult = @[
+        @"0.000000,0.000000,2.000000,2.000000",
+        @"2.000000,0.000000,0.000000,2.000000"
+        ];
+	STAssertEqualObjects(theResult, theExpectedResult, @"");
+    }
+
 
 @end
 

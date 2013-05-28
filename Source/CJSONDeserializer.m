@@ -655,10 +655,24 @@ typedef struct
     if ([_scratchData length] <= 4096)
         {
         NSUInteger hash = [_scratchData hash];
-        theString = (__bridge NSString *) CFDictionaryGetValue(_stringsByHash, (const void *) hash);
-        if (theString == NULL)
+        NSString *theFoundString = (__bridge NSString *) CFDictionaryGetValue(_stringsByHash, (const void *) hash);
+        BOOL theFoundFlag = NO;
+        theString = NULL;
+        if (theFoundString != NULL)
             {
             theString = (__bridge_transfer NSString *) CFStringCreateWithBytes(kCFAllocatorDefault, [_scratchData bytes], [_scratchData length], kCFStringEncodingUTF8, NO);
+            if ([theFoundString isEqualToString:theString] == YES)
+                {
+                theFoundFlag = YES;
+                }
+            }
+
+        if (theFoundFlag == NO)
+            {
+            if (theString == NULL)
+                {
+                theString = (__bridge_transfer NSString *) CFStringCreateWithBytes(kCFAllocatorDefault, [_scratchData bytes], [_scratchData length], kCFStringEncodingUTF8, NO);
+                }
             if (_options & kJSONDeserializationOptions_MutableLeaves)
                 {
                 theString = [theString mutableCopy];
