@@ -32,17 +32,6 @@
 
 @implementation CJSONDeserializer_UnitTests
 
-//static id TXPropertyList(NSString *inString)
-//    {
-//    NSData *theData = [inString dataUsingEncoding:NSUTF8StringEncoding];
-//
-//    NSPropertyListFormat theFormat;
-//    NSString *theError = NULL;
-//
-//    id thePropertyList = [NSPropertyListSerialization propertyListFromData:theData mutabilityOption:NSPropertyListImmutable format:&theFormat errorDescription:&theError];
-//    return(thePropertyList);
-//    }
-
 static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     {
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
@@ -62,189 +51,6 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 
 #pragma mark -
 
-//- (void)testTrue
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"true", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject boolValue] == YES, @"Result of scan didn't match expectations.");
-//    }
-
-- (void)testFalse
-    {
-    id theObject = NULL;
-    BOOL theResult = Scan(@"false", &theObject, NULL);
-    STAssertTrue(theResult, @"Scan return failure.");
-    STAssertTrue([theObject boolValue] == NO, @"Result of scan didn't match expectations.");
-    }
-
-//- (void)testNull
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"null", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:[NSNull null]], @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testNumber
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"3.14", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertEqualsWithAccuracy([theObject doubleValue], 3.14, 0.001, @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testEngineeringNumber
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"3.14e4", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject doubleValue] == 3.14e4, @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testEngineeringNumber2
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"-3.433021e+07", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject doubleValue] == -3.433021e+07, @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testNegativeNumber
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"-1", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject doubleValue] == -1, @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testLargeNumber
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"14399073641566209", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject unsignedLongLongValue] == 14399073641566209, @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testLargeNegativeNumber
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"-14399073641566209", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject longLongValue] == -14399073641566209, @"Result of scan didn't match expectations.");
-//    }
-
-#pragma mark -
-
-//- (void)testString
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"\"Hello world.\"", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    NSLog(@">>> %@", theObject);
-//    STAssertTrue([theObject isEqual:@"Hello world."], @"Result of scan didn't match expectations.");
-//
-//    theResult = Scan(@"    \"Hello world.\"      ", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:@"Hello world."], @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testUnicode
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"\"••••Über©©©©\"", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:@"••••Über©©©©"], @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testStringEscaping
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"\"\\r\\n\\f\\b\\\\\"", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:@"\r\n\f\b\\"], @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testStringEscaping2
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"\"Hello\r\rworld.\"", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:@"Hello\r\rworld."], @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testStringLooseEscaping
-//    {
-//    id theObject = NULL;
-//
-//    NSDictionary *theOptions = [NSDictionary dictionaryWithObjectsAndKeys:
-//        [NSNumber numberWithBool:NO], @"strictEscapeCodes",
-//        NULL];
-//
-//    BOOL theResult = Scan(@"\"Hello\\ World.\"", &theObject, theOptions);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:@"Hello World."], @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testStringStrictEscaping
-//    {
-//    id theObject = NULL;
-//
-//    NSDictionary *theOptions = [NSDictionary dictionaryWithObjectsAndKeys:
-//        [NSNumber numberWithBool:YES], @"strictEscapeCodes",
-//        NULL];
-//
-//    BOOL theResult = Scan(@"\"Hello\\ World.\"", &theObject, theOptions);
-//    STAssertFalse(theResult, @"Scan return failure.");
-//    }
-
-
-#pragma mark -
-
-//- (void)testSimpleDictionary
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"{\"bar\":\"foo\"}", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:TXPropertyList(@"{bar = foo; }")], @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testNestedDictionary
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"{\"bar\":{\"bar\":\"foo\"}}", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:TXPropertyList(@"{bar = {bar = foo; }; }")], @"Result of scan didn't match expectations.");
-//    }
-
-//#pragma mark -
-
-//- (void)testSimpleArray
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"[\"bar\",\"foo\"]", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:TXPropertyList(@"(bar, foo)")], @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testNestedArray
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"[\"bar\",[\"bar\",\"foo\"]]", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:TXPropertyList(@"(bar, (bar, foo))")], @"Result of scan didn't match expectations.");
-//    }
-
-#pragma mark -
-
-//- (void)testWhitespace1
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"    \"Hello world.\"      ", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:@"Hello world."], @"Result of scan didn't match expectations.");
-//    }
-
 - (void)testWhitespace2
     {
     id theObject = NULL;
@@ -262,61 +68,6 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     }
 
 #pragma mark -
-
-//- (void)testBlakesCode
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan([NSString stringWithContentsOfFile:[[NSBundle bundleForClass:[self class]] pathForResource:@"Blake" ofType:@"json"] encoding:NSUTF8StringEncoding error:nil], &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan returned failure");
-//    }
-
-//- (void)testExtraCommasInDictionary
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"{\r\"title\": \"space - Everyone's Tagged Photos\",\r}", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:TXPropertyList(@"{title = \"space - Everyone's Tagged Photos\"; }")], @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testEmptyArray1
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"[]", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:TXPropertyList(@"()")], @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testEmptyArray2
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"[ ]", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:TXPropertyList(@"()")], @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testEmptyDictionary1
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"{}", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    //STAssertTrue([theObject isEqual:TXPropertyList(@"{}")], @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testEmptyDictionary2
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"{\"Foo\":{}}", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:TXPropertyList(@"{Foo = { }; }")], @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testEmptyDictionary3
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"{ }", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:TXPropertyList(@"{}")], @"Result of scan didn't match expectations.");
-//    }
 
 - (void)testDanielPascoCode1
     {
@@ -610,27 +361,6 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 	STAssertEqualObjects(theResult, theExpectedResult, @"");
     }
 
--(void)testLargeNumbers
-    {
-    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
-    NSData *theData = [@"14399073641566209" dataUsingEncoding:NSUTF8StringEncoding];
-	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
-	STAssertEquals([theObject unsignedLongLongValue], 14399073641566209ULL, @"Numbers did not contain expected contents");
-    }
-
--(void)test64BitNumbers
-    {
-    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
-    NSData *theData = [@"9223372036854775807" dataUsingEncoding:NSUTF8StringEncoding];
-	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
-	STAssertEquals([theObject unsignedLongLongValue], 9223372036854775807ULL, @"Numbers did not contain expected contents");
-
-//    theDeserializer = [CJSONDeserializer deserializer];
-//    theData = [@"−9223372036854775808" dataUsingEncoding:NSUTF8StringEncoding];
-//	theObject = [theDeserializer deserialize:theData error:nil];
-//	STAssertEquals([theObject longLongValue], -9223372036854775808LL, @"Numbers did not contain expected contents");
-    }
-
 -(void)testEscapeCodes1
     {
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
@@ -741,9 +471,103 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 	STAssertNil(theResult, @"Poop mismatch");
 	}
 
+-(void)testFloats1
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSData *theData = [@"1.0" dataUsingEncoding:NSASCIIStringEncoding];
+	NSError *theError = NULL;
+	id theResult = [theDeserializer deserialize:theData error:&theError];
+	STAssertNil(theError, @"Got an error when expected none.");
+	STAssertEqualObjects(theResult, @(1.0), @"Floating point mismatch");
+	}
 
+-(void)testFloats2
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSData *theData = [@"1.1" dataUsingEncoding:NSASCIIStringEncoding];
+	NSError *theError = NULL;
+	id theResult = [theDeserializer deserialize:theData error:&theError];
+	STAssertNil(theError, @"Got an error when expected none.");
+	STAssertEqualObjects(theResult, @(1.1), @"Floating point mismatch");
+	}
 
+-(void)testFloats3
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSData *theData = [@"1.1e10" dataUsingEncoding:NSASCIIStringEncoding];
+	NSError *theError = NULL;
+	id theResult = [theDeserializer deserialize:theData error:&theError];
+	STAssertNil(theError, @"Got an error when expected none.");
+	STAssertEqualObjects(theResult, @(1.1e10), @"Floating point mismatch");
+	}
 
+-(void)testFloats4
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSData *theData = [@"1e123" dataUsingEncoding:NSASCIIStringEncoding];
+	NSError *theError = NULL;
+	id theResult = [theDeserializer deserialize:theData error:&theError];
+	STAssertNil(theError, @"Got an error when expected none.");
+	STAssertEqualObjects(theResult, @(1e123), @"Floating point mismatch");
+	}
+
+-(void)testLargeNumbers
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"14399073641566209" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, @(14399073641566209ULL), @"Numbers did not contain expected contents");
+    }
+
+-(void)testLargeNegativeNumbers
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"-14399073641566209" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, @(-14399073641566209LL), @"Numbers did not contain expected contents");
+    }
+
+-(void)test64BitNumbers
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"9223372036854775807" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, @(9223372036854775807ULL), @"Numbers did not contain expected contents");
+    }
+
+-(void)test65BitNumbers
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"36893488147419103232" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, [NSDecimalNumber decimalNumberWithString:@"36893488147419103232"], @"Numbers did not contain expected contents");
+    }
+
+-(void)testUpperLimitNumbers
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	NSString *theValue = @"99999999999999999999999999999999999999";
+    NSData *theData = [theValue dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	NSLog(@"%@", theObject);
+	NSLog(@"%@", theValue);
+	STAssertEqualObjects([theObject stringValue], theValue, @"Numbers did not contain expected contents");
+    }
+
+//-(void)testOverflowNumbers
+//    {
+//    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+//	NSString *theValue = @"999999999999999999999999999999999999999";
+//    NSData *theData = [theValue dataUsingEncoding:NSUTF8StringEncoding];
+//	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+//	NSLog(@"%@", theObject);
+//	NSLog(@"%@", theValue);
+//	STAssertEqualObjects([theObject stringValue], theValue, @"Numbers did not contain expected contents");
+//    }
 
 @end
 

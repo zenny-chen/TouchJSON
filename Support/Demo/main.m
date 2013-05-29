@@ -39,12 +39,11 @@ int main(int argc, char **argv)
 	{
 	#pragma unused(argc, argv)
 
-    NSString *theString = @"\"\\u0000\"";
-    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
-
+	unsigned long long N = 0xffffffffffffffff1ULL;
+    NSData *theData = [[@(N) stringValue] dataUsingEncoding:NSUTF8StringEncoding];
     id theResult = test(theData);
-	NSLog(@"%@", theResult);
-    test_files();
+	NSLog(@"%@ (%@) %d %llx", theResult, NSStringFromClass([theResult class]), [theResult isEqual:@(N)], [theResult unsignedLongLongValue]);
+//    test_files();
 
 	return(0);
 	}
@@ -69,12 +68,17 @@ static id test(NSData *inData)
 	CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
 	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
 	id theResult = [theDeserializer deserialize:inData error:&theError];
+	if (theResult == NULL)
+		{
+		NSLog(@"ERROR: %@", theError);
+		return(NULL);
+		}
 	id theExpectedResult = [NSJSONSerialization JSONObjectWithData:inData options:NSJSONReadingAllowFragments error:NULL];
 	if ([theResult isEqual:theExpectedResult] == NO)
 		{
 		NSLog(@"TouchJSON and NSJSON* results differ");
-		NSLog(@"TouchJSON: %@", theResult);
-		NSLog(@"NSJSON*: %@", theExpectedResult);
+		NSLog(@"TouchJSON: (%@) %@", NSStringFromClass([theResult class]), theResult);
+		NSLog(@"NSJSON*: (%@) %@", NSStringFromClass([theExpectedResult class]), theExpectedResult);
 		}
 	return(theResult);
     }

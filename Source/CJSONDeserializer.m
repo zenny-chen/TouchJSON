@@ -692,46 +692,60 @@ typedef struct
     {
     _current = _SkipWhiteSpace(_current, _end);
 
+	NSNumber *theValue = NULL;
     PtrRange theRange;
-    if ([self _scanDoubleCharactersIntoRange:&theRange] == YES)
-        {
-        if (_PtrRangeContainsCharacter(theRange, '.') == YES)
-            {
-            if (outValue)
-                {
-                CFStringRef theString = CFStringCreateWithBytes(kCFAllocatorDefault, theRange.location, theRange.length, kCFStringEncodingASCII, NO);
-                double n = CFStringGetDoubleValue(theString);
-                *outValue = (__bridge_transfer NSNumber *) CFNumberCreate(kCFAllocatorDefault, kCFNumberDoubleType, &n);
-                CFRelease(theString);
-                }
-            return (YES);
-            }
-//        else if (_PtrRangeContainsCharacter(theRange, '-') == YES)
-//            {
-//            if (outValue != NULL)
-//                {
-//                long long n = strtoll(theRange.location, NULL, 0);
-//                *outValue = (__bridge_transfer NSNumber *)CFNumberCreate(kCFAllocatorDefault, kCFNumberLongLongType, &n);
-//                }
-//            return(YES);
-//            }
-//        else
-            {
-            if (outValue != NULL)
-                {
-                /* unsigned */ long long n = strtoll(theRange.location, NULL, 0);
-                *outValue = (__bridge_transfer NSNumber *) CFNumberCreate(kCFAllocatorDefault, kCFNumberLongLongType, &n);
-                }
-            return (YES);
-            }
+    if ([self _scanDoubleCharactersIntoRange:&theRange] == NO)
+		{
+		if (outError)
+			{
+			*outError = [self _error:kJSONDeserializerErrorCode_NumberNotScannable description:@"Could not scan number constant."];
+			}
+		return (NO);
+		}
 
+	if (_PtrRangeContainsCharacter(theRange, '.') == YES || _PtrRangeContainsCharacter(theRange, 'e') == YES)
+		{
+		CFStringRef theString = CFStringCreateWithBytes(kCFAllocatorDefault, theRange.location, theRange.length, kCFStringEncodingASCII, NO);
+		double n = CFStringGetDoubleValue(theString);
+		theValue = (__bridge_transfer NSNumber *) CFNumberCreate(kCFAllocatorDefault, kCFNumberDoubleType, &n);
+		CFRelease(theString);
+		}
+
+	if (theValue == NULL)
+		{
+		errno = 0;
+		unsigned long long n = strtoull(theRange.location, NULL, 0);
+		if (errno == 0)
+			{
+			theValue = [NSNumber numberWithUnsignedLongLong:n];
+			}
+		errno = 0;
+		}
+
+	if (theValue == NULL)
+		{
+		errno = 0;
+		long long n = strtoll(theRange.location, NULL, 0);
+		if (errno == 0)
+			{
+			theValue = (__bridge_transfer NSNumber *)CFNumberCreate(kCFAllocatorDefault, kCFNumberLongLongType, &n);
+			}
+		errno = 0;
+		}
+
+	if (theValue == NULL)
+		{
+		CFStringRef theString = CFStringCreateWithBytes(kCFAllocatorDefault, theRange.location, theRange.length, kCFStringEncodingASCII, NO);
+		theValue = [[NSDecimalNumber alloc] initWithString:(__bridge NSString *)theString locale:@{ NSLocaleDecimalSeparator: @"." }];
+		CFRelease(theString);
         }
 
-    if (outError)
-        {
-        *outError = [self _error:kJSONDeserializerErrorCode_NumberNotScannable description:@"Could not scan number constant."];
-        }
-    return (NO);
+	if (outValue)
+		{
+		*outValue = theValue;
+		}
+
+    return (YES);
     }
 
 #pragma mark -
