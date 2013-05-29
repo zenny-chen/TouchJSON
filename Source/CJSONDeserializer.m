@@ -652,7 +652,7 @@ typedef struct
             }
         }
 
-    if ([_scratchData length] <= 4096)
+    if ([_scratchData length] < 80)
         {
         NSUInteger hash = [_scratchData hash];
         NSString *theFoundString = (__bridge NSString *) CFDictionaryGetValue(_stringsByHash, (const void *) hash);
