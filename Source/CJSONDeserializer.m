@@ -101,6 +101,7 @@ typedef struct
                 {
                 if (outError != NULL)
                     {
+					// TODO -- use a real error.
                     *outError = [self _error:-1 description:NULL];
                     return(NULL);
                     }
@@ -599,27 +600,17 @@ typedef struct
                     break;
                 case 'u':
                     {
-                    unichar theUnichar = 0;
-
-                    int theShift;
-                    for (theShift = 12; theShift >= 0; theShift -= 4)
-                        {
-                        const int theDigit = _HexToInt(*_current++);
-                        if (theDigit == -1)
+                    UInt8 theBuffer[4];
+                    size_t theLength = ConvertEscapes(self, theBuffer);
+					if (theLength == 0)
+						{
+                        if (outError)
                             {
-                            _current = _start + theScanLocation;
-                            if (outError)
-                                {
-                                *outError = [self _error:kJSONDeserializerErrorCode_StringUnicodeNotDecoded description:@"Could not scan string constant. Unicode character could not be decoded."];
-                                }
-                            return (NO);
+                            *outError = [self _error:kJSONDeserializerErrorCode_StringBadEscaping description:@"Could not decode string escape code."];
                             }
-                        theUnichar |= (theDigit << theShift);
-                        }
-
-                    theString = [[NSString alloc] initWithCharacters:&theUnichar length:1];
-                    [_scratchData appendData:[theString dataUsingEncoding:NSUTF8StringEncoding]];
-
+						return(NO);
+						}
+                    [_scratchData appendBytes:&theBuffer length:theLength];
                     theCharacter = 0;
                     }
                     break;
@@ -877,19 +868,6 @@ inline static char *_SkipWhiteSpace(char *_current, char *_end)
     return (P);
     }
 
-inline static int _HexToInt(char inCharacter)
-    {
-    int theValues[] = { 0x0 /* 48 '0' */, 0x1 /* 49 '1' */, 0x2 /* 50 '2' */, 0x3 /* 51 '3' */, 0x4 /* 52 '4' */, 0x5 /* 53 '5' */, 0x6 /* 54 '6' */, 0x7 /* 55 '7' */, 0x8 /* 56 '8' */, 0x9 /* 57 '9' */, -1 /* 58 ':' */, -1 /* 59 ';' */, -1 /* 60 '<' */, -1 /* 61 '=' */, -1 /* 62 '>' */, -1 /* 63 '?' */, -1 /* 64 '@' */, 0xa /* 65 'A' */, 0xb /* 66 'B' */, 0xc /* 67 'C' */, 0xd /* 68 'D' */, 0xe /* 69 'E' */, 0xf /* 70 'F' */, -1 /* 71 'G' */, -1 /* 72 'H' */, -1 /* 73 'I' */, -1 /* 74 'J' */, -1 /* 75 'K' */, -1 /* 76 'L' */, -1 /* 77 'M' */, -1 /* 78 'N' */, -1 /* 79 'O' */, -1 /* 80 'P' */, -1 /* 81 'Q' */, -1 /* 82 'R' */, -1 /* 83 'S' */, -1 /* 84 'T' */, -1 /* 85 'U' */, -1 /* 86 'V' */, -1 /* 87 'W' */, -1 /* 88 'X' */, -1 /* 89 'Y' */, -1 /* 90 'Z' */, -1 /* 91 '[' */, -1 /* 92 '\' */, -1 /* 93 ']' */, -1 /* 94 '^' */, -1 /* 95 '_' */, -1 /* 96 '`' */, 0xa /* 97 'a' */, 0xb /* 98 'b' */, 0xc /* 99 'c' */, 0xd /* 100 'd' */, 0xe /* 101 'e' */, 0xf /* 102 'f' */,};
-    if (inCharacter >= '0' && inCharacter <= 'f')
-        {
-        return (theValues[inCharacter - '0']);
-        }
-    else
-        {
-        return (-1);
-        }
-    }
-
 static inline BOOL _ScanCharacter(CJSONDeserializer *deserializer, char inCharacter)
     {
     char theCharacter = *deserializer->_current;
@@ -917,5 +895,131 @@ static inline BOOL _ScanUTF8String(CJSONDeserializer *deserializer, const char *
         }
     return (NO);
     }
+
+static size_t ConvertEscapes(CJSONDeserializer *deserializer, UInt8 outBuffer[static 4])
+    {
+	if (deserializer->_end - deserializer->_current < 4)
+		{
+		return(0);
+		}
+    UInt32 C = hexdec(deserializer->_current, 4);
+    deserializer->_current += 4;
+
+    if (C >= 0xD800 && C <= 0xDBFF)
+        {
+		if (deserializer->_end - deserializer->_current < 6)
+			{
+			return(0);
+			}
+        if ((*deserializer->_current++) != '\\')
+            {
+			return(0);
+            }
+        if ((*deserializer->_current++) != 'u')
+            {
+			return(0);
+            }
+
+        UInt32 C2 = hexdec(deserializer->_current, 4);
+		deserializer->_current += 4;
+
+        if (C2 >= 0xDC00 && C2 <= 0xDFFF)
+            {
+            C = ((C - 0xD800) << 10) + (C2 - 0xDC00) + 0x0010000UL;
+            }
+        else
+            {
+            return(0);
+            }
+        }
+	else if (C >= 0xDC00 && C <= 0xDFFF)
+		{
+		return(0);
+		}
+
+    int bytesToWrite;
+    if (C < 0x80)
+        {
+        bytesToWrite = 1;
+        }
+    else if (C < 0x800)
+        {
+        bytesToWrite = 2;
+        }
+    else if (C < 0x10000)
+        {
+        bytesToWrite = 3;
+        }
+    else if (C < 0x110000)
+        {
+        bytesToWrite = 4;
+        }
+    else
+        {
+        return(0);
+        }
+
+    static const UInt8 firstByteMark[7] = { 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC };
+    UInt8 *target = outBuffer + bytesToWrite;
+    const UInt32 byteMask = 0xBF;
+    const UInt32 byteMark = 0x80;
+    switch (bytesToWrite)
+        {
+        case 4:
+            *--target = ((C | byteMark) & byteMask);
+            C >>= 6;
+        case 3:
+            *--target = ((C | byteMark) & byteMask);
+            C >>= 6;
+        case 2:
+            *--target = ((C | byteMark) & byteMask);
+            C >>= 6;
+        case 1:
+            *--target =  (C | firstByteMark[bytesToWrite]);
+        }
+
+    return(bytesToWrite);
+    }
+
+// Adapted from http://stackoverflow.com/a/11068850
+/** 
+ * @brief convert a hexidecimal string to a signed long
+ * will not produce or process negative numbers except 
+ * to signal error.
+ * 
+ * @param hex without decoration, case insensative. 
+ * 
+ * @return -1 on error, or result (max sizeof(long)-1 bits)
+ */
+static int hexdec(const char *hex, int len)
+    {
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Winitializer-overrides"
+    static const int hextable[] = {
+       [0 ... 255] = -1,                     // bit aligned access into this table is considerably
+       ['0'] = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, // faster for most modern processors,
+       ['A'] = 10, 11, 12, 13, 14, 15,       // for the space conscious, reduce to
+       ['a'] = 10, 11, 12, 13, 14, 15        // signed char.
+    };
+    #pragma clang diagnostic pop
+
+    int ret = 0;
+    if (len > 0)
+        {
+        while (*hex && ret >= 0 && (len--))
+            {
+            ret = (ret << 4) | hextable[*hex++];
+            }
+        }
+    else
+        {
+        while (*hex && ret >= 0)
+            {
+            ret = (ret << 4) | hextable[*hex++];
+            }
+        }
+    return ret; 
+    }
+
 
 @end

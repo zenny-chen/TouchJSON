@@ -56,6 +56,7 @@ typedef enum {
     kJSONDeserializerErrorCode_StringUnicodeNotDecoded = -302,
     kJSONDeserializerErrorCode_StringUnknownEscapeCode = -303,
     kJSONDeserializerErrorCode_StringNotTerminated = -304,
+	kJSONDeserializerErrorCode_StringBadEscaping = -305,
     
     // Number scanning
     kJSONDeserializerErrorCode_NumberNotScannable = -401

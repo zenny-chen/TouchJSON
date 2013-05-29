@@ -45,15 +45,17 @@
 
 static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     {
-    CJSONDeserializer *theScanner = [CJSONDeserializer deserializer];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+
     for (NSString *theKey in inOptions)
         {
         id theValue = [inOptions objectForKey:theKey];
-        [theScanner setValue:theValue forKey:theKey];	
+        [theDeserializer setValue:theValue forKey:theKey];
         }
 
     NSData *theData = [inString dataUsingEncoding:NSUTF8StringEncoding];
-    id theResult = [theScanner deserialize:theData error:NULL];
+    id theResult = [theDeserializer deserialize:theData error:NULL];
 
     return(theResult != NULL);
     }
@@ -169,14 +171,6 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 //    BOOL theResult = Scan(@"\"Hello\r\rworld.\"", &theObject, NULL);
 //    STAssertTrue(theResult, @"Scan return failure.");
 //    STAssertTrue([theObject isEqual:@"Hello\r\rworld."], @"Result of scan didn't match expectations.");
-//    }
-
-//- (void)testStringUnicodeEscaping
-//    {
-//    id theObject = NULL;
-//    BOOL theResult = Scan(@"\"x\\u0078xx\"", &theObject, NULL);
-//    STAssertTrue(theResult, @"Scan return failure.");
-//    STAssertTrue([theObject isEqual:@"xxxx"], @"Result of scan didn't match expectations.");
 //    }
 
 //- (void)testStringLooseEscaping
@@ -598,15 +592,6 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 //	STAssertEqualObjects(array, [NSArray arrayWithObject:@"Expos\u00E9"], nil);
 //    }
 
-
--(void)testLargeNumbers
-    {
-    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
-    NSData *theData = [@"14399073641566209" dataUsingEncoding:NSUTF8StringEncoding];
-	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
-	STAssertEquals([theObject unsignedLongLongValue], 14399073641566209ULL, @"Numbers did not contain expected contents");
-    }
-
 - (void)testCloseHashes
     {
     STAssertEquals(
@@ -624,6 +609,140 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
         ];
 	STAssertEqualObjects(theResult, theExpectedResult, @"");
     }
+
+-(void)testLargeNumbers
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"14399073641566209" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEquals([theObject unsignedLongLongValue], 14399073641566209ULL, @"Numbers did not contain expected contents");
+    }
+
+-(void)test64BitNumbers
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"9223372036854775807" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEquals([theObject unsignedLongLongValue], 9223372036854775807ULL, @"Numbers did not contain expected contents");
+
+//    theDeserializer = [CJSONDeserializer deserializer];
+//    theData = [@"−9223372036854775808" dataUsingEncoding:NSUTF8StringEncoding];
+//	theObject = [theDeserializer deserialize:theData error:nil];
+//	STAssertEquals([theObject longLongValue], -9223372036854775808LL, @"Numbers did not contain expected contents");
+    }
+
+-(void)testEscapeCodes1
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSData *theData = [@"\"\\u003c\"" dataUsingEncoding:NSASCIIStringEncoding];
+	NSError *theError = NULL;
+	id theResult = [theDeserializer deserialize:theData error:&theError];
+	STAssertNil(theError, @"Got an error when expected none.");
+	STAssertEqualObjects(theResult, @"<", @"Mismatch");
+	}
+
+-(void)testEscapeCodes2
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSData *theData = [@"\"\\u003ca href=\\\"\\\"\\u003e\"" dataUsingEncoding:NSASCIIStringEncoding];
+	NSError *theError = NULL;
+	id theResult = [theDeserializer deserialize:theData error:&theError];
+	STAssertNil(theError, @"Got an error when expected none.");
+	STAssertEqualObjects(theResult, @"<a href=\"\">", @"Mismatch");
+	}
+
+-(void)testNullEscapeCode
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSData *theData = [@"\"\\u0000\"" dataUsingEncoding:NSASCIIStringEncoding];
+	NSError *theError = NULL;
+	id theResult = [theDeserializer deserialize:theData error:&theError];
+	STAssertNil(theError, @"Got an error when expected none.");
+	STAssertEqualObjects(theResult, @"\0", @"Mismatch");
+	}
+
+-(void)testMalformedEscapeCodes0
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSData *theData = [@"\"\\u\"" dataUsingEncoding:NSASCIIStringEncoding];
+	NSError *theError = NULL;
+	id theResult = [theDeserializer deserialize:theData error:&theError];
+	STAssertNotNil(theError, @"Expected an error!");
+	STAssertNil(theResult, @"Expected a nil");
+	}
+
+-(void)testMalformedEscapeCodes1
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSData *theData = [@"\"\\u2\"" dataUsingEncoding:NSASCIIStringEncoding];
+	NSError *theError = NULL;
+	id theResult = [theDeserializer deserialize:theData error:&theError];
+	STAssertNotNil(theError, @"Expected an error!");
+	STAssertNil(theResult, @"Expected a nil");
+	}
+
+-(void)testMalformedEscapeCodes2
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSData *theData = [@"\"\\u20\"" dataUsingEncoding:NSASCIIStringEncoding];
+	NSError *theError = NULL;
+	id theResult = [theDeserializer deserialize:theData error:&theError];
+	STAssertNotNil(theError, @"Expected an error!");
+	STAssertNil(theResult, @"Expected a nil");
+	}
+
+-(void)testMalformedEscapeCodes3
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSData *theData = [@"\"\\u202\"" dataUsingEncoding:NSASCIIStringEncoding];
+	NSError *theError = NULL;
+	id theResult = [theDeserializer deserialize:theData error:&theError];
+	STAssertNotNil(theError, @"Expected an error!");
+	STAssertNil(theResult, @"Expected a nil");
+	}
+
+-(void)testSurrogatePairs
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSData *theData = [@"\"\\uD83D\\uDCA9\"" dataUsingEncoding:NSASCIIStringEncoding];
+	NSError *theError = NULL;
+	id theResult = [theDeserializer deserialize:theData error:&theError];
+	STAssertNil(theError, @"Got an error when expected none.");
+	STAssertEqualObjects([theResult decomposedStringWithCanonicalMapping], [@"💩" decomposedStringWithCanonicalMapping], @"Poop mismatch");
+	}
+
+-(void)testBrokenSurrogatePair1
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSData *theData = [@"\"\\uD83D\"" dataUsingEncoding:NSASCIIStringEncoding];
+	NSError *theError = NULL;
+	id theResult = [theDeserializer deserialize:theData error:&theError];
+	STAssertNotNil(theError, @"Didn't get error when expected one.");
+	STAssertNil(theResult, @"Poop mismatch");
+	}
+
+-(void)testBrokenSurrogatePair2
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSData *theData = [@"\"\\uDCA9\"" dataUsingEncoding:NSASCIIStringEncoding];
+	NSError *theError = NULL;
+	id theResult = [theDeserializer deserialize:theData error:&theError];
+	STAssertNotNil(theError, @"Didn't get error when expected one.");
+	STAssertNil(theResult, @"Poop mismatch");
+	}
+
+
+
 
 
 @end
