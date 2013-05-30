@@ -515,20 +515,51 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 	STAssertEqualObjects(theResult, @(1e123), @"Floating point mismatch");
 	}
 
+-(void)testNumbers1
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSNumber *theNumber = @(100);
+    NSData *theData = [[theNumber stringValue] dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, theNumber, @"Numbers did not contain expected contents");
+    }
+
+-(void)testNumbers2
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSNumber *theNumber = @(-100);
+    NSData *theData = [[theNumber stringValue] dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, theNumber, @"Numbers did not contain expected contents");
+    }
+
 -(void)testLargeNumbers
     {
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
-    NSData *theData = [@"14399073641566209" dataUsingEncoding:NSUTF8StringEncoding];
+    NSNumber *theNumber = @(0xFFFFFFFFFFFFFFFFULL);
+    NSData *theData = [[theNumber stringValue] dataUsingEncoding:NSUTF8StringEncoding];
 	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
-	STAssertEqualObjects(theObject, @(14399073641566209ULL), @"Numbers did not contain expected contents");
+	STAssertEqualObjects(theObject, theNumber, @"Numbers did not contain expected contents");
     }
 
--(void)testLargeNegativeNumbers
+//@(14399073641566209ULL)
+
+-(void)testLargeNegativeNumbers1
     {
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
-    NSData *theData = [@"-14399073641566209" dataUsingEncoding:NSUTF8StringEncoding];
+    NSNumber *theNumber = @(-14399073641566209LL);
+    NSData *theData = [[theNumber stringValue] dataUsingEncoding:NSUTF8StringEncoding];
 	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
-	STAssertEqualObjects(theObject, @(-14399073641566209LL), @"Numbers did not contain expected contents");
+	STAssertEqualObjects(theObject, theNumber, @"Numbers did not contain expected contents");
+    }
+
+-(void)testLargeNegativeNumbers2
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSNumber *theNumber = @(-0xFFFFFFFFFFFFFFFLL);
+    NSData *theData = [[theNumber stringValue] dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, theNumber, @"Numbers did not contain expected contents");
     }
 
 -(void)test64BitNumbers
@@ -550,22 +581,23 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 -(void)testUpperLimitNumbers
     {
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
-	NSString *theValue = @"99999999999999999999999999999999999999";
+    // NSDecimalNumber can reliably store 38 digits...
+	NSString *theValue = [@"" stringByPaddingToLength:38 withString:@"9" startingAtIndex:0];
+	STAssertTrue([theValue length] == 38, @"");
     NSData *theData = [theValue dataUsingEncoding:NSUTF8StringEncoding];
 	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
-	NSLog(@"%@", theObject);
-	NSLog(@"%@", theValue);
 	STAssertEqualObjects([theObject stringValue], theValue, @"Numbers did not contain expected contents");
     }
 
-//-(void)testOverflowNumbers
+// TODO -- disabling this test. Right now TouchJSON will overflow NSDecimalNumber - if you use JSON for numbers with mantinssas of more than 38 digits you're screwed anyway.
+//-(void)testUpperLimitNumbers2
 //    {
 //    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
-//	NSString *theValue = @"999999999999999999999999999999999999999";
+//    // NSDecimalNumber can reliably store 38 digits...
+//	NSString *theValue = [@"" stringByPaddingToLength:39 withString:@"9" startingAtIndex:0];
+//	STAssertTrue([theValue length] == 39, @"");
 //    NSData *theData = [theValue dataUsingEncoding:NSUTF8StringEncoding];
 //	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
-//	NSLog(@"%@", theObject);
-//	NSLog(@"%@", theValue);
 //	STAssertEqualObjects([theObject stringValue], theValue, @"Numbers did not contain expected contents");
 //    }
 

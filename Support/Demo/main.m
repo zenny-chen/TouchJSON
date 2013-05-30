@@ -39,11 +39,11 @@ int main(int argc, char **argv)
 	{
 	#pragma unused(argc, argv)
 
-	unsigned long long N = 0xffffffffffffffff1ULL;
+	unsigned long long N = 0xffffffffffffffffULL;
     NSData *theData = [[@(N) stringValue] dataUsingEncoding:NSUTF8StringEncoding];
     id theResult = test(theData);
 	NSLog(@"%@ (%@) %d %llx", theResult, NSStringFromClass([theResult class]), [theResult isEqual:@(N)], [theResult unsignedLongLongValue]);
-//    test_files();
+    test_files();
 
 	return(0);
 	}
