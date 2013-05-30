@@ -714,10 +714,10 @@ typedef struct
 	if (theValue == NULL)
 		{
 		errno = 0;
-		unsigned long long n = strtoull(theRange.location, NULL, 0);
+		long long n = strtoll(theRange.location, NULL, 0);
 		if (errno == 0)
 			{
-			theValue = [NSNumber numberWithUnsignedLongLong:n];
+			theValue = (__bridge_transfer NSNumber *)CFNumberCreate(kCFAllocatorDefault, kCFNumberLongLongType, &n);
 			}
 		errno = 0;
 		}
@@ -725,10 +725,10 @@ typedef struct
 	if (theValue == NULL)
 		{
 		errno = 0;
-		long long n = strtoll(theRange.location, NULL, 0);
+		unsigned long long n = strtoull(theRange.location, NULL, 0);
 		if (errno == 0)
 			{
-			theValue = (__bridge_transfer NSNumber *)CFNumberCreate(kCFAllocatorDefault, kCFNumberLongLongType, &n);
+			theValue = [NSNumber numberWithUnsignedLongLong:n];
 			}
 		errno = 0;
 		}
