@@ -601,5 +601,29 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 //	STAssertEqualObjects([theObject stringValue], theValue, @"Numbers did not contain expected contents");
 //    }
 
+-(void)testBadInt
+    {
+    NSError *theError = NULL;
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+	NSString *theValue = @"1-1-1-1-1";
+    NSData *theData = [theValue dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theObject, @"Got a value when I shouldnt.");
+    STAssertNotNil(theError, @"Didn't get an error.");g
+    }
+
+-(void)testBadFloatgit
+    {
+    NSError *theError = NULL;
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+	NSString *theValue = @"1.1.1.1.1.";
+    NSData *theData = [theValue dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theObject, @"Got a value when I shouldnt.");
+    STAssertNotNil(theError, @"Didn't get an error.");
+    }
+
 @end
 

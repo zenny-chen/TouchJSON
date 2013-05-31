@@ -692,7 +692,6 @@ typedef struct
     {
     _current = _SkipWhiteSpace(_current, _end);
 
-	NSNumber *theValue = NULL;
     PtrRange theRange;
     if ([self _scanDoubleCharactersIntoRange:&theRange] == NO)
 		{
@@ -703,42 +702,15 @@ typedef struct
 		return (NO);
 		}
 
-	if (_PtrRangeContainsCharacter(theRange, '.') == YES || _PtrRangeContainsCharacter(theRange, 'e') == YES)
-		{
-		CFStringRef theString = CFStringCreateWithBytes(kCFAllocatorDefault, theRange.location, theRange.length, kCFStringEncodingASCII, NO);
-		double n = CFStringGetDoubleValue(theString);
-		theValue = (__bridge_transfer NSNumber *) CFNumberCreate(kCFAllocatorDefault, kCFNumberDoubleType, &n);
-		CFRelease(theString);
-		}
-
+	NSNumber *theValue = ScanNumber(theRange.location, theRange.length, NULL);
 	if (theValue == NULL)
 		{
-		errno = 0;
-		long long n = strtoll(theRange.location, NULL, 0);
-		if (errno == 0)
+		if (outError)
 			{
-			theValue = (__bridge_transfer NSNumber *)CFNumberCreate(kCFAllocatorDefault, kCFNumberLongLongType, &n);
+			*outError = [self _error:kJSONDeserializerErrorCode_NumberNotScannable description:@"Could not scan number constant."];
 			}
-		errno = 0;
+		return (NO);
 		}
-
-	if (theValue == NULL)
-		{
-		errno = 0;
-		unsigned long long n = strtoull(theRange.location, NULL, 0);
-		if (errno == 0)
-			{
-			theValue = [NSNumber numberWithUnsignedLongLong:n];
-			}
-		errno = 0;
-		}
-
-	if (theValue == NULL)
-		{
-		CFStringRef theString = CFStringCreateWithBytes(kCFAllocatorDefault, theRange.location, theRange.length, kCFStringEncodingASCII, NO);
-		theValue = [[NSDecimalNumber alloc] initWithString:(__bridge NSString *)theString locale:@{ NSLocaleDecimalSeparator: @"." }];
-		CFRelease(theString);
-        }
 
 	if (outValue)
 		{
@@ -1033,6 +1005,141 @@ static int hexdec(const char *hex, int len)
             }
         }
     return ret; 
+    }
+
+static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError)
+    {
+	if (length < 1)
+		{
+		goto error;
+		}
+
+    const char *P = start;
+    const char *end = start + length;
+
+	// Scan for a leading - character.
+    BOOL negative = NO;
+    if (*P == '-')
+        {
+        negative = YES;
+        ++P;
+        }
+
+	// Scan for integer portion
+    UInt64 integer = 0;
+	int integer_digits = 0;
+    while (P != end && isdigit(*P))
+        {
+		if (integer > (UINTMAX_MAX / 10))
+			{
+			goto fallback;
+			}
+        integer *= 10;
+        integer += *P - '0';
+		++integer_digits;
+        ++P;
+        }
+
+	// If we scan a '.' character scan for fraction portion.
+    UInt64 frac = 0;
+    int frac_digits = 0;
+    if (P != end && *P == '.')
+        {
+        ++P;
+        while (P != end && isdigit(*P))
+            {
+			if (frac > (UINTMAX_MAX / 10))
+				{
+				goto fallback;
+				}
+            frac *= 10;
+            frac += *P - '0';
+            ++frac_digits;
+            ++P;
+            }
+        }
+
+	// If we scan no integer digits and no fraction digits this isn't good (generally strings like "." or ".e10")
+	if (integer_digits == 0 && frac_digits == 0)
+		{
+		goto error;
+		}
+
+	// If we scan an 'e' character scan for '+' or '-' then scan exponent portion.
+    BOOL negativeExponent = NO;
+    UInt64 exponent = 0;
+    if (P != end && *P == 'e')
+        {
+        ++P;
+        if (P != end && *P == '-')
+            {
+            ++P;
+            negativeExponent = YES;
+            }
+        else if (P != end && *P == '+')
+            {
+            ++P;
+            }
+
+        while (P != end && isdigit(*P))
+            {
+			if (exponent > (UINTMAX_MAX / 10))
+				{
+				goto fallback;
+				}
+            exponent *= 10;
+            exponent += *P - '0';
+            ++P;
+            }
+        }
+
+	// If we haven't scanned the entire length something has gone wrong
+    if (P != end)
+        {
+		goto error;
+        }
+
+	// If we have no fraction and no exponent we're obviously an integer otherwise we're a number...
+    if (frac == 0 && exponent == 0)
+        {
+		if (negative == NO)
+			{
+			return([NSNumber numberWithUnsignedLongLong:integer]);
+			}
+		else
+			{
+			return([NSNumber numberWithLongLong:-integer]);
+			}
+        }
+    else
+        {
+        double double_fract = frac / pow(10, frac_digits);
+        double D = (double)integer + double_fract;
+		if (negative)
+			{
+			D *= -1;
+			}
+		if (exponent != 0)
+			{
+			D *= pow(10, negativeExponent ? -exponent : exponent);
+			}
+
+        return([NSNumber numberWithDouble:D]);
+        }
+
+
+fallback: {
+		NSString *theString = [[NSString alloc] initWithBytes:start length:length encoding:NSASCIIStringEncoding];
+		NSDecimalNumber *theDecimalNumber = [NSDecimalNumber decimalNumberWithString:theString];
+		return(theDecimalNumber);
+		}
+error: {
+		if (outError != NULL)
+			{
+			*outError = [NSError errorWithDomain:@"TODO" code:-1 userInfo:@{ NSLocalizedDescriptionKey: @"Could not parse string as a number." }];
+			}
+        return(NULL);
+		}
     }
 
 
