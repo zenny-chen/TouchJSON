@@ -610,10 +610,10 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     NSData *theData = [theValue dataUsingEncoding:NSUTF8StringEncoding];
 	NSNumber *theObject = [theDeserializer deserialize:theData error:&theError];
     STAssertNil(theObject, @"Got a value when I shouldnt.");
-    STAssertNotNil(theError, @"Didn't get an error.");g
+    STAssertNotNil(theError, @"Didn't get an error.");
     }
 
--(void)testBadFloatgit
+-(void)testBadFloat
     {
     NSError *theError = NULL;
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
