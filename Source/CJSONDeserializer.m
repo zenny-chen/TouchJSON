@@ -101,8 +101,7 @@ typedef struct
                 {
                 if (outError != NULL)
                     {
-					// TODO -- use a real error.
-                    *outError = [self _error:-1 description:NULL];
+                    *outError = [self _error:kJSONDeserializerErrorCode_ScanningFragmentsNotAllowed description:@"Scanning fragments not allowed."];
                     return(NULL);
                     }
                 }
@@ -1068,7 +1067,7 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
 	// If we scan an 'e' character scan for '+' or '-' then scan exponent portion.
     BOOL negativeExponent = NO;
     UInt64 exponent = 0;
-    if (P != end && *P == 'e')
+    if (P != end && (*P == 'e' || *P == 'E'))
         {
         ++P;
         if (P != end && *P == '-')
@@ -1136,8 +1135,8 @@ fallback: {
 error: {
 		if (outError != NULL)
 			{
-			*outError = [NSError errorWithDomain:@"TODO" code:-1 userInfo:@{ NSLocalizedDescriptionKey: @"Could not parse string as a number." }];
-			}
+			*outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:kJSONDeserializerErrorCode_NumberNotScannable userInfo:@{ NSLocalizedDescriptionKey: @"Could not scan number constant." }];
+            }
         return(NULL);
 		}
     }
