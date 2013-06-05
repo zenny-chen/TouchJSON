@@ -1029,7 +1029,7 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
 	int integer_digits = 0;
     while (P != end && isdigit(*P))
         {
-		if (integer > (UINTMAX_MAX / 10))
+		if (integer >= (UINTMAX_MAX / 10))
 			{
 			goto fallback;
 			}
@@ -1047,7 +1047,7 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
         ++P;
         while (P != end && isdigit(*P))
             {
-			if (frac > (UINTMAX_MAX / 10))
+			if (frac >= (UINTMAX_MAX / 10))
 				{
 				goto fallback;
 				}
@@ -1082,7 +1082,7 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
 
         while (P != end && isdigit(*P))
             {
-			if (exponent > (UINTMAX_MAX / 10))
+			if (exponent >= (UINTMAX_MAX / 10))
 				{
 				goto fallback;
 				}
@@ -1129,7 +1129,8 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
 
 fallback: {
 		NSString *theString = [[NSString alloc] initWithBytes:start length:length encoding:NSASCIIStringEncoding];
-		NSDecimalNumber *theDecimalNumber = [NSDecimalNumber decimalNumberWithString:theString];
+        NSLocale *theLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+		NSDecimalNumber *theDecimalNumber = [NSDecimalNumber decimalNumberWithString:theString locale:theLocale ];
 		return(theDecimalNumber);
 		}
 error: {
