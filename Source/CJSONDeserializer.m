@@ -1029,11 +1029,11 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
 	int integer_digits = 0;
     while (P != end && isdigit(*P))
         {
-		if (integer >= (UINTMAX_MAX / 10))
+		if (integer > (UINTMAX_MAX / 10ULL))
 			{
 			goto fallback;
 			}
-        integer *= 10;
+        integer *= 10ULL;
         integer += *P - '0';
 		++integer_digits;
         ++P;
@@ -1047,11 +1047,11 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
         ++P;
         while (P != end && isdigit(*P))
             {
-			if (frac >= (UINTMAX_MAX / 10))
+			if (frac >= (UINTMAX_MAX / 10ULL))
 				{
 				goto fallback;
 				}
-            frac *= 10;
+            frac *= 10ULL;
             frac += *P - '0';
             ++frac_digits;
             ++P;
@@ -1082,7 +1082,7 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
 
         while (P != end && isdigit(*P))
             {
-			if (exponent >= (UINTMAX_MAX / 10))
+			if (exponent > (UINTMAX_MAX / 10))
 				{
 				goto fallback;
 				}
@@ -1107,6 +1107,10 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
 			}
 		else
 			{
+            if (integer >= INT64_MAX)
+                {
+                goto fallback;
+                }
 			return([NSNumber numberWithLongLong:-(long long)integer]);
 			}
         }

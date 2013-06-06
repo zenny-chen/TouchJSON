@@ -657,6 +657,16 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 	STAssertEqualObjects(theObject, [NSDecimalNumber decimalNumberWithString:@"36893488147419103232"], @"Numbers did not contain expected contents");
     }
 
+-(void)testLargeNegativeNumbers
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSString *theValue = @"-18446744073709551615";
+    NSLog(@"*** %@", theValue);
+    NSData *theData = [theValue dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, [NSDecimalNumber decimalNumberWithString:theValue], @"Numbers did not contain expected contents");
+    }
+
 -(void)testUpperLimitNumbers
     {
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
