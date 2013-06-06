@@ -51,6 +51,35 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 
 #pragma mark -
 
+// Disabled for now - this can in fact cause crashes!!!
+//- (void)testInvalidDictionaries_1
+//    {
+//    NSString *theString = @"{ \"key\":";
+//    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+//    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+//	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+//    NSError *theError = NULL;
+//    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+//    STAssertNil(theDeseralizedValue, @"This test should return nil");
+//    STAssertNotNil(theError, @"This test should return an error");
+//    }
+
+- (void)testInvalidDictionaries_2
+    {
+    NSString *theString = @"{ \"key\"•";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
+    }
+
+#pragma mark -
+
+#pragma mark Old tests - these are still being reviewed for value and possibly due for clean up.
+
 - (void)testWhitespace2
     {
     id theObject = NULL;
@@ -237,8 +266,6 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 	STAssertNil(error, @"No error should be reported when deserializing an empty dictionary", nil);
 	STAssertNotNil(dictionary, @"Dictionary will be nil when there is not an error deserializing", nil);
     }
-
-#pragma mark DeprecatedTests
 
 -(void)testCheckForError_Deprecated
     {
