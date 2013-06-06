@@ -1107,7 +1107,7 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
 			}
 		else
 			{
-			return([NSNumber numberWithLongLong:-integer]);
+			return([NSNumber numberWithLongLong:-(long long)integer]);
 			}
         }
     else
@@ -1124,14 +1124,7 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
 			}
 		if (D != 0.0 && exponent != 0)
 			{
-            if (negativeExponent)
-                {
-                D /= pow(10, exponent);
-                }
-            else
-                {
-                D *= pow(10, exponent);
-                }
+            D *= pow(10, negativeExponent ? -(double)exponent : exponent);
 			}
 
         return([NSNumber numberWithDouble:D]);
