@@ -542,7 +542,86 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 	STAssertEqualObjects(theObject, theNumber, @"Numbers did not contain expected contents");
     }
 
-//@(14399073641566209ULL)
+-(void)testScientificNumbers1
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"-134e4" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, @(-134e4), @"Numbers did not contain expected contents");
+    }
+
+-(void)testScientificNumbers2
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"-134e4" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, @(-134e4), @"Numbers did not contain expected contents");
+    }
+
+-(void)testScientificNumbers3
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"-134e-4" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, @(-134e-4), @"Numbers did not contain expected contents");
+    }
+
+-(void)testScientificNumbers4
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"-134E4" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, @(-134e4), @"Numbers did not contain expected contents");
+    }
+
+-(void)testScientificNumbers5
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"-134E4" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, @(-134e4), @"Numbers did not contain expected contents");
+    }
+
+-(void)testScientificNumbers6
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"-134E-4" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, @(-134e-4), @"Numbers did not contain expected contents");
+    }
+
+-(void)testScientificNumbers7
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"134E4" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, @(134e4), @"Numbers did not contain expected contents");
+    }
+
+-(void)testScientificNumbers8
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"134E4" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, @(134e4), @"Numbers did not contain expected contents");
+    }
+
+-(void)testScientificNumbers9
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"134E-4" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, @(134e-4), @"Numbers did not contain expected contents");
+    }
+
+-(void)testScientificNumbers10
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    NSData *theData = [@"134E0" dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:nil];
+	STAssertEqualObjects(theObject, @(134), @"Numbers did not contain expected contents");
+    }
+
 
 -(void)testLargeNegativeNumbers1
     {

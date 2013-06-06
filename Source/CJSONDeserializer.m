@@ -1112,15 +1112,26 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
         }
     else
         {
-        double double_fract = frac / pow(10, frac_digits);
-        double D = (double)integer + double_fract;
+        double D = (double)integer;
+        if (frac_digits > 0)
+            {
+            double double_fract = frac / pow(10, frac_digits);
+            D += double_fract;
+            }
 		if (negative)
 			{
 			D *= -1;
 			}
-		if (exponent != 0)
+		if (D != 0.0 && exponent != 0)
 			{
-			D *= pow(10, negativeExponent ? -exponent : exponent);
+            if (negativeExponent)
+                {
+                D /= pow(10, exponent);
+                }
+            else
+                {
+                D *= pow(10, exponent);
+                }
 			}
 
         return([NSNumber numberWithDouble:D]);
