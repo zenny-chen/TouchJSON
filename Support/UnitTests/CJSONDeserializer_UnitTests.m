@@ -430,6 +430,89 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     STAssertNotNil(theError, @"This test should return an error");
     }
 
+- (void)testLaxEscapeCodes_EscapedSingleUTF8Character
+    {
+    NSString *theString = @"\"\\u0061\"";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertNil(theError, @"This test should not return an error");
+    STAssertEqualObjects(theDeseralizedValue, @"a", @"");
+    }
+
+- (void)testLaxEscapeCodes_EscapedDoubleUTF8Character
+    {
+    NSString *theString = @"\"\\u00C6\"";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertNil(theError, @"This test should not return an error");
+    STAssertEqualObjects(theDeseralizedValue, @"Æ", @"");
+    }
+
+- (void)testLaxEscapeCodes_EscapedTripleUTF8Character
+    {
+    NSString *theString = @"\"\\u2026\"";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertNil(theError, @"This test should not return an error");
+    STAssertEqualObjects(theDeseralizedValue, @"…", @"");
+    }
+
+- (void)testLaxEscapeCodes_EscapedQuadUTF8Character
+    {
+    NSString *theString = @"\"\\uD83D\\uDCA9\"";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertNil(theError, @"This test should not return an error");
+    STAssertEqualObjects(theDeseralizedValue, @"💩", @"");
+    }
+
+
+#pragma mark Numbers
+
+- (void)testFloatsWithGiantFractions
+    {
+    NSString *theString = [NSString stringWithFormat:@"0.%llu", UINT64_MAX];
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertNil(theError, @"This test should return an error");
+    STAssertEqualObjects(theDeseralizedValue, [NSDecimalNumber decimalNumberWithString:theString], @"");
+    }
+
+- (void)testFloatsWithGiantExponents
+    {
+    NSString *theString = [NSString stringWithFormat:@"1.0E%llu", UINT64_MAX];
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertNil(theError, @"This test should return an error");
+    STAssertEqualObjects(theDeseralizedValue, [NSDecimalNumber decimalNumberWithString:theString], @"");
+    }
+
+
+
 #pragma mark Old tests - these are still being reviewed for value and possibly due for clean up.
 
 - (void)testWhitespace2
