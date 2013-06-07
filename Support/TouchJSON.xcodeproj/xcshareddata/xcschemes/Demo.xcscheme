@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "0460"
-   version = "1.3">
+   version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
@@ -27,6 +27,24 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
+      <PostActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "PATH=&quot;${PATH}:/usr/local/bin&quot;&#10;&#10;if [ which lconv ]&#10;  then&#10;    echo &quot;No lconv found. Please install&quot;&#10;    exit 0&#10;fi&#10;&#10;&#10;COVERAGE_DIR=&quot;${OBJECT_FILE_DIR}-${BUILD_VARIANTS}/${NATIVE_ARCH_ACTUAL}&quot;&#10;echo &quot;${COVERAGE_DIR}&quot; &gt; ~/Desktop/dir.txt&#10;lcov --capture --directory &quot;${COVERAGE_DIR}&quot; --output-file &quot;${COVERAGE_DIR}/converage.info&quot;&#10;#genhtml &quot;${COVERAGE_DIR}/converage.info&quot; --output-directory &quot;${COVERAGE_DIR}/out&quot;&#10;genhtml &quot;${COVERAGE_DIR}/converage.info&quot; --output-directory &quot;${SRCROOT}/Coverage Report&quot;&#10;&#10;&#10;">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "45B15E100947D97B00AE66EB"
+                     BuildableName = "UnitTests.octest"
+                     BlueprintName = "UnitTests"
+                     ReferencedContainer = "container:TouchJSON.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PostActions>
       <Testables>
          <TestableReference
             skipped = "NO">
