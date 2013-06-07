@@ -482,6 +482,34 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     STAssertEqualObjects(theDeseralizedValue, @"💩", @"");
     }
 
+#pragma mark Null
+
+- (void)testNullObjectReplacement1
+    {
+    NSString *theString = @"null";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    theDeserializer.nullObject = @"<<fake null>>";
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertNil(theError, @"This test should not return an error");
+    STAssertEqualObjects(theDeseralizedValue, theDeserializer.nullObject, @"");
+    }
+
+- (void)testNullObjectReplacement
+    {
+    NSString *theString = @"null";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    theDeserializer.nullObject = NULL;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNil(theError, @"This test should not return an error");
+    }
 
 #pragma mark Numbers
 
