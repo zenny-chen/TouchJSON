@@ -220,6 +220,15 @@ typedef struct
 
     _current = _SkipWhiteSpace(_current, _end);
 
+    if (_current >= _end)
+        {
+        if (outError)
+            {
+            *outError = [self _error:kJSONDeserializerErrorCode_CouldNotScanObject description:@"Could not read JSON object, input exhausted."];
+            }
+        return(NO);
+        }
+
     id theObject = NULL;
 
     const char C = *_current;

@@ -174,18 +174,17 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 
 #pragma mark Dictionaries
 
-// Disabled for now - this can in fact cause crashes!!!
-//- (void)testInvalidDictionaries_1
-//    {
-//    NSString *theString = @"{ \"key\":";
-//    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
-//    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
-//	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
-//    NSError *theError = NULL;
-//    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
-//    STAssertNil(theDeseralizedValue, @"This test should return nil");
-//    STAssertNotNil(theError, @"This test should return an error");
-//    }
+- (void)testInvalidDictionaries_1
+    {
+    NSString *theString = @"{ \"key\":";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
+    }
 
 - (void)testInvalidDictionaries_2
     {
