@@ -28,6 +28,7 @@
 //
 
 #import "CJSONDeserializer_UnitTests.h"
+
 #import "CJSONDeserializer.h"
 
 @implementation CJSONDeserializer_UnitTests
@@ -49,8 +50,147 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     return(theResult != NULL);
     }
 
-#pragma mark -
+#pragma mark Parameter Errors
 
+- (void)testParameterErrors_1
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:NULL error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
+    }
+
+- (void)testParameterErrors_Array
+    {
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserializeAsArray:NULL error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
+    }
+
+#pragma mark Encodings
+
+- (void)testEncodings_UTF8
+    {
+    NSString *theValue = @"This is a string.";
+    NSString *theJSONString = [NSString stringWithFormat:@"\"%@\"", theValue];
+    NSData *theJSONData = [theJSONString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theJSONData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertEqualObjects(theDeseralizedValue, theValue, @"Output did not match expectations");
+    STAssertNil(theError, @"This test should not return an error");
+    }
+
+- (void)testEncodings_UTF16LE
+    {
+    NSString *theValue = @"This is a string.";
+    NSString *theJSONString = [NSString stringWithFormat:@"\"%@\"", theValue];
+    NSData *theJSONData = [theJSONString dataUsingEncoding:NSUTF16LittleEndianStringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theJSONData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertEqualObjects(theDeseralizedValue, theValue, @"Output did not match expectations");
+    STAssertNil(theError, @"This test should not return an error");
+    }
+
+- (void)testEncodings_UTF16BE
+    {
+    NSString *theValue = @"This is a string.";
+    NSString *theJSONString = [NSString stringWithFormat:@"\"%@\"", theValue];
+    NSData *theJSONData = [theJSONString dataUsingEncoding:NSUTF16BigEndianStringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theJSONData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertEqualObjects(theDeseralizedValue, theValue, @"Output did not match expectations");
+    STAssertNil(theError, @"This test should not return an error");
+    }
+
+- (void)testEncodings_UTF32LE
+    {
+    NSString *theValue = @"This is a string.";
+    NSString *theJSONString = [NSString stringWithFormat:@"\"%@\"", theValue];
+    NSData *theJSONData = [theJSONString dataUsingEncoding:NSUTF32LittleEndianStringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theJSONData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertEqualObjects(theDeseralizedValue, theValue, @"Output did not match expectations");
+    STAssertNil(theError, @"This test should not return an error");
+    }
+
+- (void)testEncodings_UTF32BE
+    {
+    NSString *theValue = @"This is a string.";
+    NSString *theJSONString = [NSString stringWithFormat:@"\"%@\"", theValue];
+    NSData *theJSONData = [theJSONString dataUsingEncoding:NSUTF32BigEndianStringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theJSONData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertEqualObjects(theDeseralizedValue, theValue, @"Output did not match expectations");
+    STAssertNil(theError, @"This test should not return an error");
+    }
+
+- (void)testEncodings_UTF16
+    {
+    NSString *theValue = @"This is a string.";
+    NSString *theJSONString = [NSString stringWithFormat:@"\"%@\"", theValue];
+    NSData *theJSONData = [theJSONString dataUsingEncoding:NSUTF16StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theJSONData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertEqualObjects(theDeseralizedValue, theValue, @"Output did not match expectations");
+    STAssertNil(theError, @"This test should not return an error");
+    }
+
+- (void)testEncodings_UTF32
+    {
+    NSString *theValue = @"This is a string.";
+    NSString *theJSONString = [NSString stringWithFormat:@"\"%@\"", theValue];
+    NSData *theJSONData = [theJSONString dataUsingEncoding:NSUTF32StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theJSONData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertEqualObjects(theDeseralizedValue, theValue, @"Output did not match expectations");
+    STAssertNil(theError, @"This test should not return an error");
+    }
+
+// TODO
+//- (void)testEncodings_NonUTF
+//    {
+//    NSString *theString = @"\"This is a • string.\"";
+//    NSData *theData = [theString dataUsingEncoding:NSMacOSRomanStringEncoding];
+//    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+//	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+//    theDeserializer.allowedEncoding = NSMacOSRomanStringEncoding;
+//
+//    NSError *theError = NULL;
+//    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+//    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+//    STAssertEqualObjects(theDeseralizedValue, @"This is a string.", @"Output did not match expectations");
+//    STAssertNil(theError, @"This test should not return an error");
+//    }
+
+#pragma mark Dictionaries
+
+// TODO
 // Disabled for now - this can in fact cause crashes!!!
 //- (void)testInvalidDictionaries_1
 //    {

@@ -79,15 +79,6 @@ typedef struct
 
 - (id)deserialize:(NSData *)inData error:(NSError **)outError
     {
-    if (inData == NULL || [inData length] == 0)
-        {
-        if (outError)
-            {
-            *outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:kJSONDeserializerErrorCode_NothingToScan userInfo:NULL];
-            }
-
-        return (NULL);
-        }
     if ([self _setData:inData error:outError] == NO)
         {
         return (NULL);
@@ -114,77 +105,41 @@ typedef struct
 
 - (id)deserializeAsDictionary:(NSData *)inData error:(NSError **)outError
     {
-    if (inData == NULL || [inData length] == 0)
-        {
-        if (outError)
-            {
-            *outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:kJSONDeserializerErrorCode_NothingToScan userInfo:NULL];
-            }
-
-        return (NULL);
-        }
     if ([self _setData:inData error:outError] == NO)
         {
         return (NULL);
         }
     NSDictionary *theDictionary = NULL;
-    if ([self _scanJSONDictionary:&theDictionary error:outError] == YES)
-        {
-        return (theDictionary);
-        }
-    else
-        {
-        return (NULL);
-        }
+    [self _scanJSONDictionary:&theDictionary error:outError];
+    return(theDictionary);
     }
 
 - (id)deserializeAsArray:(NSData *)inData error:(NSError **)outError
     {
-    if (inData == NULL || [inData length] == 0)
-        {
-        if (outError)
-            {
-            *outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:kJSONDeserializerErrorCode_NothingToScan userInfo:NULL];
-            }
-
-        return (NULL);
-        }
     if ([self _setData:inData error:outError] == NO)
         {
         return (NULL);
         }
     NSArray *theArray = NULL;
-    if ([self _scanJSONArray:&theArray error:outError] == YES)
-        {
-        return (theArray);
-        }
-    else
-        {
-        return (NULL);
-        }
+    [self _scanJSONArray:&theArray error:outError];
+    return(theArray);
     }
 
 #pragma mark -
-
-- (BOOL)isAtEnd
-    {
-    return (_current >= _end);
-    }
 
 - (NSUInteger)scanLocation
     {
     return (_current - _start);
     }
 
-- (void)setData:(NSData *)inData
-    {
-    [self _setData:inData error:NULL];
-    }
-
 - (BOOL)_setData:(NSData *)inData error:(NSError **)outError;
     {
     if (_data == inData)
         {
+        if (outError)
+            {
+            *outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:kJSONDeserializerErrorCode_NothingToScan userInfo:NULL];
+            }
         return(NO);
         }
 
@@ -192,7 +147,7 @@ typedef struct
     if (theData.length >= 4)
         {
         // This code is lame, but it works. Because the first character of any JSON string will always be a (ascii) control character we can work out the Unicode encoding by the bit pattern. See section 3 of http://www.ietf.org/rfc/rfc4627.txt
-        const char *theChars = theData.bytes;
+        const UInt8 *theChars = theData.bytes;
         NSStringEncoding theEncoding = NSUTF8StringEncoding;
         if (theChars[0] != 0 && theChars[1] == 0)
             {
@@ -214,6 +169,25 @@ typedef struct
             else if (theChars[1] != 0)
                 {
                 theEncoding = NSUTF16BigEndianStringEncoding;
+                }
+            }
+        else
+            {
+            const UInt32 *C32 = (UInt32 *)theChars;
+            if (*C32 == CFSwapInt32HostToBig(0x0000FEFF) || *C32 == CFSwapInt32HostToBig(0xFFFE0000))
+                {
+                theEncoding = NSUTF32StringEncoding;
+                }
+            else
+                {
+                const uint16_t *C16 = (UInt16 *)theChars;
+                if (*C16 == CFSwapInt16HostToBig(0xFEFF) || *C16 == CFSwapInt16HostToBig(0xFFFE))
+                    {
+                    theEncoding = NSUTF16StringEncoding;
+                    }
+                else
+                    {
+                    }
                 }
             }
 

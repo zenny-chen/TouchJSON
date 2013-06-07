@@ -39,11 +39,15 @@ int main(int argc, char **argv)
 	{
 	#pragma unused(argc, argv)
 
-	unsigned long long N = 0xffffffffffffffffULL;
-    NSData *theData = [[@(N) stringValue] dataUsingEncoding:NSUTF8StringEncoding];
-    id theResult = test(theData);
-	NSLog(@"%@ (%@) %d %llx", theResult, NSStringFromClass([theResult class]), [theResult isEqual:@(N)], [theResult unsignedLongLongValue]);
-    test_files();
+    NSString *theString = @"\"This is a string.\"";
+    NSData *theData = [theString dataUsingEncoding:NSUTF32StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    NSLog(@"%@ %@", theDeseralizedValue, theError);
+
+//    test_files();
 
 	return(0);
 	}
