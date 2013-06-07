@@ -36,31 +36,31 @@ static id test(NSData *inData);
 static void test_files(void);
 
 int main(int argc, char **argv)
-	{
-	#pragma unused(argc, argv)
+    {
+    #pragma unused(argc, argv)
 
-    NSString *theString = @"\"This is a string.\"";
+    NSString *theString = @"<XML>";
     NSData *theData = [theString dataUsingEncoding:NSUTF32StringEncoding];
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
-	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
     NSError *theError = NULL;
     id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
     NSLog(@"%@ %@", theDeseralizedValue, theError);
 
 //    test_files();
 
-	return(0);
-	}
+    return(0);
+    }
 
 static void test_files(void)
     {
     NSDirectoryEnumerator *theEnumerator = [[NSFileManager defaultManager] enumeratorAtURL:[NSURL fileURLWithPath:@"Test Data"] includingPropertiesForKeys:NULL options:0 errorHandler:NULL];
     for (NSURL *theURL in theEnumerator)
         {
-		NSLog(@"%@ ********************************", [theURL lastPathComponent]);
+        NSLog(@"%@ ********************************", [theURL lastPathComponent]);
         NSData *theData = [NSData dataWithContentsOfURL:theURL];
 
-		test(theData);
+        test(theData);
         }
     }
 
@@ -69,20 +69,20 @@ static id test(NSData *inData)
     NSError *theError = NULL;
 //    NSString *theString = @"\"\\uD83D\\uDCA9\"";
 //    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
-	CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
-	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
-	id theResult = [theDeserializer deserialize:inData error:&theError];
-	if (theResult == NULL)
-		{
-		NSLog(@"ERROR: %@", theError);
-		return(NULL);
-		}
-	id theExpectedResult = [NSJSONSerialization JSONObjectWithData:inData options:NSJSONReadingAllowFragments error:NULL];
-	if ([theResult isEqual:theExpectedResult] == NO)
-		{
-		NSLog(@"TouchJSON and NSJSON* results differ");
-		NSLog(@"TouchJSON: (%@) %@", NSStringFromClass([theResult class]), theResult);
-		NSLog(@"NSJSON*: (%@) %@", NSStringFromClass([theExpectedResult class]), theExpectedResult);
-		}
-	return(theResult);
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    id theResult = [theDeserializer deserialize:inData error:&theError];
+    if (theResult == NULL)
+        {
+        NSLog(@"ERROR: %@", theError);
+        return(NULL);
+        }
+    id theExpectedResult = [NSJSONSerialization JSONObjectWithData:inData options:NSJSONReadingAllowFragments error:NULL];
+    if ([theResult isEqual:theExpectedResult] == NO)
+        {
+        NSLog(@"TouchJSON and NSJSON* results differ");
+        NSLog(@"TouchJSON: (%@) %@", NSStringFromClass([theResult class]), theResult);
+        NSLog(@"NSJSON*: (%@) %@", NSStringFromClass([theExpectedResult class]), theExpectedResult);
+        }
+    return(theResult);
     }

@@ -576,14 +576,14 @@ typedef struct
                     {
                     UInt8 theBuffer[4];
                     size_t theLength = ConvertEscapes(self, theBuffer);
-					if (theLength == 0)
-						{
+                    if (theLength == 0)
+                        {
                         if (outError)
                             {
                             *outError = [self _error:kJSONDeserializerErrorCode_StringBadEscaping description:@"Could not decode string escape code."];
                             }
-						return(NO);
-						}
+                        return(NO);
+                        }
                     [_scratchData appendBytes:&theBuffer length:theLength];
                     theCharacter = 0;
                     }
@@ -668,28 +668,28 @@ typedef struct
 
     PtrRange theRange;
     if ([self _scanDoubleCharactersIntoRange:&theRange] == NO)
-		{
-		if (outError)
-			{
-			*outError = [self _error:kJSONDeserializerErrorCode_NumberNotScannable description:@"Could not scan number constant."];
-			}
-		return (NO);
-		}
+        {
+        if (outError)
+            {
+            *outError = [self _error:kJSONDeserializerErrorCode_NumberNotScannable description:@"Could not scan number constant."];
+            }
+        return (NO);
+        }
 
-	NSNumber *theValue = ScanNumber(theRange.location, theRange.length, NULL);
-	if (theValue == NULL)
-		{
-		if (outError)
-			{
-			*outError = [self _error:kJSONDeserializerErrorCode_NumberNotScannable description:@"Could not scan number constant."];
-			}
-		return (NO);
-		}
+    NSNumber *theValue = ScanNumber(theRange.location, theRange.length, NULL);
+    if (theValue == NULL)
+        {
+        if (outError)
+            {
+            *outError = [self _error:kJSONDeserializerErrorCode_NumberNotScannable description:@"Could not scan number constant."];
+            }
+        return (NO);
+        }
 
-	if (outValue)
-		{
-		*outValue = theValue;
-		}
+    if (outValue)
+        {
+        *outValue = theValue;
+        }
 
     return (YES);
     }
@@ -858,30 +858,30 @@ static inline BOOL _ScanUTF8String(CJSONDeserializer *deserializer, const char *
 
 static size_t ConvertEscapes(CJSONDeserializer *deserializer, UInt8 outBuffer[static 4])
     {
-	if (deserializer->_end - deserializer->_current < 4)
-		{
-		return(0);
-		}
+    if (deserializer->_end - deserializer->_current < 4)
+        {
+        return(0);
+        }
     UInt32 C = hexdec(deserializer->_current, 4);
     deserializer->_current += 4;
 
     if (C >= 0xD800 && C <= 0xDBFF)
         {
-		if (deserializer->_end - deserializer->_current < 6)
-			{
-			return(0);
-			}
+        if (deserializer->_end - deserializer->_current < 6)
+            {
+            return(0);
+            }
         if ((*deserializer->_current++) != '\\')
             {
-			return(0);
+            return(0);
             }
         if ((*deserializer->_current++) != 'u')
             {
-			return(0);
+            return(0);
             }
 
         UInt32 C2 = hexdec(deserializer->_current, 4);
-		deserializer->_current += 4;
+        deserializer->_current += 4;
 
         if (C2 >= 0xDC00 && C2 <= 0xDFFF)
             {
@@ -892,10 +892,10 @@ static size_t ConvertEscapes(CJSONDeserializer *deserializer, UInt8 outBuffer[st
             return(0);
             }
         }
-	else if (C >= 0xDC00 && C <= 0xDFFF)
-		{
-		return(0);
-		}
+    else if (C >= 0xDC00 && C <= 0xDFFF)
+        {
+        return(0);
+        }
 
     int bytesToWrite;
     if (C < 0x80)
@@ -983,15 +983,15 @@ static int hexdec(const char *hex, int len)
 
 static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError)
     {
-	if (length < 1)
-		{
-		goto error;
-		}
+    if (length < 1)
+        {
+        goto error;
+        }
 
     const char *P = start;
     const char *end = start + length;
 
-	// Scan for a leading - character.
+    // Scan for a leading - character.
     BOOL negative = NO;
     if (*P == '-')
         {
@@ -999,22 +999,22 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
         ++P;
         }
 
-	// Scan for integer portion
+    // Scan for integer portion
     UInt64 integer = 0;
-	int integer_digits = 0;
+    int integer_digits = 0;
     while (P != end && isdigit(*P))
         {
-		if (integer > (UINTMAX_MAX / 10ULL))
-			{
-			goto fallback;
-			}
+        if (integer > (UINTMAX_MAX / 10ULL))
+            {
+            goto fallback;
+            }
         integer *= 10ULL;
         integer += *P - '0';
-		++integer_digits;
+        ++integer_digits;
         ++P;
         }
 
-	// If we scan a '.' character scan for fraction portion.
+    // If we scan a '.' character scan for fraction portion.
     UInt64 frac = 0;
     int frac_digits = 0;
     if (P != end && *P == '.')
@@ -1022,10 +1022,10 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
         ++P;
         while (P != end && isdigit(*P))
             {
-			if (frac >= (UINTMAX_MAX / 10ULL))
-				{
-				goto fallback;
-				}
+            if (frac >= (UINTMAX_MAX / 10ULL))
+                {
+                goto fallback;
+                }
             frac *= 10ULL;
             frac += *P - '0';
             ++frac_digits;
@@ -1033,13 +1033,13 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
             }
         }
 
-	// If we scan no integer digits and no fraction digits this isn't good (generally strings like "." or ".e10")
-	if (integer_digits == 0 && frac_digits == 0)
-		{
-		goto error;
-		}
+    // If we scan no integer digits and no fraction digits this isn't good (generally strings like "." or ".e10")
+    if (integer_digits == 0 && frac_digits == 0)
+        {
+        goto error;
+        }
 
-	// If we scan an 'e' character scan for '+' or '-' then scan exponent portion.
+    // If we scan an 'e' character scan for '+' or '-' then scan exponent portion.
     BOOL negativeExponent = NO;
     UInt64 exponent = 0;
     if (P != end && (*P == 'e' || *P == 'E'))
@@ -1057,37 +1057,37 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
 
         while (P != end && isdigit(*P))
             {
-			if (exponent > (UINTMAX_MAX / 10))
-				{
-				goto fallback;
-				}
+            if (exponent > (UINTMAX_MAX / 10))
+                {
+                goto fallback;
+                }
             exponent *= 10;
             exponent += *P - '0';
             ++P;
             }
         }
 
-	// If we haven't scanned the entire length something has gone wrong
+    // If we haven't scanned the entire length something has gone wrong
     if (P != end)
         {
-		goto error;
+        goto error;
         }
 
-	// If we have no fraction and no exponent we're obviously an integer otherwise we're a number...
+    // If we have no fraction and no exponent we're obviously an integer otherwise we're a number...
     if (frac == 0 && exponent == 0)
         {
-		if (negative == NO)
-			{
-			return([NSNumber numberWithUnsignedLongLong:integer]);
-			}
-		else
-			{
+        if (negative == NO)
+            {
+            return([NSNumber numberWithUnsignedLongLong:integer]);
+            }
+        else
+            {
             if (integer >= INT64_MAX)
                 {
                 goto fallback;
                 }
-			return([NSNumber numberWithLongLong:-(long long)integer]);
-			}
+            return([NSNumber numberWithLongLong:-(long long)integer]);
+            }
         }
     else
         {
@@ -1097,32 +1097,32 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
             double double_fract = frac / pow(10, frac_digits);
             D += double_fract;
             }
-		if (negative)
-			{
-			D *= -1;
-			}
-		if (D != 0.0 && exponent != 0)
-			{
+        if (negative)
+            {
+            D *= -1;
+            }
+        if (D != 0.0 && exponent != 0)
+            {
             D *= pow(10, negativeExponent ? -(double)exponent : exponent);
-			}
+            }
 
         return([NSNumber numberWithDouble:D]);
         }
 
 
 fallback: {
-		NSString *theString = [[NSString alloc] initWithBytes:start length:length encoding:NSASCIIStringEncoding];
+        NSString *theString = [[NSString alloc] initWithBytes:start length:length encoding:NSASCIIStringEncoding];
         NSLocale *theLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-		NSDecimalNumber *theDecimalNumber = [NSDecimalNumber decimalNumberWithString:theString locale:theLocale ];
-		return(theDecimalNumber);
-		}
+        NSDecimalNumber *theDecimalNumber = [NSDecimalNumber decimalNumberWithString:theString locale:theLocale ];
+        return(theDecimalNumber);
+        }
 error: {
-		if (outError != NULL)
-			{
-			*outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:kJSONDeserializerErrorCode_NumberNotScannable userInfo:@{ NSLocalizedDescriptionKey: @"Could not scan number constant." }];
+        if (outError != NULL)
+            {
+            *outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:kJSONDeserializerErrorCode_NumberNotScannable userInfo:@{ NSLocalizedDescriptionKey: @"Could not scan number constant." }];
             }
         return(NULL);
-		}
+        }
     }
 
 
