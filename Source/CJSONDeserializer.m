@@ -37,14 +37,15 @@ typedef struct
     NSUInteger length;
     } PtrRange;
 
-@interface CJSONDeserializer ()
-@property(readwrite, nonatomic, strong) NSData *data;
-@property(readonly, nonatomic, assign) NSUInteger scanLocation;
-@property(readonly, nonatomic, assign) char *end;
-@property(readonly, nonatomic, assign) char *current;
-@property(readonly, nonatomic, assign) char *start;
-@property(readwrite, nonatomic, strong) NSMutableData *scratchData;
-@property(readwrite, nonatomic, assign) CFMutableDictionaryRef stringsByHash;
+@interface CJSONDeserializer () {
+    NSData *_data;
+    NSUInteger _scanLocation;
+    char *_end;
+    char *_current;
+    char *_start;
+    NSMutableData *_scratchData;
+    CFMutableDictionaryRef _stringsByHash;
+    }
 @end
 
 @implementation CJSONDeserializer
@@ -1104,6 +1105,11 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
         if (D != 0.0 && exponent != 0)
             {
             D *= pow(10, negativeExponent ? -(double)exponent : exponent);
+            }
+
+        if (isinf(D) || isnan(D))
+            {
+            goto fallback;
             }
 
         return([NSNumber numberWithDouble:D]);
