@@ -61,7 +61,6 @@ typedef struct
     if ((self = [super init]) != NULL)
         {
         _nullObject = [NSNull null];
-        _allowedEncoding = 0;
         _options = kJSONDeserializationOptions_Default;
 
         CFDictionaryKeyCallBacks theCallbacks = {};
@@ -185,19 +184,12 @@ typedef struct
                     {
                     theEncoding = NSUTF16StringEncoding;
                     }
-                else
-                    {
-                    }
                 }
             }
 
         if (theEncoding != NSUTF8StringEncoding)
             {
             NSString *theString = [[NSString alloc] initWithData:theData encoding:theEncoding];
-            if (theString == NULL && _allowedEncoding != 0)
-                {
-                theString = [[NSString alloc] initWithData:theData encoding:_allowedEncoding];
-                }
             if (theString == NULL)
                 {
                 if (outError)

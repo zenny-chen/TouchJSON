@@ -172,25 +172,8 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     STAssertNil(theError, @"This test should not return an error");
     }
 
-// TODO
-//- (void)testEncodings_NonUTF
-//    {
-//    NSString *theString = @"\"This is a • string.\"";
-//    NSData *theData = [theString dataUsingEncoding:NSMacOSRomanStringEncoding];
-//    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
-//	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
-//    theDeserializer.allowedEncoding = NSMacOSRomanStringEncoding;
-//
-//    NSError *theError = NULL;
-//    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
-//    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
-//    STAssertEqualObjects(theDeseralizedValue, @"This is a string.", @"Output did not match expectations");
-//    STAssertNil(theError, @"This test should not return an error");
-//    }
-
 #pragma mark Dictionaries
 
-// TODO
 // Disabled for now - this can in fact cause crashes!!!
 //- (void)testInvalidDictionaries_1
 //    {
