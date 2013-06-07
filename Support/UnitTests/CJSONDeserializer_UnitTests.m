@@ -260,6 +260,18 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     STAssertNotNil(theError, @"This test should return an error");
     }
 
+- (void)testDictionary_Invalid6
+    {
+    NSString *theString = @"{ \"key\" }";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
+    }
+
 - (void)testDictionary_Empty1
     {
     NSString *theString = @"{}";
@@ -360,6 +372,62 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
     STAssertNil(theError, @"This test should not return an error");
     STAssertEqualObjects(theDeseralizedValue, @[], @"");
+    }
+
+#pragma mark Immutable containers
+
+- (void)testImmutableArray
+    {
+    NSString *theString = @"[]";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options = 0;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertNil(theError, @"This test should not return an error");
+    STAssertEqualObjects(theDeseralizedValue, @[], @"");
+    STAssertFalse([theDeserializer isKindOfClass:[NSMutableArray array]], @"Should not be mutable");
+    }
+
+#pragma mark Escape Codes
+
+- (void)testEscapeCodes
+    {
+    NSString *theString = @"\"\\b\\f\\n\\r\\t\"";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertNil(theError, @"This test should not return an error");
+    STAssertEqualObjects(theDeseralizedValue, @"\b\f\n\r\t", @"");
+    }
+
+- (void)testLaxEscapeCodes
+    {
+    NSString *theString = @"\"\\q\"";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments | kJSONDeserializationOptions_LaxEscapeCodes;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertNil(theError, @"This test should not return an error");
+    STAssertEqualObjects(theDeseralizedValue, @"q", @"");
+    }
+
+- (void)testLaxEscapeCodes_NoFlag
+    {
+    NSString *theString = @"\"\\q\"";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
     }
 
 #pragma mark Old tests - these are still being reviewed for value and possibly due for clean up.
