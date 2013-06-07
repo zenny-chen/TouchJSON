@@ -72,6 +72,32 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     STAssertNotNil(theError, @"This test should return an error");
     }
 
+#pragma mark Utter Garbage
+
+- (void)testParameterErrors_Garbage
+    {
+    NSString *theJSONString = @"This is utter garbage.";
+    NSData *theJSONData = [theJSONString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserializeAsArray:theJSONData error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
+    }
+
+- (void)testParameterErrors_XML
+    {
+    NSString *theJSONString = @"<xml>Hey xml as JSON?</xml>";
+    NSData *theJSONData = [theJSONString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserializeAsArray:theJSONData error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
+    }
+
 #pragma mark Encodings
 
 - (void)testEncodings_UTF8
@@ -174,7 +200,7 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 
 #pragma mark Dictionaries
 
-- (void)testInvalidDictionaries_1
+- (void)testDictionary_Invalid1
     {
     NSString *theString = @"{ \"key\":";
     NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
@@ -186,7 +212,7 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     STAssertNotNil(theError, @"This test should return an error");
     }
 
-- (void)testInvalidDictionaries_2
+- (void)testDictionary_Invalid2
     {
     NSString *theString = @"{ \"key\"•";
     NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
@@ -198,7 +224,143 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     STAssertNotNil(theError, @"This test should return an error");
     }
 
-#pragma mark -
+- (void)testDictionary_Invalid3
+    {
+    NSString *theString = @"{ \"key\":•";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
+    }
+
+- (void)testDictionary_Invalid4
+    {
+    NSString *theString = @"{ \"key\":\"value\"";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
+    }
+
+- (void)testDictionary_Invalid5
+    {
+    NSString *theString = @"{ \"key\":\"value\"•";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
+    }
+
+- (void)testDictionary_Empty1
+    {
+    NSString *theString = @"{}";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertNil(theError, @"This test should not return an error");
+    STAssertEqualObjects(theDeseralizedValue, @{}, @"");
+    }
+
+- (void)testDictionary_Empty2
+    {
+    NSString *theString = @"{ }";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertNil(theError, @"This test should not return an error");
+    STAssertEqualObjects(theDeseralizedValue, @{}, @"");
+    }
+
+#pragma mark Arrays
+
+- (void)testArray_Invalid1
+    {
+    NSString *theString = @"[";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
+    }
+
+- (void)testArray_Invalid2
+    {
+    NSString *theString = @"[\"key\",";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
+    }
+
+- (void)testArray_Invalid3
+    {
+    NSString *theString = @"[,";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
+    }
+
+- (void)testArray_Invalid4
+    {
+    NSString *theString = @"[1,•";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theDeseralizedValue, @"This test should return nil");
+    STAssertNotNil(theError, @"This test should return an error");
+    }
+
+- (void)testArray_Empty1
+    {
+    NSString *theString = @"[]";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertNil(theError, @"This test should not return an error");
+    STAssertEqualObjects(theDeseralizedValue, @[], @"");
+    }
+
+- (void)testArray_Empty2
+    {
+    NSString *theString = @"[ ]";
+    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+	theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+    NSError *theError = NULL;
+    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
+    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
+    STAssertNil(theError, @"This test should not return an error");
+    STAssertEqualObjects(theDeseralizedValue, @[], @"");
+    }
 
 #pragma mark Old tests - these are still being reviewed for value and possibly due for clean up.
 
@@ -851,12 +1013,36 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     STAssertNotNil(theError, @"Didn't get an error.");
     }
 
+-(void)testBadInt2
+    {
+    NSError *theError = NULL;
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+	NSString *theValue = @"-";
+    NSData *theData = [theValue dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theObject, @"Got a value when I shouldnt.");
+    STAssertNotNil(theError, @"Didn't get an error.");
+    }
+
 -(void)testBadFloat
     {
     NSError *theError = NULL;
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
     theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
 	NSString *theValue = @"1.1.1.1.1.";
+    NSData *theData = [theValue dataUsingEncoding:NSUTF8StringEncoding];
+	NSNumber *theObject = [theDeserializer deserialize:theData error:&theError];
+    STAssertNil(theObject, @"Got a value when I shouldnt.");
+    STAssertNotNil(theError, @"Didn't get an error.");
+    }
+
+-(void)testBadFloat2
+    {
+    NSError *theError = NULL;
+    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
+    theDeserializer.options |= kJSONDeserializationOptions_AllowFragments;
+	NSString *theValue = @".";
     NSData *theData = [theValue dataUsingEncoding:NSUTF8StringEncoding];
 	NSNumber *theObject = [theDeserializer deserialize:theData error:&theError];
     STAssertNil(theObject, @"Got a value when I shouldnt.");
