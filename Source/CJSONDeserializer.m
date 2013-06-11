@@ -364,6 +364,11 @@ typedef struct
             }
         else
             {
+            if (theKey == NULL)
+                {
+                *outError = [self _error:kJSONDeserializerErrorCode_DictionaryKeyScanFailed description:@"Could not scan dictionary. Failed to scan a key."];
+                return(NO);
+                }
             CFDictionarySetValue((__bridge CFMutableDictionaryRef) theDictionary, (__bridge void *) theKey, (__bridge void *) theValue);
             }
 
