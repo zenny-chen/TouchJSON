@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
     NSLog(@"%@ %@", theDeseralizedValue, theError);
 
-//    test_files();
+    test_files();
 
     return(0);
     }
