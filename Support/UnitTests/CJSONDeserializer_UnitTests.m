@@ -436,22 +436,6 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     STAssertEqualObjects(theDeseralizedValue, @[], @"");
     }
 
-#pragma mark Immutable containers
-
-- (void)testImmutableArray
-    {
-    NSString *theString = @"[]";
-    NSData *theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
-    CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
-    theDeserializer.options = 0;
-    NSError *theError = NULL;
-    id theDeseralizedValue = [theDeserializer deserialize:theData error:&theError];
-    STAssertNotNil(theDeseralizedValue, @"This test should not return nil");
-    STAssertNil(theError, @"This test should not return an error");
-    STAssertEqualObjects(theDeseralizedValue, @[], @"");
-    STAssertFalse([theDeseralizedValue isKindOfClass:[NSMutableArray class]], @"Should not be mutable");
-    }
-
 #pragma mark Escape Codes
 
 - (void)testEscapeCodes
