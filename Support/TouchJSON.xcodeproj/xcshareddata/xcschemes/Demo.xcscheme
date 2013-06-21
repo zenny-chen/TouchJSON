@@ -32,7 +32,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "PATH=&quot;${PATH}:/usr/local/bin&quot;&#10;&#10;if [ which lconv ]&#10;  then&#10;    echo &quot;No lconv found. Please install&quot;&#10;    exit 0&#10;fi&#10;&#10;&#10;COVERAGE_DIR=&quot;${OBJECT_FILE_DIR}-${BUILD_VARIANTS}/${NATIVE_ARCH_ACTUAL}&quot;&#10;echo &quot;${COVERAGE_DIR}&quot; &gt; ~/Desktop/dir.txt&#10;lcov --capture --directory &quot;${COVERAGE_DIR}&quot; --output-file &quot;${COVERAGE_DIR}/converage.info&quot;&#10;#genhtml &quot;${COVERAGE_DIR}/converage.info&quot; --output-directory &quot;${COVERAGE_DIR}/out&quot;&#10;genhtml &quot;${COVERAGE_DIR}/converage.info&quot; --output-directory &quot;${SRCROOT}/Coverage Report&quot;&#10;&#10;&#10;">
+               scriptText = "PATH=&quot;${PATH}:/usr/local/bin&quot;&#10;&#10;if [ which lconv ]&#10;  then&#10;    echo &quot;No lconv found. Please install&quot;&#10;    exit 0&#10;fi&#10;&#10;&#10;COVERAGE_DIR=&quot;${OBJECT_FILE_DIR}-${BUILD_VARIANTS}/${NATIVE_ARCH_ACTUAL}&quot;&#10;#echo &quot;${COVERAGE_DIR}&quot; &gt; ~/Desktop/dir.txt&#10;lcov --capture --directory &quot;${COVERAGE_DIR}&quot; --output-file &quot;${COVERAGE_DIR}/converage.info&quot;&#10;#genhtml &quot;${COVERAGE_DIR}/converage.info&quot; --output-directory &quot;${COVERAGE_DIR}/out&quot;&#10;genhtml &quot;${COVERAGE_DIR}/converage.info&quot; --output-directory &quot;${SRCROOT}/Coverage Report&quot;&#10;&#10;&#10;">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
