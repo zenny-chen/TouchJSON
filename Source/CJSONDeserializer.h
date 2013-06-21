@@ -45,6 +45,7 @@ typedef enum {
     kJSONDeserializerErrorCode_DictionaryKeyNotTerminated = -103,
     kJSONDeserializerErrorCode_DictionaryValueScanFailed = -104,
     kJSONDeserializerErrorCode_DictionaryNotTerminated = -106,
+    kJSONDeserializerErrorCode_DictionaryDuplicateKeyNotALlowed = -107,
     
     // Array scanning
     kJSONDeserializerErrorCode_ArrayStartCharacterMissing = -201,
@@ -70,6 +71,7 @@ enum {
     kJSONDeserializationOptions_MutableLeaves = (1UL << 1),
     kJSONDeserializationOptions_AllowFragments = (1UL << 2),
     kJSONDeserializationOptions_LaxEscapeCodes = (1UL << 3),
+    kJSONDeserializationOptions_DuplicateKeysAreErrors = (1UL << 4),
     kJSONDeserializationOptions_Default = kJSONDeserializationOptions_MutableContainers,
 };
 typedef NSUInteger EJSONDeserializationOptions;
