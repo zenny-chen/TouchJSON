@@ -46,6 +46,10 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
 
     NSData *theData = [inString dataUsingEncoding:NSUTF8StringEncoding];
     id theResult = [theDeserializer deserialize:theData error:NULL];
+    if (outResult)
+        {
+        *outResult = theResult;
+        }
 
     return(theResult != NULL);
     }
