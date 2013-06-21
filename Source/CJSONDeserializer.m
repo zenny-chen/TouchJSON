@@ -369,7 +369,15 @@ typedef struct
                 *outError = [self _error:kJSONDeserializerErrorCode_DictionaryKeyScanFailed description:@"Could not scan dictionary. Failed to scan a key."];
                 return(NO);
                 }
-            CFDictionarySetValue((__bridge CFMutableDictionaryRef) theDictionary, (__bridge void *) theKey, (__bridge void *) theValue);
+            if (_options & kJSONDeserializationOptions_DuplicateKeysAreErrors && [theDictionary objectForKey:theKey] != NULL)
+                {
+                if (outError)
+                    {
+                    *outError = [self _error:kJSONDeserializerErrorCode_DictionaryDuplicateKeyNotALlowed description:@"Duplicate keys found."];
+                    }
+                return (NO);
+                }
+            CFDictionarySetValue((__bridge CFMutableDictionaryRef)theDictionary, (__bridge void *)theKey, (__bridge void *)theValue);
             }
 
         _current = _SkipWhiteSpace(_current, _end);
