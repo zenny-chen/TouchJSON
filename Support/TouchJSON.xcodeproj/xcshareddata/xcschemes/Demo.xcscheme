@@ -27,15 +27,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
-      <PreActions>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Run Script"
-               scriptText = "xcodebuild -project &quot;${PROJECT_NAME}&quot; -scheme &quot;${SCHEME_NAME}&quot; -target &quot;${TARGET_NAME}&quot; -configuration &quot;${CONFIGURATION}&quot; clean">
-            </ActionContent>
-         </ExecutionAction>
-      </PreActions>
       <PostActions>
          <ExecutionAction
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
