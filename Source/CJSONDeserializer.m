@@ -97,7 +97,13 @@ typedef struct
                     }
                 }
             }
-
+        else
+            {
+            if (theObject == [NSNull null])
+                {
+                theObject = _nullObject;
+                }
+            }
         }
 
     return (theObject);
@@ -138,7 +144,7 @@ typedef struct
         {
         if (outError)
             {
-            *outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:kJSONDeserializerErrorCode_NothingToScan userInfo:NULL];
+            *outError = [self _error:kJSONDeserializerErrorCode_NothingToScan underlyingError:NULL description:@"Have no data to scan."];
             }
         return(NO);
         }
@@ -217,7 +223,7 @@ typedef struct
 
 - (BOOL)_scanJSONObject:(id *)outObject error:(NSError **)outError
     {
-    BOOL theResult = YES;
+    BOOL theResult;
 
     _current = _SkipWhiteSpace(_current, _end);
 
@@ -236,26 +242,28 @@ typedef struct
     switch (C)
         {
         case 't':
-            if (_ScanUTF8String(self, "true", 4))
-                {
-                theObject = (__bridge id) kCFBooleanTrue;
-                }
+            {
+            theResult = _ScanUTF8String(self, "true", 4);
+            theObject = (__bridge id) kCFBooleanTrue;
             break;
+            }
         case 'f':
-            if (_ScanUTF8String(self, "false", 5))
-                {
-                theObject = (__bridge id) kCFBooleanFalse;
-                }
+            {
+            theResult = _ScanUTF8String(self, "false", 5);
+            theObject = (__bridge id) kCFBooleanFalse;
+            }
             break;
         case 'n':
-            if (_ScanUTF8String(self, "null", 4))
-                {
-                theObject = _nullObject;
-                }
+            {
+            theResult = _ScanUTF8String(self, "null", 4);
+            theObject = _nullObject ?: [NSNull null];
+            }
             break;
         case '\"':
         case '\'':
+            {
             theResult = [self _scanJSONStringConstant:&theObject key:NO error:outError];
+            }
             break;
         case '0':
         case '1':
@@ -268,24 +276,28 @@ typedef struct
         case '8':
         case '9':
         case '-':
+            {
             theResult = [self _scanJSONNumberConstant:&theObject error:outError];
+            }
             break;
         case '{':
+            {
             theResult = [self _scanJSONDictionary:&theObject error:outError];
+            }
             break;
         case '[':
+            {
             theResult = [self _scanJSONArray:&theObject error:outError];
+            }
             break;
         default:
-            theResult = NO;
+            {
             if (outError)
                 {
-                NSMutableDictionary *theUserInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                    @"Could not scan object. Character not a valid JSON character.", NSLocalizedDescriptionKey,
-                    NULL];
-                [theUserInfo addEntriesFromDictionary:self._userInfoForScanLocation];
-                *outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:kJSONDeserializerErrorCode_CouldNotScanObject userInfo:theUserInfo];
+                *outError = [self _error:kJSONDeserializerErrorCode_CouldNotScanObject description:@"Could not scan object. Character not a valid JSON character."];
                 }
+            return(NO);
+            }
             break;
         }
 
@@ -294,7 +306,7 @@ typedef struct
         *outObject = theObject;
         }
 
-    return (theResult);
+    return(theResult);
     }
 
 - (BOOL)_scanJSONDictionary:(NSDictionary **)outDictionary error:(NSError **)outError
@@ -358,19 +370,22 @@ typedef struct
             return (NO);
             }
 
-        if (theValue == NULL && _nullObject == NULL)
+        if (_nullObject == NULL && theValue == [NSNull null])
             {
-            // If the value is a null and nullObject is also null then we're skipping this key/value pair.
+            continue;
             }
-        else
+
+        if (theKey == NULL)
             {
-            if (theKey == NULL)
-                {
-                *outError = [self _error:kJSONDeserializerErrorCode_DictionaryKeyScanFailed description:@"Could not scan dictionary. Failed to scan a key."];
-                return(NO);
-                }
-            CFDictionarySetValue((__bridge CFMutableDictionaryRef) theDictionary, (__bridge void *) theKey, (__bridge void *) theValue);
+            *outError = [self _error:kJSONDeserializerErrorCode_DictionaryKeyScanFailed description:@"Could not scan dictionary. Failed to scan a key."];
+            return(NO);
             }
+        if (theValue == NULL)
+            {
+            *outError = [self _error:kJSONDeserializerErrorCode_DictionaryValueScanFailed description:@"Could not scan dictionary. Failed to scan a value."];
+            return(NO);
+            }
+        CFDictionarySetValue((__bridge CFMutableDictionaryRef)theDictionary, (__bridge void *)theKey, (__bridge void *)theValue);
 
         _current = _SkipWhiteSpace(_current, _end);
 
@@ -450,11 +465,7 @@ typedef struct
             _current = _start + theScanLocation;
             if (outError)
                 {
-                NSMutableDictionary *theUserInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                    @"Could not scan array. Could not scan a value.", NSLocalizedDescriptionKey,
-                    NULL];
-                [theUserInfo addEntriesFromDictionary:self._userInfoForScanLocation];
-                *outError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:kJSONDeserializerErrorCode_ArrayValueScanFailed userInfo:theUserInfo];
+                *outError = [self _error:kJSONDeserializerErrorCode_ArrayValueScanFailed underlyingError:NULL description:@"Could not scan array. Could not scan a value."];
                 }
             return (NO);
             }
@@ -798,14 +809,23 @@ typedef struct
     return (theUserInfo);
     }
 
-- (NSError *)_error:(NSInteger)inCode description:(NSString *)inDescription
+- (NSError *)_error:(NSInteger)inCode underlyingError:(NSError *)inUnderlyingError description:(NSString *)inDescription
     {
     NSMutableDictionary *theUserInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
         inDescription, NSLocalizedDescriptionKey,
         NULL];
     [theUserInfo addEntriesFromDictionary:self._userInfoForScanLocation];
+    if (inUnderlyingError)
+        {
+        theUserInfo[NSUnderlyingErrorKey] = inUnderlyingError;
+        }
     NSError *theError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:inCode userInfo:theUserInfo];
     return (theError);
+    }
+
+- (NSError *)_error:(NSInteger)inCode description:(NSString *)inDescription
+    {
+    return ([self _error:inCode underlyingError:NULL description:inDescription]);
     }
 
 #pragma mark -

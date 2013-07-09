@@ -822,13 +822,13 @@ static BOOL Scan(NSString *inString, id *outResult, NSDictionary *inOptions)
     STAssertNil(dictionary, @"Dictionary will be nil when there is an error deserializing", nil);
     }
 
--(void)testSkipNullValueInArray
+-(void)testNullValueInArray
     {
     CJSONDeserializer *theDeserializer = [CJSONDeserializer deserializer];
     theDeserializer.nullObject = NULL;
     NSData *theData = [@"[null]" dataUsingEncoding:NSUTF8StringEncoding];
     NSArray *theArray = [theDeserializer deserialize:theData error:nil];
-    STAssertEqualObjects(theArray, [NSArray array], @"Skipping null did not produce empty array");
+    STAssertEqualObjects(theArray, @[ [NSNull null] ], @"Array mismatch");
     }
 
 -(void)testAlternativeNullValueInArray
