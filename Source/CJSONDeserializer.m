@@ -106,6 +106,22 @@ typedef struct
             }
         }
 
+    // If we haven't consumed all the data...
+    if (_current != _end)
+        {
+        // Skip any remaining whitespace...
+        _current = _SkipWhiteSpace(_current, _end);
+        // And then error if we still haven't consumed all data...
+        if (_current != _end)
+            {
+            if (outError != NULL)
+                {
+                *outError = [self _error:kJSONDeserializerErrorCode_DidNotConsumeAllData description:@"Did not consume all data."];
+                }
+            return(NULL);
+            }
+        }
+
     return (theObject);
     }
 
@@ -244,19 +260,49 @@ typedef struct
         case 't':
             {
             theResult = _ScanUTF8String(self, "true", 4);
-            theObject = (__bridge id) kCFBooleanTrue;
+            if (theResult != NO)
+                {
+                theObject = (__bridge id) kCFBooleanTrue;
+                }
+            else
+                {
+                if (outError)
+                    {
+                    *outError = [self _error:kJSONDeserializerErrorCode_CouldNotScanObject description:@"Could not scan object. Character not a valid JSON character."];
+                    }
+                }
             break;
             }
         case 'f':
             {
             theResult = _ScanUTF8String(self, "false", 5);
-            theObject = (__bridge id) kCFBooleanFalse;
+            if (theResult != NO)
+                {
+                theObject = (__bridge id) kCFBooleanFalse;
+                }
+            else
+                {
+                if (outError)
+                    {
+                    *outError = [self _error:kJSONDeserializerErrorCode_CouldNotScanObject description:@"Could not scan object. Character not a valid JSON character."];
+                    }
+                }
             }
             break;
         case 'n':
             {
             theResult = _ScanUTF8String(self, "null", 4);
-            theObject = _nullObject ?: [NSNull null];
+            if (theResult != NO)
+                {
+                theObject = _nullObject ?: [NSNull null];
+                }
+            else
+                {
+                if (outError)
+                    {
+                    *outError = [self _error:kJSONDeserializerErrorCode_CouldNotScanObject description:@"Could not scan object. Character not a valid JSON character."];
+                    }
+                }
             }
             break;
         case '\"':

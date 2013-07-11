@@ -38,6 +38,7 @@ typedef enum {
     kJSONDeserializerErrorCode_CouldNotDecodeData = -12,
     kJSONDeserializerErrorCode_CouldNotScanObject = -15,
     kJSONDeserializerErrorCode_ScanningFragmentsNotAllowed = -16,
+    kJSONDeserializerErrorCode_DidNotConsumeAllData = -17,
 
     // Dictionary scanning
     kJSONDeserializerErrorCode_DictionaryStartCharacterMissing = -101,
