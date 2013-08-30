@@ -603,7 +603,6 @@ typedef struct
         [_scratchData setLength:0];
         }
 
-    NSString *theString = NULL;
     PtrRange thePtrRange;
     while (_ScanCharacter(self, '"') == NO)
         {
@@ -680,15 +679,23 @@ typedef struct
             }
         }
 
+    NSString *theString = NULL;
     if ([_scratchData length] < 80)
         {
         NSUInteger hash = [_scratchData hash];
-        NSString *theFoundString = (__bridge NSString *) CFDictionaryGetValue(_stringsByHash, (const void *) hash);
+        NSString *theFoundString = (__bridge NSString *)CFDictionaryGetValue(_stringsByHash, (const void *) hash);
         BOOL theFoundFlag = NO;
-        theString = NULL;
         if (theFoundString != NULL)
             {
-            theString = (__bridge_transfer NSString *) CFStringCreateWithBytes(kCFAllocatorDefault, [_scratchData bytes], [_scratchData length], kCFStringEncodingUTF8, NO);
+            theString = (__bridge_transfer NSString *)CFStringCreateWithBytes(kCFAllocatorDefault, [_scratchData bytes], [_scratchData length], kCFStringEncodingUTF8, NO);
+            if (theString == NULL)
+                {
+                if (outError)
+                    {
+                    *outError = [self _error:kJSONDeserializerErrorCode_StringCouldNotBeCreated description:@"Could not create string."];
+                    }
+                return(NO);
+                }
             if ([theFoundString isEqualToString:theString] == YES)
                 {
                 theFoundFlag = YES;
@@ -699,7 +706,15 @@ typedef struct
             {
             if (theString == NULL)
                 {
-                theString = (__bridge_transfer NSString *) CFStringCreateWithBytes(kCFAllocatorDefault, [_scratchData bytes], [_scratchData length], kCFStringEncodingUTF8, NO);
+                theString = (__bridge_transfer NSString *)CFStringCreateWithBytes(kCFAllocatorDefault, [_scratchData bytes], [_scratchData length], kCFStringEncodingUTF8, NO);
+                if (theString == NULL)
+                    {
+                    if (outError)
+                        {
+                        *outError = [self _error:kJSONDeserializerErrorCode_StringCouldNotBeCreated description:@"Could not create string."];
+                        }
+                    return(NO);
+                    }
                 }
             if (_options & kJSONDeserializationOptions_MutableLeaves)
                 {
@@ -710,7 +725,15 @@ typedef struct
         }
     else
         {
-        theString = (__bridge_transfer NSString *) CFStringCreateWithBytes(kCFAllocatorDefault, [_scratchData bytes], [_scratchData length], kCFStringEncodingUTF8, NO);
+        theString = (__bridge_transfer NSString *)CFStringCreateWithBytes(kCFAllocatorDefault, [_scratchData bytes], [_scratchData length], kCFStringEncodingUTF8, NO);
+        if (theString == NULL)
+            {
+            if (outError)
+                {
+                *outError = [self _error:kJSONDeserializerErrorCode_StringCouldNotBeCreated description:@"Could not create string."];
+                }
+            return(NO);
+            }
         if (_options & kJSONDeserializationOptions_MutableLeaves)
             {
             theString = [theString mutableCopy];
