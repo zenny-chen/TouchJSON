@@ -372,6 +372,15 @@ typedef struct
 
     NSMutableDictionary *theDictionary = (__bridge_transfer NSMutableDictionary *) CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 
+    if (theDictionary == NULL)
+        {
+        if (outError)
+            {
+            *outError = [self _error:kJSONDeserializerErrorCode_FailedToCreateObject description:@"Could not scan dictionary. Could not allow object."];
+            }
+        return(NO);
+        }
+
     NSString *theKey = NULL;
     id theValue = NULL;
 
