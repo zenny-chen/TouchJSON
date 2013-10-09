@@ -84,7 +84,7 @@ typedef struct
         return (NULL);
         }
     id theObject = NULL;
-    if ([self _scanJSONObject:&theObject error:outError] == YES)
+    if ([self _scanJSONObject:&theObject sharedKeySet:NULL error:outError] == YES)
         {
         if (!(_options & kJSONDeserializationOptions_AllowFragments))
             {
@@ -132,7 +132,7 @@ typedef struct
         return (NULL);
         }
     NSDictionary *theDictionary = NULL;
-    [self _scanJSONDictionary:&theDictionary error:outError];
+    [self _scanJSONDictionary:&theDictionary sharedKeySet:NULL error:outError];
     return(theDictionary);
     }
 
@@ -237,7 +237,7 @@ typedef struct
 
 #pragma mark -
 
-- (BOOL)_scanJSONObject:(id *)outObject error:(NSError **)outError
+- (BOOL)_scanJSONObject:(id *)outObject sharedKeySet:(id *)ioSharedKeySet error:(NSError **)outError
     {
     BOOL theResult;
 
@@ -328,7 +328,7 @@ typedef struct
             break;
         case '{':
             {
-            theResult = [self _scanJSONDictionary:&theObject error:outError];
+            theResult = [self _scanJSONDictionary:&theObject sharedKeySet:ioSharedKeySet error:outError];
             }
             break;
         case '[':
@@ -355,7 +355,7 @@ typedef struct
     return(theResult);
     }
 
-- (BOOL)_scanJSONDictionary:(NSDictionary **)outDictionary error:(NSError **)outError
+- (BOOL)_scanJSONDictionary:(NSDictionary **)outDictionary sharedKeySet:(id *)ioSharedKeySet error:(NSError **)outError
     {
     NSUInteger theScanLocation = _current - _start;
 
@@ -370,7 +370,24 @@ typedef struct
         return (NO);
         }
 
-    NSMutableDictionary *theDictionary = (__bridge_transfer NSMutableDictionary *) CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    NSMutableDictionary *theDictionary = NULL;
+    if (ioSharedKeySet != NULL && *ioSharedKeySet != NULL)
+        {
+        theDictionary = [NSMutableDictionary dictionaryWithSharedKeySet:*ioSharedKeySet];
+        }
+    else
+        {
+        theDictionary = [NSMutableDictionary dictionary];
+        }
+
+    if (theDictionary == NULL)
+        {
+        if (outError)
+            {
+            *outError = [self _error:kJSONDeserializerErrorCode_FailedToCreateObject description:@"Could not scan dictionary. Could not allow object."];
+            }
+        return(NO);
+        }
 
     NSString *theKey = NULL;
     id theValue = NULL;
@@ -406,7 +423,7 @@ typedef struct
             return (NO);
             }
 
-        if ([self _scanJSONObject:&theValue error:outError] == NO)
+        if ([self _scanJSONObject:&theValue sharedKeySet:NULL error:outError] == NO)
             {
             _current = _start + theScanLocation;
             if (outError)
@@ -481,6 +498,11 @@ typedef struct
             }
         }
 
+    if (ioSharedKeySet != NULL && *ioSharedKeySet == NULL)
+        {
+        *ioSharedKeySet = [NSMutableDictionary sharedKeySetForKeys:[theDictionary allKeys]];
+        }
+
     return (YES);
     }
 
@@ -503,10 +525,12 @@ typedef struct
 
     _current = _SkipWhiteSpace(_current, _end);
 
+    id theSharedKeySet = NULL;
+
     NSString *theValue = NULL;
     while (*_current != ']')
         {
-        if ([self _scanJSONObject:&theValue error:outError] == NO)
+        if ([self _scanJSONObject:&theValue sharedKeySet:&theSharedKeySet error:outError] == NO)
             {
             _current = _start + theScanLocation;
             if (outError)
