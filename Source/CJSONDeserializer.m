@@ -923,19 +923,6 @@ typedef struct
 
 #pragma mark -
 
-inline static BOOL _PtrRangeContainsCharacter(PtrRange inPtrRange, char C)
-    {
-    char *P = inPtrRange.location;
-    for (NSUInteger N = inPtrRange.length; --N && *P; P++)
-        {
-        if (*P == C)
-            {
-            return (YES);
-            }
-        }
-    return (NO);
-    }
-
 inline static char *_SkipWhiteSpace(char *_current, char *_end)
     {
     char *P;
