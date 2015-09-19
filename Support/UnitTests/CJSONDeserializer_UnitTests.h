@@ -27,10 +27,10 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
 
-@interface CJSONDeserializer_UnitTests : SenTestCase {
+@interface CJSONDeserializer_UnitTests : XCTestCase {
 
 }
 

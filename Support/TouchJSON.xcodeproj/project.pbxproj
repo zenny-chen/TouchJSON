@@ -73,7 +73,7 @@
 		45058870099952F600FB865F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		453111B10A64EDBB00A970C2 /* TouchJSON Demo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "TouchJSON Demo"; sourceTree = BUILT_PRODUCTS_DIR; };
 		453111B50A64EDDE00A970C2 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		45B15E110947D97B00AE66EB /* UnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		45B15E110947D97B00AE66EB /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		45BB461A174D6C79000473E5 /* CJSONDeserializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer.h; sourceTree = "<group>"; };
 		45BB461B174D6C79000473E5 /* CJSONDeserializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer.m; sourceTree = "<group>"; };
 		45BB461E174D6C79000473E5 /* CJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializer.h; sourceTree = "<group>"; };
@@ -109,7 +109,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				45B15E110947D97B00AE66EB /* UnitTests.octest */,
+				45B15E110947D97B00AE66EB /* UnitTests.xctest */,
 				453111B10A64EDBB00A970C2 /* TouchJSON Demo */,
 			);
 			name = Products;
@@ -206,8 +206,8 @@
 			);
 			name = UnitTests;
 			productName = UnitTests;
-			productReference = 45B15E110947D97B00AE66EB /* UnitTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = 45B15E110947D97B00AE66EB /* UnitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -360,6 +360,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(value)",
 					"$(DEVELOPER_FRAMEWORKS_DIR_QUOTED)",
+					"$(inherited)",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -376,11 +377,8 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					Cocoa,
-					"-framework",
-					SenTestingKit,
 				);
 				PRODUCT_NAME = UnitTests;
-				WRAPPER_EXTENSION = octest;
 				ZERO_LINK = NO;
 			};
 			name = Debug;
@@ -393,6 +391,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(value)",
 					"$(DEVELOPER_FRAMEWORKS_DIR_QUOTED)",
+					"$(inherited)",
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -406,11 +405,8 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					Cocoa,
-					"-framework",
-					SenTestingKit,
 				);
 				PRODUCT_NAME = UnitTests;
-				WRAPPER_EXTENSION = octest;
 				ZERO_LINK = NO;
 			};
 			name = Release;
