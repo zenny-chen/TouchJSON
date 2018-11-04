@@ -27,20 +27,25 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import "JSONRepresentation.h"
 
-enum {
+enum
+{
     kJSONSerializationOptions_EncodeSlashes = 0x01,
 };
+
 typedef NSUInteger EJSONSerializationOptions;
 
-
-@interface CJSONSerializer : NSObject {
+@interface CJSONSerializer : NSObject
+{
+@private
+    
+    EJSONSerializationOptions options;
 }
 
 @property (readwrite, nonatomic, assign) EJSONSerializationOptions options;
 
-+ (CJSONSerializer *)serializer;
++ (instancetype)serializer;
 
 - (BOOL)isValidJSONObject:(id)inObject;
 
@@ -55,9 +60,11 @@ typedef NSUInteger EJSONSerializationOptions;
 
 @end
 
-extern NSString *const kJSONSerializerErrorDomain /* = @"CJSONSerializerErrorDomain" */;
+extern NSString* const kJSONSerializerErrorDomain /* = @"CJSONSerializerErrorDomain" */;
 
-typedef enum {
+typedef enum
+{
     CJSONSerializerErrorCouldNotSerializeDataType = -1,
     CJSONSerializerErrorCouldNotSerializeObject = -2,
 } CJSONSerializerError;
+
