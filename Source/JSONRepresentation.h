@@ -8,10 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
+#ifndef __clang__
+#define instancetype    id
+#endif
+
 @protocol JSONRepresentation
 
 @optional
-- (id)initWithJSONDataRepresentation:(NSData *)inJSONData;
+
+- (instancetype)initWithJSONDataRepresentation:(NSData *)inJSONData;
 
 - (NSData *)JSONDataRepresentation;
 
