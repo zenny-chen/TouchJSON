@@ -29,288 +29,271 @@
 
 #import "CJSONDeserializer.h"
 
-NSString *const kJSONDeserializerErrorDomain = @"CJSONDeserializerErrorDomain";
-
 typedef struct
-    {
+{
     void *location;
     NSUInteger length;
-    } PtrRange;
+} PtrRange;
 
-@interface CJSONDeserializer () {
-    NSData *_data;
-    NSUInteger _scanLocation;
-    char *_end;
-    char *_current;
-    char *_start;
-    NSMutableData *_scratchData;
-    CFMutableDictionaryRef _stringsByHash;
-    }
-@end
+static uint32_t ByteSwapForInt32(uint32_t org)
+{
+    uint32_t dst = org >> 24;
+    dst |= ((org >> 16) & 0xff) << 8;
+    dst |= ((org >> 8) & 0xff) << 16;
+    dst |= (org & 0xff) << 24;
+    
+    return dst;
+}
+
+static uint16_t ByteSwapForInt16(uint16_t org)
+{
+    uint16_t dst = org >> 8;
+    dst |= (org & 0xff) << 8;
+    
+    return dst;
+}
+
+NSString* const kJSONDeserializerErrorDomain = @"CJSONDeserializerErrorDomain";
 
 @implementation CJSONDeserializer
 
-#pragma mark -
+@synthesize nullObject, options;
 
-+ (CJSONDeserializer *)deserializer
-    {
-    return ([[self alloc] init]);
-    }
+// MARK: Initializer & Deinitializer
 
-- (id)init
-    {
-    if ((self = [super init]) != NULL)
-        {
-        _nullObject = [NSNull null];
-        _options = kJSONDeserializationOptions_Default;
++ (instancetype)deserializer
+{
+    return CJSONDeserializer.new.autorelease;
+}
 
-        CFDictionaryKeyCallBacks theCallbacks = {};
-        _stringsByHash = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &theCallbacks, &kCFTypeDictionaryValueCallBacks);
-        }
+- (instancetype)init
+{
+    self = super.init;
+    
+    nullObject = NSNull.null;
+    options = kJSONDeserializationOptions_Default;
+    mStringsByHash = [NSMutableDictionary.alloc initWithCapacity:16];
+    
     return (self);
-    }
+}
 
 - (void)dealloc
-    {
-    CFRelease(_stringsByHash);
-    }
+{
+    [mStringsByHash release];
+    [mData release];
+    [mScratchData release];
+    
+    [super dealloc];
+}
 
-#pragma mark -
+// MARK: API methods implementation
 
 - (id)deserialize:(NSData *)inData error:(NSError **)outError
+{
+    if (![self _setData:inData error:outError])
+        return nil;
+
+    id theObject = nil;
+    if ([self _scanJSONObject:&theObject error:outError])
     {
-    if ([self _setData:inData error:outError] == NO)
+        if ((options & kJSONDeserializationOptions_AllowFragments) == 0)
         {
-        return (NULL);
-        }
-    id theObject = NULL;
-    if ([self _scanJSONObject:&theObject sharedKeySet:NULL error:outError] == YES)
-        {
-        if (!(_options & kJSONDeserializationOptions_AllowFragments))
+            if (![theObject isKindOfClass:NSArray.class] && ![theObject isKindOfClass:NSDictionary.class])
             {
-            if ([theObject isKindOfClass:[NSArray class]] == NO && [theObject isKindOfClass:[NSDictionary class]] == NO)
-                {
                 if (outError != NULL)
-                    {
-                    *outError = [self _error:kJSONDeserializerErrorCode_ScanningFragmentsNotAllowed description:@"Scanning fragments not allowed."];
-                    return(NULL);
-                    }
-                }
-            }
-        else
-            {
-            if (theObject == [NSNull null])
                 {
-                theObject = _nullObject;
+                    *outError = [self _error:kJSONDeserializerErrorCode_ScanningFragmentsNotAllowed description:@"Scanning fragments not allowed."];
+                    return nil;
                 }
             }
         }
+        else
+        {
+            if (theObject == NSNull.null)
+                theObject = nullObject;
+        }
+    }
 
     // If we haven't consumed all the data...
-    if (_current != _end)
-        {
+    if (mCurrent != mEnd)
+    {
         // Skip any remaining whitespace...
-        _current = _SkipWhiteSpace(_current, _end);
+        mCurrent = _SkipWhiteSpace(mCurrent, mEnd);
         // And then error if we still haven't consumed all data...
-        if (_current != _end)
-            {
+        if (mCurrent != mEnd)
+        {
             if (outError != NULL)
-                {
                 *outError = [self _error:kJSONDeserializerErrorCode_DidNotConsumeAllData description:@"Did not consume all data."];
-                }
-            return(NULL);
-            }
+            
+            return nil;
         }
-
-    return (theObject);
     }
+
+    return theObject;
+}
 
 - (id)deserializeAsDictionary:(NSData *)inData error:(NSError **)outError
-    {
-    if ([self _setData:inData error:outError] == NO)
-        {
-        return (NULL);
-        }
+{
+    if (![self _setData:inData error:outError])
+        return nil;
+
     NSDictionary *theDictionary = NULL;
-    [self _scanJSONDictionary:&theDictionary sharedKeySet:NULL error:outError];
-    return(theDictionary);
-    }
+    [self _scanJSONDictionary:&theDictionary error:outError];
+    return theDictionary;
+}
 
 - (id)deserializeAsArray:(NSData *)inData error:(NSError **)outError
-    {
-    if ([self _setData:inData error:outError] == NO)
-        {
-        return (NULL);
-        }
+{
+    if (![self _setData:inData error:outError])
+        return nil;
+    
     NSArray *theArray = NULL;
     [self _scanJSONArray:&theArray error:outError];
-    return(theArray);
-    }
+    return theArray;
+}
 
-#pragma mark -
+// MARK: Inner methods
 
 - (NSUInteger)scanLocation
-    {
-    return (_current - _start);
-    }
+{
+    return (mCurrent - mStart);
+}
 
 - (BOOL)_setData:(NSData *)inData error:(NSError **)outError;
+{
+    if (mData == inData)
     {
-    if (_data == inData)
-        {
         if (outError)
-            {
             *outError = [self _error:kJSONDeserializerErrorCode_NothingToScan underlyingError:NULL description:@"Have no data to scan."];
-            }
-        return(NO);
-        }
+        
+        return NO;
+    }
 
     NSData *theData = inData;
     if (theData.length >= 4)
-        {
+    {
         // This code is lame, but it works. Because the first character of any JSON string will always be a (ascii) control character we can work out the Unicode encoding by the bit pattern. See section 3 of http://www.ietf.org/rfc/rfc4627.txt
-        const UInt8 *theChars = theData.bytes;
+        const uint8_t *theChars = theData.bytes;
         NSStringEncoding theEncoding = NSUTF8StringEncoding;
         if (theChars[0] != 0 && theChars[1] == 0)
-            {
+        {
             if (theChars[2] != 0 && theChars[3] == 0)
-                {
                 theEncoding = NSUTF16LittleEndianStringEncoding;
-                }
             else if (theChars[2] == 0 && theChars[3] == 0)
-                {
                 theEncoding = NSUTF32LittleEndianStringEncoding;
-                }
-            }
+        }
         else if (theChars[0] == 0 && theChars[2] == 0 && theChars[3] != 0)
-            {
+        {
             if (theChars[1] == 0)
-                {
                 theEncoding = NSUTF32BigEndianStringEncoding;
-                }
             else if (theChars[1] != 0)
-                {
                 theEncoding = NSUTF16BigEndianStringEncoding;
-                }
-            }
+        }
         else
-            {
-            const UInt32 *C32 = (UInt32 *)theChars;
-            if (*C32 == CFSwapInt32HostToBig(0x0000FEFF) || *C32 == CFSwapInt32HostToBig(0xFFFE0000))
-                {
+        {
+            const uint32_t *C32 = (uint32_t*)theChars;
+            if (*C32 == ByteSwapForInt32(0x0000FEFF) || *C32 == ByteSwapForInt32(0xFFFE0000))
                 theEncoding = NSUTF32StringEncoding;
-                }
             else
-                {
-                const uint16_t *C16 = (UInt16 *)theChars;
-                if (*C16 == CFSwapInt16HostToBig(0xFEFF) || *C16 == CFSwapInt16HostToBig(0xFFFE))
-                    {
+            {
+                const uint16_t *C16 = (uint16_t *)theChars;
+                if (*C16 == ByteSwapForInt16(0xFEFF) || *C16 == ByteSwapForInt16(0xFFFE))
                     theEncoding = NSUTF16StringEncoding;
-                    }
-                }
             }
+        }
 
         if (theEncoding != NSUTF8StringEncoding)
+        {
+            NSString *theString = [NSString.alloc initWithData:theData encoding:theEncoding];
+            if (theString == nil)
             {
-            NSString *theString = [[NSString alloc] initWithData:theData encoding:theEncoding];
-            if (theString == NULL)
-                {
-                if (outError)
-                    {
+                if (outError != NULL)
                     *outError = [self _error:kJSONDeserializerErrorCode_CouldNotDecodeData description:NULL];
-                    }
-                return(NO);
-                }
-            theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+                
+                return NO;
             }
+            
+            theData = [theString dataUsingEncoding:NSUTF8StringEncoding];
+            [theString release];
         }
-
-    _data = theData;
-
-    _start = (char *) _data.bytes;
-    _end = _start + _data.length;
-    _current = _start;
-    _scratchData = NULL;
-
-    return (YES);
     }
 
-#pragma mark -
+    if(mData != nil)
+        [mData release];
+    mData = theData.retain;
+    
+    mStart = (char *)mData.bytes;
+    mEnd = mStart + mData.length;
+    mCurrent = mStart;
 
-- (BOOL)_scanJSONObject:(id *)outObject sharedKeySet:(id *)ioSharedKeySet error:(NSError **)outError
-    {
+    return YES;
+}
+
+// MARK: scan JSON object
+
+- (BOOL)_scanJSONObject:(id *)outObject error:(NSError **)outError
+{
     BOOL theResult;
 
-    _current = _SkipWhiteSpace(_current, _end);
+    mCurrent = _SkipWhiteSpace(mCurrent, mEnd);
 
-    if (_current >= _end)
-        {
+    if (mCurrent >= mEnd)
+    {
         if (outError)
-            {
             *outError = [self _error:kJSONDeserializerErrorCode_CouldNotScanObject description:@"Could not read JSON object, input exhausted."];
-            }
+        
         return(NO);
-        }
+    }
 
-    id theObject = NULL;
+    id theObject = nil;
 
-    const char C = *_current;
+    const char C = *mCurrent;
     switch (C)
-        {
+    {
         case 't':
-            {
+        {
             theResult = _ScanUTF8String(self, "true", 4);
-            if (theResult != NO)
-                {
-                theObject = (__bridge id) kCFBooleanTrue;
-                }
+            if (theResult)
+                theObject = [NSNumber numberWithBool:YES];
             else
-                {
-                if (outError)
-                    {
+            {
+                if (outError != NULL)
                     *outError = [self _error:kJSONDeserializerErrorCode_CouldNotScanObject description:@"Could not scan object. Character not a valid JSON character."];
-                    }
-                }
-            break;
             }
+            
+            break;
+        }
         case 'f':
-            {
+        {
             theResult = _ScanUTF8String(self, "false", 5);
-            if (theResult != NO)
-                {
-                theObject = (__bridge id) kCFBooleanFalse;
-                }
+            if (theResult)
+                theObject = [NSNumber numberWithBool:NO];
             else
-                {
-                if (outError)
-                    {
-                    *outError = [self _error:kJSONDeserializerErrorCode_CouldNotScanObject description:@"Could not scan object. Character not a valid JSON character."];
-                    }
-                }
-            }
-            break;
-        case 'n':
             {
-            theResult = _ScanUTF8String(self, "null", 4);
-            if (theResult != NO)
-                {
-                theObject = _nullObject ?: [NSNull null];
-                }
-            else
-                {
-                if (outError)
-                    {
+                if (outError != NULL)
                     *outError = [self _error:kJSONDeserializerErrorCode_CouldNotScanObject description:@"Could not scan object. Character not a valid JSON character."];
-                    }
-                }
             }
+            
             break;
+        }
+        case 'n':
+        {
+            theResult = _ScanUTF8String(self, "null", 4);
+            if (theResult)
+                theObject = nullObject != nil ? nullObject : NSNull.null;
+            else
+            {
+                if (outError != NULL)
+                    *outError = [self _error:kJSONDeserializerErrorCode_CouldNotScanObject description:@"Could not scan object. Character not a valid JSON character."];
+            }
+            
+            break;
+        }
         case '\"':
         case '\'':
-            {
             theResult = [self _scanJSONStringConstant:&theObject key:NO error:outError];
-            }
             break;
+
         case '0':
         case '1':
         case '2':
@@ -322,323 +305,266 @@ typedef struct
         case '8':
         case '9':
         case '-':
-            {
             theResult = [self _scanJSONNumberConstant:&theObject error:outError];
-            }
             break;
+
         case '{':
-            {
-            theResult = [self _scanJSONDictionary:&theObject sharedKeySet:ioSharedKeySet error:outError];
-            }
+            theResult = [self _scanJSONDictionary:&theObject error:outError];
             break;
+
         case '[':
-            {
             theResult = [self _scanJSONArray:&theObject error:outError];
-            }
             break;
+
         default:
-            {
-            if (outError)
-                {
+            if (outError != NULL)
                 *outError = [self _error:kJSONDeserializerErrorCode_CouldNotScanObject description:@"Could not scan object. Character not a valid JSON character."];
-                }
-            return(NO);
-            }
-            break;
-        }
+
+            return NO;
+    }
 
     if (outObject != NULL)
-        {
         *outObject = theObject;
-        }
 
-    return(theResult);
+    return theResult;
+}
+
+- (BOOL)_scanJSONDictionary:(NSDictionary **)outDictionary error:(NSError **)outError
+{
+    NSUInteger theScanLocation = mCurrent - mStart;
+
+    mCurrent = _SkipWhiteSpace(mCurrent, mEnd);
+
+    if (!_ScanCharacter(self, '{'))
+    {
+        if (outError != NULL)
+            *outError = [self _error:kJSONDeserializerErrorCode_DictionaryStartCharacterMissing description:@"Could not scan dictionary. Dictionary that does not start with '{' character."];
+
+        return NO;
     }
 
-- (BOOL)_scanJSONDictionary:(NSDictionary **)outDictionary sharedKeySet:(id *)ioSharedKeySet error:(NSError **)outError
+    NSMutableDictionary *theDictionary = [NSMutableDictionary dictionary];
+    if (theDictionary == nil)
     {
-    NSUInteger theScanLocation = _current - _start;
-
-    _current = _SkipWhiteSpace(_current, _end);
-
-    if (_ScanCharacter(self, '{') == NO)
-        {
-        if (outError)
-            {
-            *outError = [self _error:kJSONDeserializerErrorCode_DictionaryStartCharacterMissing description:@"Could not scan dictionary. Dictionary that does not start with '{' character."];
-            }
-        return (NO);
-        }
-
-    NSMutableDictionary *theDictionary = NULL;
-    if (ioSharedKeySet != NULL && *ioSharedKeySet != NULL)
-        {
-        theDictionary = [NSMutableDictionary dictionaryWithSharedKeySet:*ioSharedKeySet];
-        }
-    else
-        {
-        theDictionary = [NSMutableDictionary dictionary];
-        }
-
-    if (theDictionary == NULL)
-        {
-        if (outError)
-            {
+        if (outError != NULL)
             *outError = [self _error:kJSONDeserializerErrorCode_FailedToCreateObject description:@"Could not scan dictionary. Could not allow object."];
-            }
+        
         return(NO);
-        }
+    }
 
-    NSString *theKey = NULL;
-    id theValue = NULL;
+    NSString *theKey = nil;
+    id theValue = nil;
 
-    while (*_current != '}')
-        {
-        _current = _SkipWhiteSpace(_current, _end);
+    while (*mCurrent != '}')
+    {
+        mCurrent = _SkipWhiteSpace(mCurrent, mEnd);
 
-        if (*_current == '}')
-            {
+        if (*mCurrent == '}')
             break;
-            }
 
         if ([self _scanJSONStringConstant:&theKey key:YES error:outError] == NO)
-            {
-            _current = _start + theScanLocation;
-            if (outError)
-                {
-                *outError = [self _error:kJSONDeserializerErrorCode_DictionaryKeyScanFailed description:@"Could not scan dictionary. Failed to scan a key."];
-                }
-            return (NO);
-            }
-
-        _current = _SkipWhiteSpace(_current, _end);
-
-        if (_ScanCharacter(self, ':') == NO)
-            {
-            _current = _start + theScanLocation;
-            if (outError)
-                {
-                *outError = [self _error:kJSONDeserializerErrorCode_DictionaryKeyNotTerminated description:@"Could not scan dictionary. Key was not terminated with a ':' character."];
-                }
-            return (NO);
-            }
-
-        if ([self _scanJSONObject:&theValue sharedKeySet:NULL error:outError] == NO)
-            {
-            _current = _start + theScanLocation;
-            if (outError)
-                {
-                *outError = [self _error:kJSONDeserializerErrorCode_DictionaryValueScanFailed description:@"Could not scan dictionary. Failed to scan a value."];
-                }
-            return (NO);
-            }
-
-        if (_nullObject == NULL && theValue == [NSNull null])
-            {
-            continue;
-            }
-
-        if (theKey == NULL)
-            {
-            *outError = [self _error:kJSONDeserializerErrorCode_DictionaryKeyScanFailed description:@"Could not scan dictionary. Failed to scan a key."];
-            return(NO);
-            }
-        if (theValue == NULL)
-            {
-            *outError = [self _error:kJSONDeserializerErrorCode_DictionaryValueScanFailed description:@"Could not scan dictionary. Failed to scan a value."];
-            return(NO);
-            }
-        CFDictionarySetValue((__bridge CFMutableDictionaryRef)theDictionary, (__bridge void *)theKey, (__bridge void *)theValue);
-
-        _current = _SkipWhiteSpace(_current, _end);
-
-        if (_ScanCharacter(self, ',') == NO)
-            {
-            if (*_current != '}')
-                {
-                _current = _start + theScanLocation;
-                if (outError)
-                    {
-                    *outError = [self _error:kJSONDeserializerErrorCode_DictionaryNotTerminated description:@"kJSONDeserializerErrorCode_DictionaryKeyValuePairNoDelimiter"];
-                    }
-                return (NO);
-                }
-            break;
-            }
-        else
-            {
-            _current = _SkipWhiteSpace(_current, _end);
-
-            if (*_current == '}')
-                {
-                break;
-                }
-            }
-        }
-
-    if (_ScanCharacter(self, '}') == NO)
         {
-        _current = _start + theScanLocation;
-        if (outError)
-            {
-            *outError = [self _error:kJSONDeserializerErrorCode_DictionaryNotTerminated description:@"Could not scan dictionary. Dictionary not terminated by a '}' character."];
-            }
-        return (NO);
+            mCurrent = mStart + theScanLocation;
+            if (outError != NULL)
+                *outError = [self _error:kJSONDeserializerErrorCode_DictionaryKeyScanFailed description:@"Could not scan dictionary. Failed to scan a key."];
+
+            return (NO);
         }
+
+        mCurrent = _SkipWhiteSpace(mCurrent, mEnd);
+
+        if (!_ScanCharacter(self, ':'))
+        {
+            mCurrent = mStart + theScanLocation;
+            if (outError)
+                *outError = [self _error:kJSONDeserializerErrorCode_DictionaryKeyNotTerminated description:@"Could not scan dictionary. Key was not terminated with a ':' character."];
+            
+            return NO;
+        }
+
+        if (![self _scanJSONObject:&theValue error:outError])
+        {
+            mCurrent = mStart + theScanLocation;
+            if (outError != NULL)
+                *outError = [self _error:kJSONDeserializerErrorCode_DictionaryValueScanFailed description:@"Could not scan dictionary. Failed to scan a value."];
+
+            return NO;
+        }
+
+        if (nullObject == nil && theValue == NSNull.null)
+            continue;
+
+        if (theKey == nil)
+        {
+            if (outError != NULL)
+                *outError = [self _error:kJSONDeserializerErrorCode_DictionaryKeyScanFailed description:@"Could not scan dictionary. Failed to scan a key."];
+            return NO;
+        }
+        if (theValue == nil)
+        {
+            if (outError != NULL)
+                *outError = [self _error:kJSONDeserializerErrorCode_DictionaryValueScanFailed description:@"Could not scan dictionary. Failed to scan a value."];
+            return NO;
+        }
+        
+        [theDictionary setObject:theValue forKey:theKey];
+
+        mCurrent = _SkipWhiteSpace(mCurrent, mEnd);
+
+        if (!_ScanCharacter(self, ','))
+        {
+            if (*mCurrent != '}')
+            {
+                mCurrent = mStart + theScanLocation;
+                if (outError != NULL)
+                    *outError = [self _error:kJSONDeserializerErrorCode_DictionaryNotTerminated description:@"kJSONDeserializerErrorCode_DictionaryKeyValuePairNoDelimiter"];
+
+                return NO;
+            }
+            
+            break;
+        }
+        else
+        {
+            mCurrent = _SkipWhiteSpace(mCurrent, mEnd);
+
+            if (*mCurrent == '}')
+                break;
+        }
+    }
+
+    if (!_ScanCharacter(self, '}'))
+    {
+        mCurrent = mStart + theScanLocation;
+        if (outError != NULL)
+            *outError = [self _error:kJSONDeserializerErrorCode_DictionaryNotTerminated description:@"Could not scan dictionary. Dictionary not terminated by a '}' character."];
+
+        return NO;
+    }
 
     if (outDictionary != NULL)
-        {
-        if (_options & kJSONDeserializationOptions_MutableContainers)
-            {
+    {
+        if((options & kJSONDeserializationOptions_MutableContainers) != 0)
             *outDictionary = theDictionary;
-            }
         else
-            {
-            *outDictionary = [theDictionary copy];
-            }
-        }
-
-    if (ioSharedKeySet != NULL && *ioSharedKeySet == NULL)
-        {
-        *ioSharedKeySet = [NSMutableDictionary sharedKeySetForKeys:[theDictionary allKeys]];
-        }
-
-    return (YES);
+            *outDictionary = [NSDictionary dictionaryWithDictionary:theDictionary];
     }
+
+    return YES;
+}
 
 - (BOOL)_scanJSONArray:(NSArray **)outArray error:(NSError **)outError
+{
+    NSUInteger theScanLocation = mCurrent - mStart;
+
+    mCurrent = _SkipWhiteSpace(mCurrent, mEnd);
+
+    if (!_ScanCharacter(self, '['))
     {
-    NSUInteger theScanLocation = _current - _start;
-
-    _current = _SkipWhiteSpace(_current, _end);
-
-    if (_ScanCharacter(self, '[') == NO)
-        {
-        if (outError)
-            {
+        if (outError != NULL)
             *outError = [self _error:kJSONDeserializerErrorCode_ArrayStartCharacterMissing description:@"Could not scan array. Array not started by a '[' character."];
-            }
-        return (NO);
-        }
 
-    NSMutableArray *theArray = (__bridge_transfer NSMutableArray *) CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
-
-    _current = _SkipWhiteSpace(_current, _end);
-
-    id theSharedKeySet = NULL;
-
-    NSString *theValue = NULL;
-    while (*_current != ']')
-        {
-        if ([self _scanJSONObject:&theValue sharedKeySet:&theSharedKeySet error:outError] == NO)
-            {
-            _current = _start + theScanLocation;
-            if (outError)
-                {
-                *outError = [self _error:kJSONDeserializerErrorCode_ArrayValueScanFailed underlyingError:NULL description:@"Could not scan array. Could not scan a value."];
-                }
-            return (NO);
-            }
-
-        if (theValue == NULL)
-            {
-            if (_nullObject != NULL)
-                {
-                if (outError)
-                    {
-                    *outError = [self _error:kJSONDeserializerErrorCode_ArrayValueIsNull description:@"Could not scan array. Value is NULL."];
-                    }
-                return (NO);
-                }
-            }
-        else
-            {
-            CFArrayAppendValue((__bridge CFMutableArrayRef) theArray, (__bridge void *) theValue);
-            }
-
-        _current = _SkipWhiteSpace(_current, _end);
-
-        if (_ScanCharacter(self, ',') == NO)
-            {
-            _current = _SkipWhiteSpace(_current, _end);
-
-            if (*_current != ']')
-                {
-                _current = _start + theScanLocation;
-                if (outError)
-                    {
-                    *outError = [self _error:kJSONDeserializerErrorCode_ArrayNotTerminated description:@"Could not scan array. Array not terminated by a ']' character."];
-                    }
-                return (NO);
-                }
-
-            break;
-            }
-
-        _current = _SkipWhiteSpace(_current, _end);
-        }
-
-    if (_ScanCharacter(self, ']') == NO)
-        {
-        _current = _start + theScanLocation;
-        if (outError)
-            {
-            *outError = [self _error:kJSONDeserializerErrorCode_ArrayNotTerminated description:@"Could not scan array. Array not terminated by a ']' character."];
-            }
-        return (NO);
-        }
-
-    if (outArray != NULL)
-        {
-        if (_options & kJSONDeserializationOptions_MutableContainers)
-            {
-            *outArray = theArray;
-            }
-        else
-            {
-            *outArray = [theArray copy];
-            }
-        }
-    return (YES);
+        return NO;
     }
 
-- (BOOL)_scanJSONStringConstant:(NSString **)outStringConstant key:(BOOL)inKey error:(NSError **)outError
+    NSMutableArray *theArray = [NSMutableArray arrayWithCapacity:100];
+
+    mCurrent = _SkipWhiteSpace(mCurrent, mEnd);
+
+    NSString *theValue = nil;
+    while (*mCurrent != ']')
     {
-    #pragma unused (inKey)
-
-    NSUInteger theScanLocation = _current - _start;
-
-    if (_ScanCharacter(self, '"') == NO)
+        if (![self _scanJSONObject:&theValue error:outError])
         {
-        _current = _start + theScanLocation;
-        if (outError)
+            mCurrent = mStart + theScanLocation;
+            if (outError != NULL)
+                *outError = [self _error:kJSONDeserializerErrorCode_ArrayValueScanFailed underlyingError:NULL description:@"Could not scan array. Could not scan a value."];
+
+            return NO;
+        }
+
+        if (theValue == nil)
+        {
+            if (nullObject != nil)
             {
-            *outError = [self _error:kJSONDeserializerErrorCode_StringNotStartedWithBackslash description:@"Could not scan string constant. String not started by a '\"' character."];
+                if (outError != NULL)
+                    *outError = [self _error:kJSONDeserializerErrorCode_ArrayValueIsNull description:@"Could not scan array. Value is NULL."];
+
+                return NO;
             }
-        return (NO);
+        }
+        else
+            [theArray addObject:theValue];
+
+        mCurrent = _SkipWhiteSpace(mCurrent, mEnd);
+
+        if (!_ScanCharacter(self, ','))
+        {
+            mCurrent = _SkipWhiteSpace(mCurrent, mEnd);
+
+            if (*mCurrent != ']')
+            {
+                mCurrent = mStart + theScanLocation;
+                if (outError)
+                    *outError = [self _error:kJSONDeserializerErrorCode_ArrayNotTerminated description:@"Could not scan array. Array not terminated by a ']' character."];
+
+                return NO;
+            }
+
+            break;
         }
 
-    if (_scratchData == NULL)
-        {
-        _scratchData = [NSMutableData dataWithCapacity:8 * 1024];
-        }
+        mCurrent = _SkipWhiteSpace(mCurrent, mEnd);
+    }
+
+    if (_ScanCharacter(self, ']') == NO)
+    {
+        mCurrent = mStart + theScanLocation;
+        if (outError != NULL)
+            *outError = [self _error:kJSONDeserializerErrorCode_ArrayNotTerminated description:@"Could not scan array. Array not terminated by a ']' character."];
+
+        return NO;
+    }
+
+    if (outArray != NULL)
+    {
+        if((options & kJSONDeserializationOptions_MutableContainers) != 0)
+            *outArray = theArray;
+        else
+            *outArray = [NSArray arrayWithArray:theArray];
+    }
+    
+    return YES;
+}
+
+- (BOOL)_scanJSONStringConstant:(NSString **)outStringConstant key:(BOOL)inKey error:(NSError **)outError
+{
+    NSUInteger theScanLocation = mCurrent - mStart;
+
+    if (!_ScanCharacter(self, '"'))
+    {
+        mCurrent = mStart + theScanLocation;
+        if (outError != NULL)
+            *outError = [self _error:kJSONDeserializerErrorCode_StringNotStartedWithBackslash description:@"Could not scan string constant. String not started by a '\"' character."];
+
+        return NO;
+    }
+
+    if (mScratchData == NULL)
+        mScratchData = [NSMutableData.alloc initWithCapacity:8 * 1024];
     else
-        {
-        [_scratchData setLength:0];
-        }
+        mScratchData.length = 0;
 
     PtrRange thePtrRange;
-    while (_ScanCharacter(self, '"') == NO)
-        {
+    while (!_ScanCharacter(self, '"'))
+    {
         if ([self _scanNotQuoteCharactersIntoRange:&thePtrRange])
-            {
-            [_scratchData appendBytes:thePtrRange.location length:thePtrRange.length];
-            }
-        else if (_ScanCharacter(self, '\\') == YES)
-            {
-            char theCharacter = *_current++;
+            [mScratchData appendBytes:thePtrRange.location length:thePtrRange.length];
+        else if (_ScanCharacter(self, '\\'))
+        {
+            char theCharacter = *mCurrent++;
             switch (theCharacter)
-                {
+            {
                 case '"':
                 case '\\':
                 case '/':
@@ -659,378 +585,317 @@ typedef struct
                     theCharacter = '\t';
                     break;
                 case 'u':
-                    {
-                    UInt8 theBuffer[4];
+                {
+                    uint8_t theBuffer[4];
                     size_t theLength = ConvertEscapes(self, theBuffer);
                     if (theLength == 0)
-                        {
-                        if (outError)
-                            {
+                    {
+                        if (outError != NULL)
                             *outError = [self _error:kJSONDeserializerErrorCode_StringBadEscaping description:@"Could not decode string escape code."];
-                            }
-                        return(NO);
-                        }
-                    [_scratchData appendBytes:&theBuffer length:theLength];
+                        
+                        return NO;
+                    }
+                    
+                    [mScratchData appendBytes:&theBuffer length:theLength];
                     theCharacter = 0;
-                    }
                     break;
+                }
+                    
                 default:
+                {
+                    if ((options & kJSONDeserializationOptions_LaxEscapeCodes) == 0)
                     {
-                    if (!(_options & kJSONDeserializationOptions_LaxEscapeCodes))
-                        {
-                        _current = _start + theScanLocation;
-                        if (outError)
-                            {
+                        mCurrent = mStart + theScanLocation;
+                        if (outError != NULL)
                             *outError = [self _error:kJSONDeserializerErrorCode_StringUnknownEscapeCode description:@"Could not scan string constant. Unknown escape code."];
-                            }
+                        
                         return (NO);
-                        }
                     }
                     break;
                 }
+            }
             if (theCharacter != 0)
-                {
-                [_scratchData appendBytes:&theCharacter length:1];
-                }
-            }
+                [mScratchData appendBytes:&theCharacter length:1];
+        }
         else
-            {
-            if (outError)
-                {
+        {
+            if (outError != NULL)
                 *outError = [self _error:kJSONDeserializerErrorCode_StringNotTerminated description:@"Could not scan string constant. No terminating double quote character."];
-                }
+            
             return (NO);
-            }
         }
-
-    NSString *theString = NULL;
-    if ([_scratchData length] < 80)
-        {
-        NSUInteger hash = [_scratchData hash];
-        NSString *theFoundString = (__bridge NSString *)CFDictionaryGetValue(_stringsByHash, (const void *) hash);
-        BOOL theFoundFlag = NO;
-        if (theFoundString != NULL)
-            {
-            theString = (__bridge_transfer NSString *)CFStringCreateWithBytes(kCFAllocatorDefault, [_scratchData bytes], [_scratchData length], kCFStringEncodingUTF8, NO);
-            if (theString == NULL)
-                {
-                if (outError)
-                    {
-                    *outError = [self _error:kJSONDeserializerErrorCode_StringCouldNotBeCreated description:@"Could not create string."];
-                    }
-                return(NO);
-                }
-            if ([theFoundString isEqualToString:theString] == YES)
-                {
-                theFoundFlag = YES;
-                }
-            }
-
-        if (theFoundFlag == NO)
-            {
-            if (theString == NULL)
-                {
-                theString = (__bridge_transfer NSString *)CFStringCreateWithBytes(kCFAllocatorDefault, [_scratchData bytes], [_scratchData length], kCFStringEncodingUTF8, NO);
-                if (theString == NULL)
-                    {
-                    if (outError)
-                        {
-                        *outError = [self _error:kJSONDeserializerErrorCode_StringCouldNotBeCreated description:@"Could not create string."];
-                        }
-                    return(NO);
-                    }
-                }
-            if (_options & kJSONDeserializationOptions_MutableLeaves)
-                {
-                theString = [theString mutableCopy];
-                }
-            CFDictionarySetValue(_stringsByHash, (const void *) hash, (__bridge void *) theString);
-            }
-        }
-    else
-        {
-        theString = (__bridge_transfer NSString *)CFStringCreateWithBytes(kCFAllocatorDefault, [_scratchData bytes], [_scratchData length], kCFStringEncodingUTF8, NO);
-        if (theString == NULL)
-            {
-            if (outError)
-                {
-                *outError = [self _error:kJSONDeserializerErrorCode_StringCouldNotBeCreated description:@"Could not create string."];
-                }
-            return(NO);
-            }
-        if (_options & kJSONDeserializationOptions_MutableLeaves)
-            {
-            theString = [theString mutableCopy];
-            }
-        }
-
-    if (outStringConstant != NULL)
-        {
-        *outStringConstant = theString;
-        }
-
-    return (YES);
     }
 
-- (BOOL)_scanJSONNumberConstant:(NSNumber **)outValue error:(NSError **)outError
+    NSString *theString = nil;
+    if (mScratchData.length < 80)
     {
-    _current = _SkipWhiteSpace(_current, _end);
+        const NSUInteger hash = mScratchData.hash;
+        NSString *theFoundString = [mStringsByHash objectForKey:[NSNumber numberWithUnsignedInteger:hash]];
+        
+        BOOL theFoundFlag = NO;
+        if (theFoundString != nil)
+        {
+            theString = [NSString.alloc initWithBytes:mScratchData.bytes length:mScratchData.length encoding:NSUTF8StringEncoding].autorelease;
+            if (theString == nil)
+            {
+                if (outError != NULL)
+                    *outError = [self _error:kJSONDeserializerErrorCode_StringCouldNotBeCreated description:@"Could not create string."];
+                
+                return NO;
+            }
+            if ([theFoundString isEqualToString:theString])
+                theFoundFlag = YES;
+        }
+        
+        if (!theFoundFlag)
+        {
+            if (theString == nil)
+            {
+                theString = [NSString.alloc initWithBytes:mScratchData.bytes length:mScratchData.length encoding:NSUTF8StringEncoding].autorelease;
+                if (theString == nil)
+                {
+                    if (outError != NULL)
+                        *outError = [self _error:kJSONDeserializerErrorCode_StringCouldNotBeCreated description:@"Could not create string."];
+
+                    return(NO);
+                }
+            }
+            if((options & kJSONDeserializationOptions_MutableLeaves) != 0)
+                theString = [NSMutableString stringWithString:theString];
+            
+            [mStringsByHash setObject:theString forKey:[NSNumber numberWithUnsignedInteger:hash]];
+        }
+    }
+    else
+    {
+        theString = [NSString.alloc initWithBytes:mScratchData.bytes length:mScratchData.length encoding:NSUTF8StringEncoding].autorelease;
+        if (theString == nil)
+        {
+            if (outError != NULL)
+                *outError = [self _error:kJSONDeserializerErrorCode_StringCouldNotBeCreated description:@"Could not create string."];
+            
+            return(NO);
+        }
+        if((options & kJSONDeserializationOptions_MutableLeaves) != 0)
+            theString = [NSMutableString stringWithString:theString];
+    }
+
+    if (outStringConstant != NULL)
+        *outStringConstant = theString;
+
+    return YES;
+}
+
+- (BOOL)_scanJSONNumberConstant:(NSNumber **)outValue error:(NSError **)outError
+{
+    mCurrent = _SkipWhiteSpace(mCurrent, mEnd);
 
     PtrRange theRange;
-    if ([self _scanDoubleCharactersIntoRange:&theRange] == NO)
-        {
-        if (outError)
-            {
+    if (![self _scanDoubleCharactersIntoRange:&theRange])
+    {
+        if (outError != NULL)
             *outError = [self _error:kJSONDeserializerErrorCode_NumberNotScannable description:@"Could not scan number constant."];
-            }
-        return (NO);
-        }
+        
+        return NO;
+    }
 
     NSNumber *theValue = ScanNumber(theRange.location, theRange.length, NULL);
     if (theValue == NULL)
-        {
+    {
         if (outError)
-            {
             *outError = [self _error:kJSONDeserializerErrorCode_NumberNotScannable description:@"Could not scan number constant."];
-            }
-        return (NO);
-        }
-
-    if (outValue)
-        {
-        *outValue = theValue;
-        }
-
-    return (YES);
+        
+        return NO;
     }
 
-#pragma mark -
+    if (outValue != NULL)
+        *outValue = theValue;
+
+    return YES;
+}
 
 - (BOOL)_scanNotQuoteCharactersIntoRange:(PtrRange *)outValue
-    {
+{
     char *P;
-    for (P = _current; P < _end && *P != '\"' && *P != '\\'; ++P)
-        {
-        // We're just iterating...
-        }
+    for (P = mCurrent; P < mEnd && *P != '\"' && *P != '\\'; ++P);
 
-    if (P == _current)
-        {
-        return (NO);
-        }
+    if (P == mCurrent)
+        return NO;
 
-    if (outValue)
-        {
-        *outValue = (PtrRange) {.location = _current, .length = P - _current};
-        }
+    if (outValue != NULL)
+        *outValue = (PtrRange) {.location = mCurrent, .length = P - mCurrent};
 
-    _current = P;
+    mCurrent = P;
 
-    return (YES);
-    }
+    return YES;
+}
 
-#pragma mark -
+static const BOOL double_characters[256] = {
+    ['0' ... '9'] = YES,
+    ['e'] = YES,
+    ['E'] = YES,
+    ['-'] = YES,
+    ['+'] = YES,
+    ['.'] = YES,
+};
 
 - (BOOL)_scanDoubleCharactersIntoRange:(PtrRange *)outRange
-    {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Winitializer-overrides"
-    static BOOL double_characters[256] = {
-        [0 ... 255] = NO,
-        ['0' ... '9'] = YES,
-        ['e'] = YES,
-        ['E'] = YES,
-        ['-'] = YES,
-        ['+'] = YES,
-        ['.'] = YES,
-        };
-#pragma clang diagnostic pop
-
+{
     char *P;
-    for (P = _current; P < _end && double_characters[*P] == YES; ++P)
-        {
-        // Just iterate...
-        }
+    for (P = mCurrent; P < mEnd && double_characters[*P]; ++P);
 
-    if (P == _current)
-        {
-        return (NO);
-        }
+    if (P == mCurrent)
+        return NO;
 
     if (outRange)
-        {
-        *outRange = (PtrRange) {.location = _current, .length = P - _current};
-        }
+        *outRange = (PtrRange) {.location = mCurrent, .length = P - mCurrent};
 
-    _current = P;
+    mCurrent = P;
 
-    return (YES);
-    }
+    return YES;
+}
 
-#pragma mark -
+// MARK: Other utilities
 
 - (NSDictionary *)_userInfoForScanLocation
-    {
+{
     NSUInteger theLine = 0;
-    const char *theLineStart = _start;
-    for (const char *C = _start; C < _current; ++C)
-        {
+    const char *theLineStart = mStart;
+    for (const char *C = mStart; C < mCurrent; ++C)
+    {
         if (*C == '\n' || *C == '\r')
-            {
+        {
             theLineStart = C - 1;
             ++theLine;
-            }
         }
+    }
 
-    NSUInteger theCharacter = _current - theLineStart;
+    NSUInteger theCharacter = mCurrent - theLineStart;
 
-    NSRange theStartRange = NSIntersectionRange((NSRange) {.location = MAX((NSInteger) self.scanLocation - 20, 0), .length = 20 + (NSInteger) self.scanLocation - 20}, (NSRange) {.location = 0, .length = _data.length});
-    NSRange theEndRange = NSIntersectionRange((NSRange) {.location = self.scanLocation, .length = 20}, (NSRange) {.location = 0, .length = _data.length});
+    NSRange theStartRange = NSIntersectionRange((NSRange) {.location = MAX((NSInteger) self.scanLocation - 20, 0), .length = 20 + (NSInteger) self.scanLocation - 20}, (NSRange) {.location = 0, .length = mData.length});
+    NSRange theEndRange = NSIntersectionRange((NSRange) {.location = self.scanLocation, .length = 20}, (NSRange) {.location = 0, .length = mData.length});
 
-    NSString *theSnippet = [NSString stringWithFormat:@"%@!HERE>!%@",
-        [[NSString alloc] initWithData:[_data subdataWithRange:theStartRange] encoding:NSUTF8StringEncoding],
-        [[NSString alloc] initWithData:[_data subdataWithRange:theEndRange] encoding:NSUTF8StringEncoding]
-        ];
+    NSString *dataStrStart = [NSString.alloc initWithData:[mData subdataWithRange:theStartRange] encoding:NSUTF8StringEncoding];
+    NSString *dataStrEnd = [NSString.alloc initWithData:[mData subdataWithRange:theEndRange] encoding:NSUTF8StringEncoding];
+    
+    NSString *theSnippet = [NSString stringWithFormat:@"%@!HERE>!%@", dataStrStart, dataStrEnd];
+    
+    [dataStrStart release];
+    [dataStrEnd release];
 
     NSDictionary *theUserInfo;
     theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
         [NSNumber numberWithUnsignedInteger:theLine], @"line",
         [NSNumber numberWithUnsignedInteger:theCharacter], @"character",
         [NSNumber numberWithUnsignedInteger:self.scanLocation], @"location",
-        theSnippet, @"snippet",
-        NULL];
-    return (theUserInfo);
-    }
+        theSnippet, @"snippet", nil];
+    
+    return theUserInfo;
+}
 
 - (NSError *)_error:(NSInteger)inCode underlyingError:(NSError *)inUnderlyingError description:(NSString *)inDescription
-    {
+{
     NSMutableDictionary *theUserInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-        inDescription, NSLocalizedDescriptionKey,
-        NULL];
+        inDescription, NSLocalizedDescriptionKey, nil];
     [theUserInfo addEntriesFromDictionary:self._userInfoForScanLocation];
     if (inUnderlyingError)
-        {
-        theUserInfo[NSUnderlyingErrorKey] = inUnderlyingError;
-        }
+        [theUserInfo setObject:inUnderlyingError forKey:NSUnderlyingErrorKey];
+
     NSError *theError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:inCode userInfo:theUserInfo];
-    return (theError);
-    }
+    
+    return theError;
+}
 
 - (NSError *)_error:(NSInteger)inCode description:(NSString *)inDescription
-    {
-    return ([self _error:inCode underlyingError:NULL description:inDescription]);
-    }
+{
+    return [self _error:inCode underlyingError:NULL description:inDescription];
+}
 
-#pragma mark -
+// MARK: Parser functions
 
-inline static char *_SkipWhiteSpace(char *_current, char *_end)
-    {
+static inline char *_SkipWhiteSpace(char *current, char *end)
+{
     char *P;
-    for (P = _current; P < _end && isspace(*P); ++P)
-        {
-        // Just iterate...
-        }
+    for (P = current; P < end && isspace(*P); ++P);
 
-    return (P);
-    }
+    return P;
+}
 
 static inline BOOL _ScanCharacter(CJSONDeserializer *deserializer, char inCharacter)
-    {
-    char theCharacter = *deserializer->_current;
+{
+    char theCharacter = *deserializer->mCurrent;
     if (theCharacter == inCharacter)
-        {
-        ++deserializer->_current;
+    {
+        ++deserializer->mCurrent;
         return (YES);
-        }
-    else
-        {
-        return (NO);
-        }
     }
+    else
+        return NO;
+}
 
 static inline BOOL _ScanUTF8String(CJSONDeserializer *deserializer, const char *inString, size_t inLength)
-    {
-    if ((size_t) (deserializer->_end - deserializer->_current) < inLength)
-        {
-        return (NO);
-        }
-    if (strncmp(deserializer->_current, inString, inLength) == 0)
-        {
-        deserializer->_current += inLength;
-        return (YES);
-        }
-    return (NO);
-    }
+{
+    if ((size_t) (deserializer->mEnd - deserializer->mCurrent) < inLength)
+        return NO;
 
-static size_t ConvertEscapes(CJSONDeserializer *deserializer, UInt8 outBuffer[static 4])
+    if (strncmp(deserializer->mCurrent, inString, inLength) == 0)
     {
-    if (deserializer->_end - deserializer->_current < 4)
-        {
-        return(0);
-        }
-    UInt32 C = hexdec(deserializer->_current, 4);
-    deserializer->_current += 4;
+        deserializer->mCurrent += inLength;
+        return YES;
+    }
+    
+    return NO;
+}
+
+static const uint8_t firstByteMark[7] = { 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC };
+
+static size_t ConvertEscapes(CJSONDeserializer *deserializer, uint8_t outBuffer[static 4])
+{
+    if (deserializer->mEnd - deserializer->mCurrent < 4)
+        return 0;
+
+    uint32_t C = hexdec(deserializer->mCurrent, 4);
+    deserializer->mCurrent += 4;
 
     if (C >= 0xD800 && C <= 0xDBFF)
-        {
-        if (deserializer->_end - deserializer->_current < 6)
-            {
+    {
+        if (deserializer->mEnd - deserializer->mCurrent < 6)
             return(0);
-            }
-        if ((*deserializer->_current++) != '\\')
-            {
-            return(0);
-            }
-        if ((*deserializer->_current++) != 'u')
-            {
-            return(0);
-            }
 
-        UInt32 C2 = hexdec(deserializer->_current, 4);
-        deserializer->_current += 4;
+        if ((*deserializer->mCurrent++) != '\\')
+            return(0);
+
+        if ((*deserializer->mCurrent++) != 'u')
+            return 0;
+
+        uint32_t C2 = hexdec(deserializer->mCurrent, 4);
+        deserializer->mCurrent += 4;
 
         if (C2 >= 0xDC00 && C2 <= 0xDFFF)
-            {
             C = ((C - 0xD800) << 10) + (C2 - 0xDC00) + 0x0010000UL;
-            }
         else
-            {
-            return(0);
-            }
-        }
+            return 0;
+    }
     else if (C >= 0xDC00 && C <= 0xDFFF)
-        {
-        return(0);
-        }
+        return 0;
 
     int bytesToWrite;
     if (C < 0x80)
-        {
         bytesToWrite = 1;
-        }
     else if (C < 0x800)
-        {
         bytesToWrite = 2;
-        }
     else if (C < 0x10000)
-        {
         bytesToWrite = 3;
-        }
     else if (C < 0x110000)
-        {
         bytesToWrite = 4;
-        }
     else
-        {
         return(0);
-        }
-
-    static const UInt8 firstByteMark[7] = { 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC };
-    UInt8 *target = outBuffer + bytesToWrite;
-    const UInt32 byteMask = 0xBF;
-    const UInt32 byteMark = 0x80;
+    
+    uint8_t *target = outBuffer + bytesToWrite;
+    const uint32_t byteMask = 0xBF;
+    const uint32_t byteMark = 0x80;
     switch (bytesToWrite)
-        {
+    {
         case 4:
             *--target = ((C | byteMark) & byteMask);
             C >>= 6;
@@ -1042,12 +907,20 @@ static size_t ConvertEscapes(CJSONDeserializer *deserializer, UInt8 outBuffer[st
             C >>= 6;
         case 1:
             *--target =  (C | firstByteMark[bytesToWrite]);
-        }
-
-    return(bytesToWrite);
     }
 
+    return(bytesToWrite);
+}
+
 // Adapted from http://stackoverflow.com/a/11068850
+
+static const int hextable[] = {
+    [0 ... 255] = -1,                     // bit aligned access into this table is considerably
+    ['0'] = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, // faster for most modern processors,
+    ['A'] = 10, 11, 12, 13, 14, 15,       // for the space conscious, reduce to
+    ['a'] = 10, 11, 12, 13, 14, 15        // signed char.
+};
+
 /** 
  * @brief convert a hexidecimal string to a signed long
  * will not produce or process negative numbers except 
@@ -1058,25 +931,15 @@ static size_t ConvertEscapes(CJSONDeserializer *deserializer, UInt8 outBuffer[st
  * @return -1 on error, or result (max sizeof(long)-1 bits)
  */
 static int hexdec(const char *hex, int len)
-    {
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Winitializer-overrides"
-    static const int hextable[] = {
-       [0 ... 255] = -1,                     // bit aligned access into this table is considerably
-       ['0'] = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, // faster for most modern processors,
-       ['A'] = 10, 11, 12, 13, 14, 15,       // for the space conscious, reduce to
-       ['a'] = 10, 11, 12, 13, 14, 15        // signed char.
-    };
-    #pragma clang diagnostic pop
-
+{
     int ret = 0;
     if (len > 0)
-        {
-        while (*hex && ret >= 0 && (len--))
+    {
+        while (*hex != '\0' && ret >= 0 && (len-- > 0))
             {
             ret = (ret << 4) | hextable[*hex++];
             }
-        }
+    }
     else
         {
         while (*hex && ret >= 0)
@@ -1106,7 +969,7 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
         }
 
     // Scan for integer portion
-    UInt64 integer = 0;
+    uint64_t integer = 0;
     int integer_digits = 0;
     while (P != end && isdigit(*P))
         {
@@ -1121,7 +984,7 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
         }
 
     // If we scan a '.' character scan for fraction portion.
-    UInt64 frac = 0;
+    uint64_t frac = 0;
     int frac_digits = 0;
     if (P != end && *P == '.')
         {
@@ -1147,7 +1010,7 @@ static NSNumber *ScanNumber(const char *start, size_t length, NSError **outError
 
     // If we scan an 'e' character scan for '+' or '-' then scan exponent portion.
     BOOL negativeExponent = NO;
-    UInt64 exponent = 0;
+    uint64_t exponent = 0;
     if (P != end && (*P == 'e' || *P == 'E'))
         {
         ++P;
@@ -1238,3 +1101,4 @@ error: {
 
 
 @end
+
