@@ -27,12 +27,12 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import "JSONRepresentation.h"
 
 extern NSString *const kJSONDeserializerErrorDomain /* = @"CJSONDeserializerErrorDomain" */;
 
-typedef enum {
-    
+typedef enum
+{
     // Fundamental scanning errors
     kJSONDeserializerErrorCode_NothingToScan = -11,
     kJSONDeserializerErrorCode_CouldNotDecodeData = -12,
@@ -67,7 +67,8 @@ typedef enum {
     
 } EJSONDeserializerErrorCode;
 
-enum {
+enum
+{
     // The first three flags map to the corresponding NSJSONSerialization flags.
     kJSONDeserializationOptions_MutableContainers = (1UL << 0),
     kJSONDeserializationOptions_MutableLeaves = (1UL << 1),
@@ -75,18 +76,34 @@ enum {
     kJSONDeserializationOptions_LaxEscapeCodes = (1UL << 3),
     kJSONDeserializationOptions_Default = kJSONDeserializationOptions_MutableContainers,
 };
+
 typedef NSUInteger EJSONDeserializationOptions;
 
 @interface CJSONDeserializer : NSObject
+{
+@private
+    
+    NSObject *nullObject;
+    EJSONDeserializationOptions options;
+    
+    NSData *mData;
+    NSMutableData *mScratchData;
+    NSMutableDictionary *mStringsByHash;
+    
+    NSUInteger mScanLocation;
+    char *mEnd;
+    char *mCurrent;
+    char *mStart;
+}
 
 /// Object to return instead when a null encountered in the JSON. Defaults to NSNull. Setting to null causes the deserializer to skip null values.
-@property (readwrite, nonatomic, strong) id nullObject;
+@property (readwrite, nonatomic, retain) NSObject *nullObject;
 
 /// JSON must be encoded in Unicode (UTF-8, UTF-16 or UTF-32). Use this if you expect to get the JSON in another encoding.
 
 @property (readwrite, nonatomic, assign) EJSONDeserializationOptions options;
 
-+ (CJSONDeserializer *)deserializer;
++ (instancetype)deserializer;
 
 - (id)deserialize:(NSData *)inData error:(NSError **)outError;
 
@@ -94,3 +111,4 @@ typedef NSUInteger EJSONDeserializationOptions;
 - (id)deserializeAsArray:(NSData *)inData error:(NSError **)outError;
 
 @end
+
