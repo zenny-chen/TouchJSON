@@ -27,11 +27,13 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import "JSONRepresentation.h"
 
 @interface NSDictionary (NSDictionary_JSONExtensions)
 
-+ (id)dictionaryWithJSONData:(NSData *)inData error:(NSError **)outError;
-+ (id)dictionaryWithJSONString:(NSString *)inJSON error:(NSError **)outError;
++ (instancetype)dictionaryWithJSONData:(NSData *)inData error:(NSError **)outError;
++ (instancetype)dictionaryWithJSONString:(NSString *)inJSON error:(NSError **)outError;
 
 @end
+
+
