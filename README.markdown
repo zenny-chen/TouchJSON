@@ -1,6 +1,6 @@
 # Which Is Modified
 
-TouchJSON here now supports GNUStep framework with MRR mode. Now, you may comiple the source code with not only Clang, but also GCC compiler.
+TouchJSON here now supports GNUStep framework with MRR mode. Now, you may compile the source code with not only Clang, but also GCC compiler.
 
 Besides, the code format is slightly adjusted.
 
