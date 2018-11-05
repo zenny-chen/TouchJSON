@@ -34,16 +34,15 @@
 
 + (instancetype)dictionaryWithJSONData:(NSData *)inData error:(NSError **)outError
 {
-    return([CJSONDeserializer.deserializer deserialize:inData error:outError]);
+    return [[CJSONDeserializer deserializer] deserialize:inData error:outError];
 }
 
 + (instancetype)dictionaryWithJSONString:(NSString *)inJSON error:(NSError **)outError;
 {
     NSData *theData = [inJSON dataUsingEncoding:NSUTF8StringEncoding];
     
-    return([self dictionaryWithJSONData:theData error:outError]);
+    return [self dictionaryWithJSONData:theData error:outError];
 }
 
 @end
-
 
