@@ -29,8 +29,6 @@
 
 #import "CJSONSerializer.h"
 
-#import "JSONRepresentation.h"
-
 #ifdef __linux__
 
 /// NSNumber类型对象的具体基本数值类型编码的枚举值
@@ -99,19 +97,21 @@ static NSData *kTrue = nil;
 
 + (void)initialize
 {
-    @autoreleasepool {
-        if (kNULL == NULL)
-            kNULL = [NSData.alloc initWithBytesNoCopy:(void *)"null" length:4 freeWhenDone:NO];
-        if (kFalse == NULL)
-            kFalse = [NSData.alloc initWithBytesNoCopy:(void *)"false" length:5 freeWhenDone:NO];
-        if (kTrue == NULL)
-            kTrue = [NSData.alloc initWithBytesNoCopy:(void *)"true" length:4 freeWhenDone:NO];
-    }
+    NSAutoreleasePool *pool = NSAutoreleasePool.new;
+    
+    if (kNULL == NULL)
+        kNULL = [[NSData alloc] initWithBytesNoCopy:"null" length:4 freeWhenDone:NO];
+    if (kFalse == NULL)
+        kFalse = [[NSData alloc] initWithBytesNoCopy:"false" length:5 freeWhenDone:NO];
+    if (kTrue == NULL)
+        kTrue = [[NSData alloc] initWithBytesNoCopy:"true" length:4 freeWhenDone:NO];
+    
+    [pool drain];
 }
 
 + (instancetype)serializer
 {
-    return CJSONSerializer.new.autorelease;
+    return [[CJSONSerializer new] autorelease];
 }
 
 - (BOOL)isValidJSONObject:(id)inObject
@@ -150,7 +150,7 @@ static NSData *kTrue = nil;
         theResult = [self serializeDictionary:inObject error:outError];
     else if ([inObject isKindOfClass:NSData.class])
     {
-        NSString *theString = [NSString.alloc initWithData:inObject encoding:NSUTF8StringEncoding];
+        NSString *theString = [[NSString alloc] initWithData:inObject encoding:NSUTF8StringEncoding];
         if (theString == nil)
         {
             if (outError != NULL)
@@ -200,13 +200,11 @@ static NSData *kTrue = nil;
 
 - (NSData *)serializeNull:(NSNull *)inNull error:(NSError **)outError
 {
-    #pragma unused (inNull, outError)
     return kNULL;
 }
 
 - (NSData *)serializeNumber:(NSNumber *)inNumber error:(NSError **)outError
 {
-    #pragma unused (outError)
     NSData *theResult = nil;
     switch(inNumber.objCType[0])
     {
@@ -225,8 +223,6 @@ static NSData *kTrue = nil;
 
 - (NSData *)serializeString:(NSString *)inString error:(NSError **)outError
 {
-    #pragma unused (outError)
-
     const char *theUTF8String = inString.UTF8String;
 
     NSMutableData *theData = [NSMutableData dataWithLength:strlen(theUTF8String) * 2 + 2];
@@ -343,7 +339,7 @@ static NSData *kTrue = nil;
     NSArray *theKeys = inDictionary.allKeys;
     NSEnumerator *theEnumerator = theKeys.objectEnumerator;
     NSString *theKey = nil;
-    while ((theKey = [theEnumerator nextObject]) != nil)
+    while ((theKey = theEnumerator.nextObject) != nil)
     {
         id theValue = [inDictionary objectForKey:theKey];
         
