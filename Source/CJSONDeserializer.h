@@ -90,10 +90,9 @@ typedef NSUInteger EJSONDeserializationOptions;
     NSMutableData *mScratchData;
     NSMutableDictionary *mStringsByHash;
     
-    NSUInteger mScanLocation;
-    char *mEnd;
-    char *mCurrent;
-    char *mStart;
+    const char *mEnd;
+    const char *mCurrent;
+    const char *mStart;
 }
 
 /// Object to return instead when a null encountered in the JSON. Defaults to NSNull. Setting to null causes the deserializer to skip null values.
